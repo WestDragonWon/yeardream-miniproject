@@ -1,0 +1,4 @@
+service:
+  type: ClusterIP
+  port: 10000
+
