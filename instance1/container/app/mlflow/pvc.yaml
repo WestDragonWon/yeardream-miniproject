@@ -1,0 +1,71 @@
+# PersistentVolumeClaims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    meta.helm.sh/release-name: my-mlflow
+    meta.helm.sh/release-namespace: default
+  labels:
+    app.kubernetes.io/component: tracking
+    app.kubernetes.io/instance: my-mlflow
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mlflow
+    app.kubernetes.io/part-of: mlflow
+    app.kubernetes.io/version: 2.16.0
+    helm.sh/chart: mlflow-1.4.25
+  name: my-mlflow-tracking
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: new-storage-class
+  volumeMode: Filesystem
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    meta.helm.sh/release-name: my-mlflow
+    meta.helm.sh/release-namespace: default
+  labels:
+    app.kubernetes.io/instance: my-mlflow
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/version: 2024.8.29
+    helm.sh/chart: minio-14.7.4
+  name: my-mlflow-minio
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: new-storage-class
+  volumeMode: Filesystem
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{},"name":"data-my-mlflow-postgresql-0","namespace":"default"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"5Gi"}},"storageClassName":"new-storage-class"}}
+    volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+    volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+  name: data-my-mlflow-postgresql-0
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: new-storage-class
+  volumeMode: Filesystem
