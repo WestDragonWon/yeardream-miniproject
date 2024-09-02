@@ -1,0 +1,7 @@
+FROM minio/minio:RELEASE.2024-08-29T01-40-52Z-cpuv1
+
+RUN mkdir -p /data
+
+EXPOSE 9000
+EXPOSE 9001
+
