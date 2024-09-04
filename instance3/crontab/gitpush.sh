@@ -20,4 +20,4 @@ git config --global user.email "wornr06@naver.com"
 # 변경사항 커밋 및 푸시
 git add .
 git commit -m "Automated commit from $BRANCH_NAME at $(date)"
-git push yeardream-miniproject $BRANCH_NAME 
+git push origin $BRANCH_NAME 
