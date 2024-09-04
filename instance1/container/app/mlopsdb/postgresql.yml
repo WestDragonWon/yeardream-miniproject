@@ -5,9 +5,9 @@ services:
     image: postgres:13
     container_name: postgres
     environment:
-      POSTGRES_DB: mlops
-      POSTGRES_USER: mlops_user
-      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "22131:5432"
@@ -23,7 +23,7 @@ services:
           memory: 4G
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U mlops_user -d mlops"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -32,8 +32,8 @@ services:
     image: dpage/pgadmin4
     container_name: pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: wornr06@naver.com
-      PGADMIN_DEFAULT_PASSWORD: 1234
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "8080:80"
     depends_on:
