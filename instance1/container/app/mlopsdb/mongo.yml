@@ -12,8 +12,8 @@ services:
       - mongo-config:/data/configdb
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     environment:
-      MONGO_INITDB_ROOT_USERNAME: team06
-      MONGO_INITDB_ROOT_PASSWORD: 1234
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
     command: ["--auth", "--bind_ip_all"]
     deploy:
       resources:
@@ -32,8 +32,8 @@ services:
     ports:
       - "8081:8081"  # Exposed to external access
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: team06
-      ME_CONFIG_MONGODB_ADMINPASSWORD: 1234
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_EXPRESS_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_EXPRESS_PASSWORD}
       ME_CONFIG_MONGODB_SERVER: mongodb
     depends_on:
       - mongodb
