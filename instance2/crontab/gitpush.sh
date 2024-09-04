@@ -10,8 +10,14 @@ BRANCH_NAME="instance2"
 eval $(ssh-agent -s)
 ssh-add /home/ubuntu/.ssh/id_ed25519
 
+# GitHub 호스트 키가 없을 경우 추가
+if ! grep -q "^github.com " ~/.ssh/known_hosts; then
+  ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+fi
+
 # Git 디렉토리로 이동
 cd /home/ubuntu/yeardream-miniproject/
+
 
 # Git 설정: 사용자 이름과 이메일
 git config --global user.name "Loafingcat"
@@ -20,4 +26,4 @@ git config --global user.email "bjunho0130@gmail.com"
 # 변경사항 커밋 및 푸시
 git add .
 git commit -m "Automated commit from $BRANCH_NAME at $(date)"
-git push yeardream-miniproject $BRANCH_NAME 
+git push origin $BRANCH_NAME 
