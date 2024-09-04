@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: gp3
+  awsElasticBlockStore:
+    volumeID: aws://ap-northeast-2/vol-04f9eb12db6b86d12  # EBS 볼륨 ID
+    fsType: ext4
+
