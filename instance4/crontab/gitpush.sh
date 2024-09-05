@@ -23,11 +23,21 @@ send_slack_message() {
   local status="$1"
   local message="$2"
 
+  # 메시지에 이모지 추가
+  local icon=""
+  if [ "$status" == "Success" ]; then
+    icon=":white_check_mark:"  # 성공 이모지
+  else
+    icon=":x:"  # 실패 이모지
+  fi
+
   curl -X POST -H 'Content-type: application/json' --data "{
     \"text\": \"[Git Automation - $BRANCH_NAME] $status: $message\"
   }" $SLACK_WEBHOOK_URL
 }
 
+
+  
 # SSH 에이전트 실행 및 SSH 키 추가
 eval $(ssh-agent -s)
 ssh-add /home/ubuntu/.ssh/id_ed25519
