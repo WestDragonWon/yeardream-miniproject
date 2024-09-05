@@ -26,18 +26,17 @@ send_slack_message() {
   # 메시지에 이모지 추가
   local icon=""
   if [ "$status" == "Success" ]; then
-    icon=":white_check_mark:"  # 성공 이모지
+    icon="✅"  # 성공 이모지
   else
-    icon=":x:"  # 실패 이모지
+    icon="⚠️"  # 실패 이모지
   fi
 
+  # Slack 메시지 전송
   curl -X POST -H 'Content-type: application/json' --data "{
-    \"text\": \"[Git Automation - $BRANCH_NAME] $status: $message\"
-  }" $SLACK_WEBHOOK_URL
+    \"text\": \"$icon [Git Automation - $BRANCH_NAME] $status: $message\"
+  }" "$SLACK_WEBHOOK_URL"
 }
 
-
-  
 # SSH 에이전트 실행 및 SSH 키 추가
 eval $(ssh-agent -s)
 ssh-add /home/ubuntu/.ssh/id_ed25519
@@ -59,7 +58,10 @@ git add .
 COMMIT_OUTPUT=$(git commit -m "Automated commit from $BRANCH_NAME at $(date)" 2>&1)
 COMMIT_STATUS=$?
 
-if [ $COMMIT_STATUS -ne 0 ]; then
+if [[ $COMMIT_OUTPUT == *"nothing to commit"* ]]; then
+  send_slack_message "No Changes" "No changes to commit on $BRANCH_NAME."
+  exit 0
+elif [ $COMMIT_STATUS -ne 0 ]; then
   send_slack_message "Failure" "Git commit failed: $COMMIT_OUTPUT"
   exit 1
 fi
