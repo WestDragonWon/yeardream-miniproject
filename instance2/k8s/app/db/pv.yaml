@@ -12,4 +12,3 @@ spec:
   awsElasticBlockStore:
     volumeID: aws://ap-northeast-2/vol-04f9eb12db6b86d12  # EBS 볼륨 ID
     fsType: ext4
-
