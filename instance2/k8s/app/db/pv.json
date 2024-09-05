@@ -1,0 +1,47 @@
+{
+    "apiVersion": "v1",
+    "kind": "PersistentVolume",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolume\",\"metadata\":{\"annotations\":{},\"name\":\"my-pv-postgresql\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"awsElasticBlockStore\":{\"fsType\":\"ext4\",\"volumeID\":\"aws://ap-northeast-2a/vol-0d3ab22f85cec8639\"},\"capacity\":{\"storage\":\"5Gi\"},\"persistentVolumeReclaimPolicy\":\"Delete\",\"storageClassName\":\"new-storage-class\"}}\n",
+            "pv.kubernetes.io/bound-by-controller": "yes"
+        },
+        "creationTimestamp": "2024-09-02T08:04:07Z",
+        "deletionGracePeriodSeconds": 0,
+        "deletionTimestamp": "2024-09-03T02:15:40Z",
+        "finalizers": [
+            "kubernetes.io/pv-protection",
+            "external-attacher/ebs-csi-aws-com"
+        ],
+        "name": "my-pv-postgresql",
+        "resourceVersion": "146921",
+        "uid": "1aad2067-7d27-489a-83d1-f25312c3cde7"
+    },
+    "spec": {
+        "accessModes": [
+            "ReadWriteOnce"
+        ],
+        "awsElasticBlockStore": {
+            "fsType": "ext4",
+            "volumeID": "aws://ap-northeast-2a/vol-0d3ab22f85cec8639"
+        },
+        "capacity": {
+            "storage": "5Gi"
+        },
+        "claimRef": {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "name": "data-my-mlflow-postgresql-0",
+            "namespace": "default",
+            "resourceVersion": "59112",
+            "uid": "23af2cf5-bc86-4316-a843-07ce10533e41"
+        },
+        "persistentVolumeReclaimPolicy": "Delete",
+        "storageClassName": "new-storage-class",
+        "volumeMode": "Filesystem"
+    },
+    "status": {
+        "lastPhaseTransitionTime": "2024-09-02T08:06:30Z",
+        "phase": "Bound"
+    }
+}
