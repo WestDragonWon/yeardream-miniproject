@@ -1,2 +1,2 @@
 # yeardream-miniproject
-MLOps-team06
+DB 서버
