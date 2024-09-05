@@ -1,9 +1,29 @@
+# Headless Service for Redis
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-headless
+  labels:
+    app: redis
+spec:
+  clusterIP: None # Headless Service를 위한 설정
+  selector:
+    app: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+
+---
+# StatefulSet for Redis
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: redis
+  labels:
+    app: redis
 spec:
-  replicas: 1
+  serviceName: "redis-headless"
+  replicas: 2 # Redis 인스턴스 수
   selector:
     matchLabels:
       app: redis
@@ -12,21 +32,44 @@ spec:
       labels:
         app: redis
     spec:
+      nodeSelector: # 라벨을 이용한 노드 선택
+        active: enabled
       containers:
-        - name: redis
-          image: redis:6.2
-          ports:
-            - containerPort: 6379
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: redis
-spec:
-  type: NodePort
-  ports:
-    - port: 6379
-      targetPort: 6379
-      nodePort: 30015  # 사용 가능한 NodePort
-  selector:
-    app: redis
+      - name: redis
+        image: redis:6.2.6 # 사용할 Redis 이미지 버전
+        ports:
+        - containerPort: 6379 # Redis 기본 포트
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data # Redis 데이터 경로
+        command: ["redis-server", "/data/redis.conf"] # Redis 서버 실행 명령
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mlopsdb
+              key: REDIS_PASSWORD
+        - name: REDIS_PORT
+          valueFrom:
+            secretKeyRef:
+              name: mlopsdb
+              key: REDIS_PORT
+        - name: REDIS_BIND
+          valueFrom:
+            secretKeyRef:
+              name: mlopsdb
+              key: REDIS_BIND
+        - name: REDIS_PROTECTED_MODE
+          valueFrom:
+            secretKeyRef:
+              name: mlopsdb
+              key: REDIS_PROTECTED_MODE
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+      storageClassName: "ebs-gp3" # 사용할 스토리지 클래스 이름
