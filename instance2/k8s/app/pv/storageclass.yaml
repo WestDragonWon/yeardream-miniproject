@@ -1,0 +1,10 @@
+# EBS를 사용하는 StorageClass 정의 (이미 존재하는 경우 생략 가능)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-gp3
+provisioner: ebs.csi.aws.com # AWS EBS CSI 드라이버 사용
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  type: gp3 # EBS 볼륨 유형
+  fsType: ext4 # 파일 시스템 유형
