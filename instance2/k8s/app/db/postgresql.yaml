@@ -1,9 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgres
-  namespace: default
 spec:
+  serviceName: postgres
   replicas: 1
   selector:
     matchLabels:
@@ -15,29 +15,44 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: 'postgres:15'
+          image: postgres:15
           ports:
             - containerPort: 5432
           env:
+            - name: POSTGRES_DB
+              value: mlops
+            - name: POSTGRES_USER
+              value: mlops_user
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: postgresdb
-      volumes:
-        - name: postgresdb
-          persistentVolumeClaim:
-            claimName: postgres-pvc
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: ebs-gp3
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-service
-  namespace: default
+  name: postgres
+  labels:
+    app: postgres
 spec:
+  clusterIP: None
   selector:
     app: postgres
   ports:

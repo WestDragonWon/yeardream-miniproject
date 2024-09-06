@@ -15,13 +15,29 @@ spec:
     spec:
       containers:
         - name: mongodb
-          image: mongo:7.0.14
+          image: mongo:4.4.18
+          command:
+            - "numactl"
+            - "--interleave=all"
+            - "mongod"
+            - "--bind_ip"
+            - "0.0.0.0"
+            - "--replSet"
+            - "MainRepSet"
+            - "--setParameter"
+            - "authenticationMechanisms=SCRAM-SHA-1"
           ports:
             - containerPort: 27017
           volumeMounts:
             - name: mongodb-storage
-              mountPath: /data/db
-      volumes:
-        - name: mongodb-storage
-          persistentVolumeClaim:
-            claimName: pvc-1  # 기존 PVC 이름으로 참조
+              mountPath: /data  # MongoDB의 데이터 디렉토리
+  volumeClaimTemplates:
+    - metadata:
+        name: mongodb-storage  # PVC 이름
+      spec:
+        accessModes: 
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: ebs-gp3  # StorageClass 추가
