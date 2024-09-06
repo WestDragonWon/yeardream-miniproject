@@ -49,3 +49,6 @@ data:
       - job_name: 'kubernetes-nodes'
         kubernetes_sd_configs:
           - role: node
+      - job_name: 'postgres-exporter'
+        static_configs:
+          - targets: ['postgres-exporter:9187']
