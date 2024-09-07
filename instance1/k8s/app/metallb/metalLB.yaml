@@ -1,0 +1,50 @@
+#service 1개, replicaset 1개로 구성
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metallb-speaker
+spec:
+  replicas: 1
+  selector:   #label이 app: metallb인 파드를 관리하겠다고선언 
+    matchLabels:
+      app: metallb-speaker
+  template:   #Deployment가 만들 파드의 템플릿
+    metadata:
+      labels:
+        app: metallb-speaker
+    spec:
+      containers:
+        - name: metallb-speaker
+          image: bitnami/metallb-speaker:latest
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metallb-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metallb-controller
+  template:
+    metadata:
+      labels:
+        app: metallb-controller
+    spec:
+      containers:
+        - name: metallb-controller
+          image: bitnami/metallb-controller:latest
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metallb-speaker
+spec:
+  type: ClusterIP
+  selector:
+    app: metallb-speaker  #이 레이블을 가진 pod를 선택
+  ports:
+    - port: 80  #외부에 노출할 포트
+      targetPort: 443 #metallb와 연결된 포트
