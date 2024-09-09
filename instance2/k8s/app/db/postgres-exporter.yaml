@@ -17,7 +17,7 @@ spec:
         image: wrouesnel/postgres_exporter:latest
         env:
         - name: DATA_SOURCE_NAME
-          value: "postgresql://mlops_user:$(POSTGRES_PASSWORD)@postgres:5432/mlops?sslmode=disable"
+          value: "postgresql://mlops_user:1234@postgres:5432/mlops?sslmode=disable"
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
