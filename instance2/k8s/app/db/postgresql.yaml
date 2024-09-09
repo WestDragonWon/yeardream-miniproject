@@ -132,6 +132,6 @@ data:
     wal_keep_segments = 64
   pg_hba.conf: |
     local all all trust
-    host all all all md5
-    host replication all all md5
-    host replication replicator 192.168.0.0/16 md5
+    host all all all scram-sha-256
+    host replication all all scram-sha-256
+    host replication replicator 192.168.0.0/16 scram-sha-256
