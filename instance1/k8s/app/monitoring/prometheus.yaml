@@ -67,7 +67,7 @@ spec:
             - name: config-volume
               mountPath: /etc/prometheus
           args:
-            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--config.file=/etc/prometheus/prometheus.yaml"
       volumes:
         - name: config-volume
           configMap:

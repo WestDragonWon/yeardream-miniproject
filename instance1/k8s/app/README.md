@@ -18,7 +18,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        active=enabled
+        active: "enabled"
 ```
 
 - 쉽고 간단한 설정 
