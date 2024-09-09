@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1725855400961
+current_stage: None
+description: null
+last_updated_timestamp: 1725855400961
+name: IrisRandomForestModel
+run_id: 84fb87f2a9bc4a43834afc8c9556da5e
+run_link: null
+source: file:///home/ubuntu/yeardream-miniproject/instance1/k8s/app/mlflow/mlruns/0/84fb87f2a9bc4a43834afc8c9556da5e/artifacts/random_forest_model
+status: READY
+status_message: null
+storage_location: file:///home/ubuntu/yeardream-miniproject/instance1/k8s/app/mlflow/mlruns/0/84fb87f2a9bc4a43834afc8c9556da5e/artifacts/random_forest_model
+user_id: null
+version: 3
