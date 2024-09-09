@@ -1,0 +1,15 @@
+artifact_uri: file:///home/ubuntu/yeardream-miniproject/instance1/k8s/app/mlflow/mlruns/0/9717f3d4c05e48d085b9501b04af3b0a/artifacts
+end_time: 1725849631064
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 9717f3d4c05e48d085b9501b04af3b0a
+run_name: youthful-gnat-730
+run_uuid: 9717f3d4c05e48d085b9501b04af3b0a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1725849628861
+status: 3
+tags: []
+user_id: ubuntu
