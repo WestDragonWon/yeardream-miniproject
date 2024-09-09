@@ -1,50 +1,134 @@
-#service 1개, replicaset 1개로 구성
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: metallb-speaker
-spec:
-  replicas: 1
-  selector:   #label이 app: metallb인 파드를 관리하겠다고선언 
-    matchLabels:
-      app: metallb-speaker
-  template:   #Deployment가 만들 파드의 템플릿
-    metadata:
-      labels:
-        app: metallb-speaker
-    spec:
-      containers:
-        - name: metallb-speaker
-          image: bitnami/metallb-speaker:latest
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Namespace
 metadata:
-  name: metallb-controller
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: metallb-controller
-  template:
-    metadata:
-      labels:
-        app: metallb-controller
-    spec:
-      containers:
-        - name: metallb-controller
-          image: bitnami/metallb-controller:latest
+  name: metallb-system
 
 ---
 apiVersion: v1
-kind: Service
+kind: ServiceAccount
 metadata:
-  name: metallb-speaker
+  name: controller
+  namespace: metallb-system
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: speaker
+  namespace: metallb-system
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: metallb-system:controller
+rules:
+- apiGroups: [""]
+  resources: ["services", "endpoints", "nodes", "secrets", "configmaps"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: metallb-system:controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: metallb-system:controller
+subjects:
+- kind: ServiceAccount
+  name: controller
+  namespace: metallb-system
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller
+  namespace: metallb-system
 spec:
-  type: ClusterIP
+  replicas: 1
   selector:
-    app: metallb-speaker  #이 레이블을 가진 pod를 선택
-  ports:
-    - port: 80  #외부에 노출할 포트
-      targetPort: 443 #metallb와 연결된 포트
+    matchLabels:
+      component: controller
+  template:
+    metadata:
+      labels:
+        component: controller
+    spec:
+      serviceAccountName: controller
+      containers:
+      - name: controller
+        image: quay.io/metallb/controller:main
+        args:
+        - --port=7472
+        ports:
+        - containerPort: 7472
+          name: monitoring
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: speaker
+  namespace: metallb-system
+spec:
+  selector:
+    matchLabels:
+      component: speaker
+  template:
+    metadata:
+      labels:
+        component: speaker
+    spec:
+      serviceAccountName: speaker
+      hostNetwork: true
+      containers:
+      - name: speaker
+        image: quay.io/metallb/speaker:main
+        args:
+        - --port=7472
+        ports:
+        - containerPort: 7472
+          name: monitoring
+
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: my-ip-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.1.240-192.168.1.250
+
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: l2-advertisement
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - my-ip-pool
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-proxy
+  namespace: kube-system
+  labels:
+    k8s-app: kube-proxy
+data:
+  config.conf: |
+    apiVersion: kubeproxy.config.k8s.io/v1alpha1
+    kind: KubeProxyConfiguration
+    strictARP: true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: metallb-webhook-cert
+  namespace: metallb-system
