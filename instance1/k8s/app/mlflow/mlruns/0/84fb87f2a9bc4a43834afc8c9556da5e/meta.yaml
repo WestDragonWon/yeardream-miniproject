@@ -1,0 +1,15 @@
+artifact_uri: file:///home/ubuntu/yeardream-miniproject/instance1/k8s/app/mlflow/mlruns/0/84fb87f2a9bc4a43834afc8c9556da5e/artifacts
+end_time: 1725855400965
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 84fb87f2a9bc4a43834afc8c9556da5e
+run_name: ambitious-pug-944
+run_uuid: 84fb87f2a9bc4a43834afc8c9556da5e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1725855398355
+status: 3
+tags: []
+user_id: ubuntu

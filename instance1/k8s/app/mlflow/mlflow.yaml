@@ -18,21 +18,36 @@ spec:
           ports:
             - containerPort: 8080  
           command: ["mlflow", "server", 
-                    # "--backend-store-uri", "sqlite:///mlflow.db",  # 로컬 SQLite 데이터베이스
-                    "--default-artifact-root", "s3://team06-mlflow-feature",  # S3 버킷 경로
+                    "--backend-store-uri", "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/mlops",  # PostgreSQL URI
+                    "--default-artifact-root", "$(MLFLOW_S3_ARTIFACT_ROOT)",  # S3 버킷 경로
                     "--host", "0.0.0.0", 
                     "--port", "8080"]  # MLflow 서버 실행
           env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: my-env-secret
+                  key: POSTGRES_USER  # PostgreSQL 사용자
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-env-secret
+                  key: POSTGRES_PASSWORD  # PostgreSQL 비밀번호
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: aws-secret
+                  name: my-env-secret
                   key: AWS_ACCESS_KEY_ID
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: aws-secret
+                  name: my-env-secret
                   key: AWS_SECRET_ACCESS_KEY
+            - name: MLFLOW_S3_ARTIFACT_ROOT
+              valueFrom:
+                secretKeyRef:
+                  name: my-env-secret
+                  key: MLFLOW_S3_ARTIFACT_ROOT
           resources:
             requests:
               memory: "512Mi"  # 요청 메모리
