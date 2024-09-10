@@ -18,3 +18,4 @@ metadata:
   name: efs-sc
 provisioner: efs.csi.aws.com # AWS EFS CSI 드라이버 사용
 volumeBindingMode: Immediate
+allowVolumeExpansion: true # 볼륨 확장 허용
