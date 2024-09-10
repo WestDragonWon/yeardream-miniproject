@@ -1,0 +1,5 @@
+/bin/sh: 1: /home/ubuntu/yeardream-miniproject/instance5/crontab/gitpush.sh: Permission denied
+/bin/sh: 1: /home/ubuntu/yeardream-miniproject/instance5/crontab/gitpush.sh: Permission denied
+Agent pid 49471
+Identity added: /home/ubuntu/.ssh/id_ed25519 (westdragonwon@gmail.com)
+# github.com:22 SSH-2.0-babeld-fdcea1d49
