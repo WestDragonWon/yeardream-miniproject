@@ -1,0 +1,173 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: bfdprofiles.metallb.io
+spec:
+  group: metallb.io
+  names:
+    kind: BFDProfile
+    listKind: BFDProfileList
+    plural: bfdprofiles
+    singular: bfdprofile
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        type: object
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: bgppeers.metallb.io
+spec:
+  group: metallb.io
+  names:
+    kind: BGPPeer
+    listKind: BGPPeerList
+    plural: bgppeers
+    singular: bgppeer
+  scope: Namespaced
+  versions:
+  - name: v1beta2
+    schema:
+      openAPIV3Schema:
+        type: object
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: bgpadvertisements.metallb.io
+spec:
+  group: metallb.io
+  names:
+    kind: BGPAdvertisement
+    listKind: BGPAdvertisementList
+    plural: bgpadvertisements
+    singular: bgpadvertisement
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        type: object
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: servicel2statuses.metallb.io
+spec:
+  group: metallb.io
+  names:
+    kind: ServiceL2Status
+    listKind: ServiceL2StatusList
+    plural: servicel2statuses
+    singular: servicel2status
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        type: object
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: ipaddresspools.metallb.io
+spec:
+  group: metallb.io
+  names:
+    kind: IPAddressPool
+    listKind: IPAddressPoolList
+    plural: ipaddresspools
+    singular: ipaddresspool
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              addresses:
+                type: array
+                items:
+                  type: string
+                  description: IP address ranges (CIDR format or start-end ranges)
+              autoAssign:
+                type: boolean
+                description: Automatically assign IPs from this pool
+                default: true
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: l2advertisements.metallb.io
+spec:
+  group: metallb.io
+  names:
+    kind: L2Advertisement
+    listKind: L2AdvertisementList
+    plural: l2advertisements
+    singular: l2advertisement
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              ipAddressPools:
+                type: array
+                items:
+                  type: string
+                  description: List of IPAddressPools to advertise
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: communities.metallb.io
+spec:
+  group: metallb.io
+  names:
+    kind: Community
+    plural: communities
+    singular: community
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              communities:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    value:
+                      type: string
+    served: true
+    storage: true
