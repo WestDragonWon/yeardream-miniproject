@@ -75,3 +75,16 @@ spec:
 
 
 ---
+
+
+# Secret 리소스 사용법
+
+- 각 폴더마다 .env 파일을 생성하여 secret 정보를 key=value 값으로 저장한다.
+
+## 저장한 .env파일을 통해 secret 생성 (이때 secret 명은 K8s의 각 최상위 폴더로 통일한다.)
+
+`kubectl create generic secret '생성할 시크릿명' --from-env-file=.env`
+
+## 만약 수정했다면 기존 secret 삭제후 재생성
+
+`kubectl delete secret '삭제할 시크릿명'

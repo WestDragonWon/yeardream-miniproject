@@ -1,0 +1,99 @@
+# PersistentVolume 정의 (EFS 사용)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: efs-pv
+spec:
+  capacity:
+    storage: 1Gi # 요청하는 스토리지 크기 (EFS는 실제로 용량 제한이 없음)
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany # 다중 연결을 지원하는 접근 모드
+  persistentVolumeReclaimPolicy: Retain # PVC가 삭제되더라도 해당 PV와 실제 스토리지 리소스를 그대로 유지
+  storageClassName: efs-sc # 위에서 정의한 EFS StorageClass 사용
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-00fb81d888c7ed27c # EFS 파일 시스템 ID
+
+---
+# PersistentVolumeClaim 정의 (EFS 사용)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-data
+spec:
+  accessModes:
+    - ReadWriteMany # 다중 연결을 지원하는 접근 모드
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+# Headless Service for Redis
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-headless
+  labels:
+    app: redis
+spec:
+  clusterIP: None # Headless Service 설정
+  selector:
+    app: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+
+---
+# StatefulSet for Redis
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  serviceName: "redis-headless" # StatefulSet과 연결될 Headless Service 이름
+  replicas: 2 # Redis 인스턴스 수
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:6.2.6 # 사용할 Redis 이미지 버전
+        ports:
+        - containerPort: 6379 # Redis 기본 포트
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data # Redis 데이터 경로
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: REDIS_PASSWORD
+        - name: REDIS_PORT
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: REDIS_PORT
+        - name: REDIS_BIND
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: REDIS_BIND
+        - name: REDIS_PROTECTED_MODE
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: REDIS_PROTECTED_MODE
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: redis-data # PVC 이름을 정의
