@@ -1,3 +1,35 @@
+# PersistentVolume 정의 (EFS 사용)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv
+spec:
+  capacity:
+    storage: 1Gi # 요청하는 스토리지 크기 (EFS는 실제로 용량 제한이 없음)
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany # 다중 연결을 지원하는 접근 모드
+  persistentVolumeReclaimPolicy: Retain # PVC가 삭제되더라도 해당 PV와 실제 스토리지 리소스를 그대로 유지
+  storageClassName: efs-sc # 위에서 정의한 EFS StorageClass 사용
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-00fb81d888c7ed27c # EFS 파일 시스템 ID
+
+---
+# PersistentVolumeClaim 정의 (EFS 사용)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+  accessModes:
+    - ReadWriteMany # 다중 연결을 지원하는 접근 모드
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 1Gi
+
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -31,13 +63,7 @@ spec:
           volumeMounts:
             - name: mongodb-storage
               mountPath: /data  # MongoDB의 데이터 디렉토리
-  volumeClaimTemplates:
-    - metadata:
-        name: mongodb-storage  # PVC 이름
-      spec:
-        accessModes: 
-          - ReadWriteMany
-        resources:
-          requests:
-            storage: 1Gi
-        storageClassName: efs-sc  # StorageClass 추가
+      volumes:
+        - name: mongodb-storage
+          persistentVolumeClaim:
+            claimName: mongo-pvc
