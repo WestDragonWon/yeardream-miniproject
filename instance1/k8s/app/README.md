@@ -11,15 +11,41 @@ kubectl get nodes -l active=enabled --show-labels
 ```bash
 kubectl label nodes ip-172-31-5-84 active=enabled
 ```
-
+### 키가 active 인 라벨 제거 방법
+```bash
+kubectl label nodes ip-172-31-5-84 active-
+```
 ### 위 명령어로 라벨링후 적용할 yml 파일에 아래 내용 추가
 ```yml
 spec:
   template:
     spec:
       nodeSelector:
-        active: "enabled"
+        type: "active"
 ```
+
+## 라벨링 구성 정보
+
+### key값 
+- type
+##  value
+instance1
+type: "master"
+
+instance2
+type: "active""
+
+instance3
+type: "active"
+
+instance4 
+type: "mlops"
+
+instance5
+type: "active"
+
+instance6 
+type: "standby"
 
 - 쉽고 간단한 설정 
 - 단순한 매칭 조건
@@ -88,3 +114,5 @@ spec:
 ## 만약 수정했다면 기존 secret 삭제후 재생성
 
 `kubectl delete secret '삭제할 시크릿명'
+
+
