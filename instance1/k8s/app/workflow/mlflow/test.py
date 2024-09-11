@@ -1,33 +1,31 @@
 import mlflow
 import mlflow.sklearn
-from sklearn.linear_model import LinearRegression
-from sklearn.datasets import make_regression
-import joblib
+import pandas as pd
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
 
 # MLflow 서버 URL 설정
-mlflow.set_tracking_uri("http://10.103.36.87:8080")
+mlflow.set_tracking_uri("http://192.168.88.209:8080")
 mlflow.set_experiment("testjun")
 
-# 데이터 생성
-X, y = make_regression(n_samples=100, n_features=1, noise=10)
+# 데이터셋 로드
+iris = datasets.load_iris()
+X = iris.data
+y = iris.target
 
-# 모델 생성
-model = LinearRegression()
+# 훈련 데이터와 테스트 데이터로 분리
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# MLflow Run 시작
-with mlflow.start_run():
-    # 모델 훈련
-    model.fit(X, y)
-    
-    # 파라미터와 메트릭 기록
-    mlflow.log_param("fit_intercept", model.fit_intercept)
-    mlflow.log_metric("coefficient", model.coef_[0])
+# MLflow 설정
+mlflow.start_run()
 
-    # 모델 아티팩트 저장
-    joblib.dump(model, "linear_model.pkl")
-    mlflow.log_artifact("linear_model.pkl")
+# 모델 훈련
+model = RandomForestClassifier(n_estimators=100)
+model.fit(X_train, y_train)
 
-    # 모델을 MLflow에 저장
-    mlflow.sklearn.log_model(model, "model")
+# 모델 저장
+mlflow.sklearn.log_model(model, "iris_model")
 
-print("모델 학습 및 아티팩트 로그 완료!")
+# MLflow 실행 종료
+mlflow.end_run()

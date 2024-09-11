@@ -1,3 +1,36 @@
+---
+# PersistentVolume 정의 (EFS 사용)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: efs-pv
+spec:
+  capacity:
+    storage: 1Gi # 요청하는 스토리지 크기 (EFS는 실제로 용량 제한이 없음)
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany # 다중 연결을 지원하는 접근 모드
+  persistentVolumeReclaimPolicy: Retain # PVC가 삭제되더라도 해당 PV와 실제 스토리지 리소스를 그대로 유지
+  storageClassName: efs-sc # 위에서 정의한 EFS StorageClass 사용
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-00fb81d888c7ed27c # EFS 파일 시스템 ID
+
+---
+# PersistentVolumeClaim 정의 (EFS 사용)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-data
+spec:
+  accessModes:
+    - ReadWriteMany # 다중 연결을 지원하는 접근 모드
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 1Gi
+
+---
 # Headless Service for Redis
 apiVersion: v1
 kind: Service
@@ -14,7 +47,7 @@ spec:
     targetPort: 6379
 
 ---
-# StatefulSet for Redis
+# StatefulSet for Redis and Redis Sentinel
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -23,7 +56,7 @@ metadata:
     app: redis
 spec:
   serviceName: "redis-headless" # StatefulSet과 연결될 Headless Service 이름
-  replicas: 2 # Redis 인스턴스 수
+  replicas: 3 # Redis 인스턴스 수
   selector:
     matchLabels:
       app: redis
@@ -32,6 +65,8 @@ spec:
       labels:
         app: redis
     spec:
+      nodeSelector:
+        type: "active" # 노드 셀렉터로 "active" 타입 노드에만 배포
       containers:
       - name: redis
         image: redis:6.2.6 # 사용할 Redis 이미지 버전
@@ -60,17 +95,25 @@ spec:
           valueFrom:
             secretKeyRef:
               name: db
-              key: REDIS_PROTECTED_MODE # 오타 수정
+              key: REDIS_PROTECTED_MODE
+
+      - name: redis-sentinel
+        image: redis:6.2.6 # Redis Sentinel 이미지 (동일한 Redis 이미지 사용)
+        command: ["redis-server", "/etc/redis/sentinel.conf", "--sentinel"] # Sentinel 모드로 시작
+        ports:
+        - containerPort: 26379 # Redis Sentinel 포트
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data # Redis 데이터 경로
+        env:
+        - name: REDIS_SENTINEL_QUORUM
+          value: "2" # Sentinel 쿼럼 수
+        - name: REDIS_SENTINEL_DOWN_AFTER
+          value: "5000" # 다운 상태로 간주하기 전까지의 시간(ms)
+        - name: REDIS_SENTINEL_FAILOVER
+          value: "10000" # 자동 페일오버 시간(ms)
+
       volumes:
       - name: redis-data
         persistentVolumeClaim:
           claimName: redis-data # PVC 이름을 정의
-  volumeClaimTemplates:
-  - metadata:
-      name: redis-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi # 요청하는 스토리지 크기
-      storageClassName: ebs-gp3 # 동적 프로비저닝을 위한 StorageClass 이름
