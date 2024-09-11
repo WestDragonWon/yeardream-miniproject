@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../../../.."
+		},
+		{
+			"name": "SSH FS - mlops",
+			"uri": "ssh://mlops/"
+		}
+	],
+	"settings": {}
+}
