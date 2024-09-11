@@ -1,0 +1,67 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mongodb-maintenance
+spec:
+  schedule: "* 22 * * *"  # Run every 5 minutes
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 300  # Delete completed jobs after 5 minutes
+      template:
+        spec:
+          containers:
+          - name: mongodb-maintenance
+            image: mongo:4.4.18
+            command:
+            - bash
+            - -c
+            - |
+              echo "Checking MongoDB replica set status..."
+              
+              # Wait for both MongoDB instances to be ready
+              until mongo --host mongodb-0.mongodb.default.svc.cluster.local:27017 --eval "print('Connected')" > /dev/null 2>&1 && \
+                    mongo --host mongodb-1.mongodb.default.svc.cluster.local:27017 --eval "print('Connected')" > /dev/null 2>&1; do
+                echo "Waiting for MongoDB instances to be ready..."
+                sleep 5
+              done
+              
+              # Check if replica set is initialized
+              IS_INITIALIZED=$(mongo --host mongodb-0.mongodb.default.svc.cluster.local:27017 --eval "rs.status().ok" --quiet || echo "0")
+              
+              if [ "$IS_INITIALIZED" != "1" ]; then
+                echo "Initializing replica set..."
+                mongo --host mongodb-0.mongodb.default.svc.cluster.local:27017 --eval '
+                  rs.initiate({
+                    _id: "MainRepSet",
+                    members: [
+                      {_id: 0, host: "mongodb-0.mongodb.default.svc.cluster.local:27017"},
+                      {_id: 1, host: "mongodb-1.mongodb.default.svc.cluster.local:27017"}
+                    ]
+                  })
+                '
+                echo "Replica set initialized."
+              else
+                echo "Checking replica set configuration..."
+                # Get current replica set configuration
+                CONFIG=$(mongo --host mongodb-0.mongodb.default.svc.cluster.local:27017 --eval "rs.conf()" --quiet)
+                
+                # Check if both members are present in the configuration
+                if echo "$CONFIG" | grep -q "mongodb-0" && echo "$CONFIG" | grep -q "mongodb-1"; then
+                  echo "Replica set configuration is correct."
+                else
+                  echo "Updating replica set configuration..."
+                  mongo --host mongodb-0.mongodb.default.svc.cluster.local:27017 --eval '
+                    rs.reconfig({
+                      _id: "MainRepSet",
+                      members: [
+                        {_id: 0, host: "mongodb-0.mongodb.default.svc.cluster.local:27017"},
+                        {_id: 1, host: "mongodb-1.mongodb.default.svc.cluster.local:27017"}
+                      ]
+                    }, {force: true})
+                  '
+                  echo "Replica set configuration updated."
+                fi
+              fi
+              
+              echo "MongoDB maintenance completed."
+          restartPolicy: OnFailure

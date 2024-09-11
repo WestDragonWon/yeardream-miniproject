@@ -33,7 +33,7 @@ instance1
 type: "master"
 
 instance2
-type: "active""
+type: "active"
 
 instance3
 type: "active"
