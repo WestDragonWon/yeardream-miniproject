@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/999136097782897878/665de3edba8f44f7b5315839aa640e62/artifacts
+end_time: 1726039510370
+entry_point_name: ''
+experiment_id: '999136097782897878'
+lifecycle_stage: active
+run_id: 665de3edba8f44f7b5315839aa640e62
+run_name: RandomForest
+run_uuid: 665de3edba8f44f7b5315839aa640e62
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1726039502464
+status: 3
+tags: []
+user_id: ubuntu
