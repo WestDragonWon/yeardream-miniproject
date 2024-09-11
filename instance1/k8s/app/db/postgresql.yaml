@@ -35,7 +35,7 @@ metadata:
   name: postgres
 spec:
   serviceName: "postgres"
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: postgres
@@ -54,7 +54,7 @@ spec:
             name: db
         volumeMounts:
         - name: postgres-storage
-          mountPath: /var/lib/postgresql/data_temp # PostgreSQL는 데이터 디렉토리가 비어있지 않으면 새로운 데이터 베이스 클러스터 초기화하지않음(일종의 안전장치) data 폴더가 뭔가 있는상태 지우고 재지정 하면 될듯.
+          mountPath: /var/lib/postgresql/data_temp
         resources:
           requests:
             cpu: 500m
@@ -80,3 +80,8 @@ spec:
       port: 5432
       targetPort: 5432
   clusterIP: None  # Headless service for StatefulSet
+# PostgreSQL는 데이터 디렉토리가 비어있지 않으면 새로운 데이터 베이스 클러스터 초기화하지않음(일종의 안전장치). data 폴더가 뭔가 있는상태로 지우고 재지정 하면 될듯.
+# data_temp로 경로를 새로 지정하고 data 폴더 확인 결과 이미 초기화가 된 상태. 해당 디렉토리를 완전히 삭제 후 기존 리소스를 삭제해야 폴더 지정이 다시 될듯 하다. 보류 ..
+# 클러스터 구성 전 yaml로 백업 .. 경로 문제때문에 다시 안될 수 도 있다 .. 경로는 이전 사용 경로였는데 문제없이 running 됨 ..
+# 일단 경로 data로 다시 지정해보고 클러스터 구성 시도 > data 쪽은 뭔가 막힌 듯 바로 crashloopbackoff 뜸 .. > data_temp로 임시경로 지정
+# spec.persistentVolumeReclaimPolicy: Retain 이라서 기존 데이터때문에 초기화가 안되는건지? 권한문제(EFS? 이건 권한 받은건데 ..)?
