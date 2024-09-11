@@ -30,30 +30,9 @@ spec:
             - containerPort: 27017
           volumeMounts:
             - name: mongodb-storage
-              mountPath: /data  # MongoDB의 데이터 디렉토리
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: mongodb-secret  # 생성한 Secret의 이름
-                  key: MONGO_INITDB_ROOT_USERNAME  # Secret의 키
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mongodb-secret  # 생성한 Secret의 이름
-                  key: MONGO_INITDB_ROOT_PASSWORD  # Secret의 키
-      initContainers:
-        - name: mongo-init-replica
-          image: mongo:4.4.18
-          command: ['sh', '-c', 'mongo --eval "rs.initiate()"']
+              mountPath: /data  # MongoDB's data directory
+      volumes:
+        - name: mongodb-storage
+          persistentVolumeClaim:
+            claimName: mongo-pvc
 
-  volumeClaimTemplates:
-    - metadata:
-        name: mongodb-storage  # PVC 이름
-      spec:
-        accessModes: 
-          - ReadWriteMany
-        resources:
-          requests:
-            storage: 1Gi
-        storageClassName: efs-sc  # StorageClass 추가

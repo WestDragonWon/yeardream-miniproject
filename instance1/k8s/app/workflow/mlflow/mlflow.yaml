@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: mlflow
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: mlflow
@@ -12,6 +12,8 @@ spec:
       labels:
         app: mlflow
     spec:
+      nodeSelector:
+          type: "test"  # 여기서 레이블 지정 # type = test로 임시지정 -> type = mlops로 변경해야함
       containers:
         - name: mlflow
           image: bitnami/mlflow:latest

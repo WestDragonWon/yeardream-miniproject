@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongo-init-job
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      containers:
+      - name: mongo-init
+        image: mongo:4.4.18
+        command:
+          - "sh"
+          - "-c"
+          - |
+            echo "Waiting for MongoDB replicas to start...";
+            until mongo --host mongod-0.mongodb.default.svc.cluster.local:27017 --eval "print('Connected')" > /dev/null 2>&1; do
+              echo "Waiting for MongoDB to be ready...";
+              sleep 5;
+            done
+            echo "MongoDB is ready. Checking replica set status...";
+            IS_RS_INIT=$(mongo --host mongod-0.mongodb.default.svc.cluster.local:27017 --quiet --eval 'rs.status().ok || 0')
+            if [ "$IS_RS_INIT" = "0" ] || [ -z "$IS_RS_INIT" ]; then
+              echo "Initializing MongoDB replica set...";
+              mongo --host mongod-0.mongodb.default.svc.cluster.local:27017 --eval '
+                rs.initiate({
+                  _id: "MainRepSet",
+                  members: [
+                    { _id: 0, host: "mongod-0.mongodb.default.svc.cluster.local:27017" },
+                    { _id: 1, host: "mongod-1.mongodb.default.svc.cluster.local:27017" }
+                  ]
+                })
+              '
+            else
+              echo "Replica set already initialized.";
+            fi
+      restartPolicy: OnFailure
