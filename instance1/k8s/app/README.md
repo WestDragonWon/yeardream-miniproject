@@ -4,7 +4,7 @@
 ### 라벨링 된 노드 조회 방법
 ```bash
 kubectl get nodes --show-labels
-kubectl get nodes -l active=enabled --show-labels
+kubectl get nodes -l type=worker --show-labels
 ```
 
 ### 노드에 active=enabled 라는 라벨링 방법
@@ -33,7 +33,12 @@ instance1
 type: "master"
 
 instance2
-type: "active"
+type: "active"sudo iptables -F
+sudo iptables -t nat -F
+sudo iptables -t mangle -F
+sudo iptables -X
+sudo ipvsadm --clear
+rm -rf $HOME/.kube
 
 instance3
 type: "active"
