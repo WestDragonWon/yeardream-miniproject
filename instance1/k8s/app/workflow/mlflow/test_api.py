@@ -11,17 +11,15 @@ mlflow.set_tracking_uri("http://10.103.73.87:8080")  # service cluster ip
 mlflow.set_experiment("testjun")  # 실험 이름으로 변경
 
 class InputData(BaseModel):
+    model_name: str  # 모델 이름 추가
+    version: int     # 모델 버전 추가
     features: list
 
 @app.post("/predict")
 def predict(data: InputData):
     try:
-        # 가장 최근 모델의 실행 ID 가져오기
-        last_run_info = mlflow.search_runs(order_by=["start_time desc"], max_results=1)
-        run_id = last_run_info.iloc[0].run_id  # 최근 실행 ID
-        
-        # 모델 URI 설정
-        model_uri = f"runs:/{run_id}/model"  # 모델 URI 형식
+        # 모델 URI 설정 (모델 이름과 버전)
+        model_uri = f"models:/{data.model_name}/{data.version}"  # 동적으로 모델 URI 생성
         model = mlflow.pyfunc.load_model(model_uri)  # 모델 로드
         
         # 입력 데이터 형태 변경
