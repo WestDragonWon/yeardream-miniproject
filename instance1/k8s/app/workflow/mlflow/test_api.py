@@ -7,12 +7,8 @@ from sklearn.datasets import load_iris
 
 app = FastAPI()
 
-# MLflow tracking URI 및 실험 설정
-mlflow.set_tracking_uri("http://192.168.88.209:8080")
-mlflow.set_experiment("testjun")
-
 # MLflow에서 모델 로드
-model_uri = "runs:/2a5e08bd90f84d819e1ef4adb5ac8bee/iris_model"  # 실제 run_id로 변경 필요
+model_uri = "runs:/c2135c3fb3804016bb75ab9ca6e6d62c/iris_model"  # 자동화를 위해 
 model = mlflow.pyfunc.load_model(model_uri)
 
 # Iris 데이터셋에서 species 이름 가져오기
