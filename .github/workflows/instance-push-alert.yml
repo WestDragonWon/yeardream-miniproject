@@ -1,0 +1,29 @@
+name: Branch Push Alert
+
+on:
+  push:
+    branches:
+      - instance1
+      - instance2
+      - instance3
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Get latest commit details
+      id: commit_info
+      run: |
+        echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+        echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')" >> $GITHUB_ENV
+
+    - name: Send Slack notification
+      run: |
+        COMMIT_URL="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
+        curl -X POST -H 'Content-type: application/json' \
+        --data '{"text":"📢 A new push has been detected on branch: *'${{ github.ref }}'*. \n\n*Author*: '${{ env.COMMIT_AUTHOR }}'\n*Message*: '${{ env.COMMIT_MESSAGE }}'\n\nReview the changes at: '${COMMIT_URL}'."}' \
+        ${{ secrets.SLACK_WEBHOOK_URL }}

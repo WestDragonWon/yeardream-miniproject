@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
 # MLflow 서버 URL 설정
-mlflow.set_tracking_uri("http://192.168.88.209:8080")
+mlflow.set_tracking_uri("http://192.168.190.71:8080")
 mlflow.set_experiment("testjun")
 
 # 데이터셋 로드

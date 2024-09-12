@@ -13,7 +13,7 @@ spec:
         app: mlflow
     spec:
       nodeSelector:
-          type: "mlflow"  # 여기서 레이블 지정 # type = test로 임시지정 -> type = mlops로 변경해야함
+          type: "mlops"  # 여기서 레이블 지정 # type = test로 임시지정 -> type = mlops로 변경해야함
       containers:
         - name: mlflow
           image: bitnami/mlflow:latest
@@ -28,27 +28,27 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: system
+                  name: workflow
                   key: POSTGRES_USER  # PostgreSQL 사용자
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: system
+                  name: workflow
                   key: POSTGRES_PASSWORD  # PostgreSQL 비밀번호
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: system
+                  name: workflow
                   key: AWS_ACCESS_KEY_ID
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: system
+                  name: workflow
                   key: AWS_SECRET_ACCESS_KEY
             - name: MLFLOW_S3_ARTIFACT_ROOT
               valueFrom:
                 secretKeyRef:
-                  name: system
+                  name: workflow
                   key: MLFLOW_S3_ARTIFACT_ROOT
           resources:
             requests:
