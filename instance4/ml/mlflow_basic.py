@@ -85,7 +85,15 @@ client = MlflowClient()
 def register_model(model_name, run_id, accuracy, model_uri='model'): # 모델 등록
     model_uri = f"runs:/{run_id}/{model_uri}"
     model_version = mlflow.register_model(model_uri, model_name, tags = {'stage':'staging', 'accuracy':f"{accuracy:0.5f}"})
+
+    client.update_registered_model(name=model_version.name, description=f"{accuracy:0.5f}")
+
     return model_version
+
+def get_best_accuracy(model_name):
+    registered_model = client.get_registered_model(model_name)
+    return float(registered_model.description)
+
 
 def promote_to_production(model_name, version): # production
     client.set_model_version_tag(
@@ -109,12 +117,18 @@ def archive_model(model_name, version): # archive: 모델 폐기 단계
     print(f"Model: {model_name}, version: {version} Archived ...")
 
 
-
+### 모델 등록
 run_id = best_run_id
 model_name = best_model_name
-accuracy = best_accuracy
+accuracy = 11
 
 
-
-model_version = register_model(model_name, run_id, accuracy)
-print(model_version)
+if get_best_accuracy(model_name) < accuracy:
+    model_version = register_model(model_name, run_id, accuracy)
+    print(model_version)
+    print(model_version.version)
+    model_version = model_version.version
+    last_model_version = int(model_version) - 1
+    promote_to_production(model_name, model_version)
+    archive_model(model_name, str(int(model_version) - 1))
+    print(model_version)
