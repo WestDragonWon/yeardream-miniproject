@@ -15,6 +15,10 @@ http://<EC2 퍼블릭 IP>:30003
 
 2. FastAPI앱에 MLflow tracking URI와 실험 설정을 꼭 작성해야함.
 
-3. http://ec2_public_ip:8000/docs로 들어가서 /predict 부분을 클릭하면 나오는 try it out 버튼을 클릭
+3. uvicorn test_api:app --host 0.0.0.0 --port 8000 --reload : FastAPI docs 실행 명령어 
 
-4. 생성된 창에 피쳐를 입력해주고 아래 Execute 버튼을 눌려주면 결과가 나온다.
+4. http://ec2_public_ip:8000/docs로 들어가서 /predict 부분을 클릭하면 나오는 try it out 버튼을 클릭
+
+5. 생성된 창에 피쳐를 입력해주고 아래 Execute 버튼을 눌려주면 결과가 나온다.
+
+S3와의 연결, 모델 uri 연결 방법, 실험이 뭔지에 따라 결과값이 나타내는게 다르니 추후에 추가적인 설정, 데이터 입력 형식
