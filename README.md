@@ -1,2 +1,2 @@
-# yeardream-miniproject
-DB 서버
+# instance2
+- worker1 
