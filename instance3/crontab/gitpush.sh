@@ -50,8 +50,8 @@ fi
 cd /home/ubuntu/yeardream-miniproject/
 
 # Git 설정: 사용자 이름과 이메일
-git config --global user.name "kangbongsam"
-git config --global user.email "github wornr06@naver.com"
+git config --global user.name "WestDragonWon"
+git config --global user.email "westdragonwon@gmail.com"
 
 # 변경사항 커밋 및 푸시
 git add .
