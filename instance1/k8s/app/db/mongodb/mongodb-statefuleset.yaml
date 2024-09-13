@@ -36,7 +36,7 @@ metadata:
   name: mongodb
 spec:
   serviceName: mongodb
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: mongodb
@@ -45,6 +45,10 @@ spec:
       labels:
         app: mongodb
     spec:
+      volumes:
+        - name: mongodb-storage
+          persistentVolumeClaim:
+            claimName: mongo-pvc
       containers:
         - name: mongodb
           image: mongo:4.4.18
@@ -63,10 +67,7 @@ spec:
           volumeMounts:
             - name: mongodb-storage
               mountPath: /data  # MongoDB의 데이터 디렉토리
-      volumes:
-        - name: mongodb-storage
-          persistentVolumeClaim:
-            claimName: mongo-pvc
+
 ---
 apiVersion: v1
 kind: Service
@@ -75,7 +76,7 @@ metadata:
   labels:
     app: mongodb
 spec:
-  clusterIP: None
+  clusterIP: None # Headless 서비스로 설정
   selector:
     app: mongodb
   ports:
