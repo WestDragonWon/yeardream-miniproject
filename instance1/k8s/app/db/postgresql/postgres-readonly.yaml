@@ -28,7 +28,7 @@ spec:
             name: postgres-config
 
 ---
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: postgres-readonly-hpa
@@ -43,7 +43,9 @@ spec:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: 50
+      target:
+        type: Utilization
+        averageUtilization: 50
 
 ---
 apiVersion: v1
