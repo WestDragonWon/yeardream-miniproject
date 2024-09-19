@@ -137,5 +137,6 @@ if get_best_accuracy(model_name) < accuracy:
     model_version = model_version.version
     last_model_version = int(model_version) - 1
     promote_to_production(model_name, model_version)
-    archive_model(model_name, str(int(model_version) - 1))
+    if int(model_version) != 1:
+        archive_model(model_name, str(int(model_version) - 1))
     print(model_version)
