@@ -15,6 +15,11 @@ class InputData(BaseModel):
     version: int     # 모델 버전 추가
     features: list
 
+@app.get("/health")
+def health_check():
+    """헬스 체크 엔드포인트"""
+    return {"status": "healthy"}
+
 @app.post("/predict")
 def predict(data: InputData):
     try:

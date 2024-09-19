@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: efs-mongo  # 수정된 스토리지 클래스 이름
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-06a6a5314b81de016  # 주어진 EFS 파일 시스템 ID
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv-1  # 새로운 PV 이름
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: efs-mongo
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-06a6a5314b81de016  # 동일한 EFS 파일 시스템 ID

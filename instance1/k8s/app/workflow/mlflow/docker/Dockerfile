@@ -2,7 +2,7 @@
 FROM python:3.11.9-slim
 
 # 작업 디렉토리 설정
-WORKDIR /home/ubuntu/yeardream-miniproject/instance1/k8s/app/workflow/mlflow/app
+WORKDIR /app
 
 # 의존성 파일 복사
 COPY requirements.txt .
