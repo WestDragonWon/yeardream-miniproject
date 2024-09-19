@@ -5,7 +5,11 @@ echo "run all models ... "
 DIRECTORY="/home/ubuntu/yeardream-miniproject/instance4/ml/models"
 
 echo "pyenv activating ... "
-pyenv activate mlenv
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv virtualenv-init -)"
+VIRTUAL_ENV_NAME="mlenv"
+pyenv activate "$VIRTUAL_ENV_NAME"
 for file in "$DIRECTORY"/*.py; do
     python "$file"
 done
