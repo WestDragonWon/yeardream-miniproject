@@ -4,9 +4,13 @@
 echo "run all models ... "
 DIRECTORY="/home/ubuntu/yeardream-miniproject/instance4/ml/models"
 
+echo "pyenv activating ... "
+pyenv activate mlenv
 for file in "$DIRECTORY"/*.py; do
     python "$file"
 done
+echo "pyenv deactivating ... "
+pyenv deactivate
 
 #git push
 echo "git push ... "
