@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+      - name: fastapi-container
+        image: loafingcat/fastapi-app:1.0
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "512Mi"  # 최소 메모리 요청
+            cpu: "500m"      # 최소 CPU 요청
+          limits:
+            memory: "1Gi"    # 최대 메모리 제한
+            cpu: "1"         # 최대 CPU 제한
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8000        # 외부에서 접근할 포트
+    targetPort: 8000  # 컨테이너 내의 포트
+  selector:
+    app: fastapi
