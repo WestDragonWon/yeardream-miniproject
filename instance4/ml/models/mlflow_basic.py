@@ -98,7 +98,7 @@ def get_best_accuracy(model_name):
             return float(registered_model.description)
         else:
             return 0
-    escept Exception as e:
+    except Exception as e:
         print(f"error occured: {e}")
 
 
