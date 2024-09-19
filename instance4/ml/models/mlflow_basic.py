@@ -91,8 +91,15 @@ def register_model(model_name, run_id, accuracy, model_uri='model'): # 모델 �
     return model_version
 
 def get_best_accuracy(model_name):
-    registered_model = client.get_registered_model(model_name)
-    return float(registered_model.description)
+    try:
+        model_versions = client.search_model_versions(f"name='{model_name}'")
+        if model_versions:
+            registered_model = client.get_registered_model(model_name)
+            return float(registered_model.description)
+        else:
+            return 0
+    escept Exception as e:
+        print(f"error occured: {e}")
 
 
 def promote_to_production(model_name, version): # production
