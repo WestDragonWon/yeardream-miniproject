@@ -55,7 +55,7 @@ Jinja2==3.1.4
 opentelemetry-semantic-conventions==0.48b0
 s3transfer==0.10.2
 certifi==2024.8.30
-setuptools==65.5.0
+setuptools==70.0.0
 greenlet==3.0.3
 alembic==1.13.2
 pandas==2.2.2
