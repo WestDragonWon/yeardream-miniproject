@@ -1,3 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  pg_hba.append.conf: |
+    host    all             mlops_user      0.0.0.0/0      trust
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -19,24 +26,34 @@ spec:
         fsGroup: 999
       containers:
         - name: postgres
-          image: postgres:13 
+          image: postgres:13
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/mlops
+          volumeMounts:
+            - name: postgres-storage 
+              mountPath: /var/lib/postgresql/data
+            - name: postgres-config-volume
+              mountPath: /config
           command: ["/bin/bash", "-c"]
           args:
             - |
-              if [ ! -s "$PGDATA/PG_VERSION" ]; then
+              echo "Appending custom pg_hba.conf settings..."
+              cat /config/pg_hba.append.conf >> $PGDATA/pg_hba.conf
+              if [ ! -f "$PGDATA/.initialized" ]; then
+                chown -R postgres:postgres /var/lib/postgresql/data
+                chmod 700 /var/lib/postgresql/data
                 echo "Initializing database..."
+                rm -rf "$PGDATA"/*
+                mkdir -p "$PGDATA"
+                chown -R postgres:postgres "$PGDATA"
                 initdb -D "$PGDATA"
+                touch "$PGDATA/.initialized"  # 마커 파일 생성
               fi
               echo "Starting PostgreSQL..."
               exec postgres
-          volumeMounts:
-            - name: postgres-storage 
-              mountPath: /var/lib/postgresql/data 
           ports:
             - containerPort: 5432 
-          env:
-            - name: PGDATA
-              value: /var/lib/postgresql/data
           envFrom:
             - secretRef:
                 name: db 
@@ -45,12 +62,18 @@ spec:
               cpu: 500m 
               memory: 1Gi 
             limits:
-              cpu: 1 
+              cpu: 500m
               memory: 2Gi 
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: postgres-pvc-postgres-0
+        - name: postgres-config-volume
+          configMap:
+            name: postgres-config
+            items:
+            - key: pg_hba.append.conf
+              path: pg_hba.append.conf
 ---
 apiVersion: v1 
 kind: Service 
@@ -64,4 +87,3 @@ spec:
       port: 5432 
       targetPort: 5432
   clusterIP: None  
-

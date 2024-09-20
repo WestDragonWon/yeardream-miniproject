@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: mongodb-maintenance
 spec:
-  schedule: "* 1 * * *"  # Run every 1 hours
+  schedule: "*/1 * * * *"  # Run every 1 hours
   jobTemplate:
     spec:
       ttlSecondsAfterFinished: 300  # Delete completed jobs after 5 minutes
