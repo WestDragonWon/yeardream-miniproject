@@ -19,7 +19,7 @@ spec:
             - containerPort: 9308
           env:
             - name: KAFKA_SERVER
-              value: "kafka-1:9092,kafka-2:9092,kafka-3:9092"
+              value: "10.97.15.223:30011,10.109.132.75:30033,10.104.37.93:30055"
             - name: KAFKA_VERSION
               value: "3.7.1"
           resources:

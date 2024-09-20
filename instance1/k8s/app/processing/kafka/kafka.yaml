@@ -14,6 +14,15 @@ spec:
         app: kafka
         instance: kafka-1
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - worker1  # Kafka-1을 worker1에 배포
       containers:
       - name: kafka
         image: apache/kafka:3.7.1
@@ -30,7 +39,7 @@ spec:
         - name: KAFKA_LISTENERS
           value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
         - name: KAFKA_ADVERTISED_LISTENERS
-          value: "PLAINTEXT://192.168.124.174:9092"
+          value: "PLAINTEXT://10.97.15.223:9092"
         - name: KAFKA_LOG_DIRS
           value: "/var/lib/kafka/data"
         - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
@@ -61,7 +70,7 @@ spec:
           mountPath: /var/lib/kafka/data
       volumes:
       - name: kafka-storage
-        emptyDir: {}  # 파드 삭제되면 데이터도 날아감. Persistent Volume 쓰면 좋음.
+        emptyDir: {}
 
 ---
 apiVersion: apps/v1
@@ -80,6 +89,15 @@ spec:
         app: kafka
         instance: kafka-2
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - worker2  # Kafka-2를 worker2에 배포
       containers:
       - name: kafka
         image: apache/kafka:3.7.1
@@ -96,7 +114,7 @@ spec:
         - name: KAFKA_LISTENERS
           value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
         - name: KAFKA_ADVERTISED_LISTENERS
-          value: "PLAINTEXT://192.168.124.173:9092"
+          value: "PLAINTEXT://10.109.132.75:9092"
         - name: KAFKA_LOG_DIRS
           value: "/var/lib/kafka/data"
         - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
@@ -146,6 +164,15 @@ spec:
         app: kafka
         instance: kafka-3
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - worker3  # Kafka-3를 worker3에 배포
       containers:
       - name: kafka
         image: apache/kafka:3.7.1
@@ -162,7 +189,7 @@ spec:
         - name: KAFKA_LISTENERS
           value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
         - name: KAFKA_ADVERTISED_LISTENERS
-          value: "PLAINTEXT://192.168.78.213:9092"
+          value: "PLAINTEXT://10.104.37.93:9092"
         - name: KAFKA_LOG_DIRS
           value: "/var/lib/kafka/data"
         - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP

@@ -1,16 +1,15 @@
-# PersistentVolume 정의 (EFS 사용)
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: mongo-pv
 spec:
   capacity:
-    storage: 1Gi # 요청하는 스토리지 크기 (EFS는 실제로 용량 제한이 없음)
+    storage: 1Gi  # 스토리지 크기 (EFS는 실제 크기 제한 없음)
   volumeMode: Filesystem
   accessModes:
-    - ReadWriteMany # 다중 연결을 지원하는 접근 모드
-  persistentVolumeReclaimPolicy: Retain # PVC가 삭제되더라도 해당 PV와 실제 스토리지 리소스를 그대로 유지
-  storageClassName: efs-sc # 위에서 정의한 EFS StorageClass 사용
+    - ReadWriteMany  # 다수의 Pod에서 읽기/쓰기 가능
+  persistentVolumeReclaimPolicy: Retain  # PVC가 삭제되어도 PV 유지
+  storageClassName: mongo-storageclass  # 수정된 StorageClass 이름
   csi:
     driver: efs.csi.aws.com
-    volumeHandle: fs-00fb81d888c7ed27c # EFS 파일 시스템 ID
+    volumeHandle: fs-00fb81d888c7ed27c  # EFS 파일 시스템 ID

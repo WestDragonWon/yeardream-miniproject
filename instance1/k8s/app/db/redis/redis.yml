@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: redis-storageclass  # 정의한 gp3 스토리지 클래스 사용
+  resources:
+    requests:
+      storage: 5Gi  # 원하는 용량 설정
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      nodeSelector:
+        type: worker  # worker 노드에 배포
+      containers:
+        - name: redis
+          image: redis:6.2  # Redis 버전 지정
+          ports:
+            - containerPort: 6379
+          resources:
+            limits:
+              memory: "1024Mi"  # 최대 사용할 메모리 제한
+              cpu: "1000m"  # 최대 사용할 CPU 제한
+          volumeMounts:
+            - mountPath: /data
+              name: redis-storage
+      volumes:
+        - name: redis-storage
+          persistentVolumeClaim:
+            claimName: redis-pvc  # PVC 사용
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+  type: ClusterIP
