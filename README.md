@@ -1,2 +1,2 @@
 # yeardream-miniproject
-ML 전용서버
+![Not found!!](docs/images/servers.jpg)
