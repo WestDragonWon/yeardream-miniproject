@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+spec:
+  schedule: "0 1 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: postgres-backup
+            image: postgres:13
+            command:
+            - /bin/sh
+            - -c
+            - |
+              PGPASSWORD=$POSTGRES_PASSWORD pg_dump -h postgres-cluster -U $POSTGRES_USER -d $POSTGRES_DB -f /backup/postgres_$(date +%Y%m%d_%H%M%S).sql
+            env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: superuser-password
+            envFrom:
+            - configMapRef:
+                name: postgres-config
+            volumeMounts:
+            - name: backup
+              mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup
+            persistentVolumeClaim:
+              claimName: postgres-backup-pvc

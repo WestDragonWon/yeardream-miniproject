@@ -9,11 +9,11 @@ kubectl get nodes -l type=worker --show-labels
 
 ### 노드에 active=enabled 라는 라벨링 방법
 ```bash
-kubectl label nodes ip-172-31-5-84 active=enabled
+kubectl label nodes ip-172-31-5-84 type=worker
 ```
 ### 키가 active 인 라벨 제거 방법
 ```bash
-kubectl label nodes ip-172-31-5-84 active-
+kubectl label nodes ip-172-31-5-84 type-
 ```
 ### 위 명령어로 라벨링후 적용할 yml 파일에 아래 내용 추가
 ```yml
@@ -21,7 +21,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        type: "active"
+        type: "worker"
 ```
 
 ## 라벨링 구성 정보

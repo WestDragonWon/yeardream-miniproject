@@ -9,7 +9,6 @@ reclaimPolicy: Retain
 parameters:
   type: gp3 # EBS 볼륨 유형
   fsType: ext4 # 파일 시스템 유형
-
 ---
 # EFS를 사용하는 StorageClass 정의
 apiVersion: storage.k8s.io/v1
@@ -19,3 +18,4 @@ metadata:
 provisioner: efs.csi.aws.com # AWS EFS CSI 드라이버 사용
 volumeBindingMode: Immediate
 allowVolumeExpansion: true # 볼륨 확장 허용
+

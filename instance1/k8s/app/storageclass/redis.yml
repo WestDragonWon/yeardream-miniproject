@@ -1,0 +1,9 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: redis-storageclass
+provisioner: ebs.csi.aws.com  # AWS EBS CSI 드라이버 사용
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  type: gp3  # 볼륨 타입 지정
+  fsType: ext4  # 파일 시스템 타입

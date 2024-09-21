@@ -16,7 +16,14 @@ iris = load_iris()
 species_names = iris.target_names
 
 class InputData(BaseModel):
+    model_name: str  # 모델 이름 추가
+    version: int     # 모델 버전 추가
     features: list
+
+@app.get("/health")
+def health_check():
+    """헬스 체크 엔드포인트"""
+    return {"status": "healthy"}
 
 @app.post("/predict")
 def predict(data: InputData):

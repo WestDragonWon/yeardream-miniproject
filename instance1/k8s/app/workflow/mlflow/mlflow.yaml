@@ -20,7 +20,7 @@ spec:
           ports:
             - containerPort: 8080  
           command: ["mlflow", "server", 
-                    #"--backend-store-uri", "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/mlops",  # PostgreSQL URI
+                    "--backend-store-uri", "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/mlops",  # PostgreSQL URI
                     "--default-artifact-root", "$(MLFLOW_S3_ARTIFACT_ROOT)",  # S3 버킷 경로
                     "--host", "0.0.0.0", 
                     "--port", "8080"]  # MLflow 서버 실행

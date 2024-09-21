@@ -1,42 +1,10 @@
-# PersistentVolume 정의 (EFS 사용)
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: mongo-pv
-spec:
-  capacity:
-    storage: 1Gi # 요청하는 스토리지 크기 (EFS는 실제로 용량 제한이 없음)
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteMany # 다중 연결을 지원하는 접근 모드
-  persistentVolumeReclaimPolicy: Retain # PVC가 삭제되더라도 해당 PV와 실제 스토리지 리소스를 그대로 유지
-  storageClassName: efs-sc # 위에서 정의한 EFS StorageClass 사용
-  csi:
-    driver: efs.csi.aws.com
-    volumeHandle: fs-00fb81d888c7ed27c # EFS 파일 시스템 ID
-
----
-# PersistentVolumeClaim 정의 (EFS 사용)
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mongo-pvc
-spec:
-  accessModes:
-    - ReadWriteMany # 다중 연결을 지원하는 접근 모드
-  storageClassName: efs-sc
-  resources:
-    requests:
-      storage: 1Gi
-
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mongodb
 spec:
-  serviceName: mongodb
-  replicas: 2
+  serviceName: "mongodb"
+  replicas: 2  # MongoDB 인스턴스 수
   selector:
     matchLabels:
       app: mongodb
@@ -45,25 +13,65 @@ spec:
       labels:
         app: mongodb
     spec:
+      nodeSelector:
+        type: worker  # worker 노드에 배포
       containers:
         - name: mongodb
           image: mongo:4.4.18
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: MONGO_INITDB_ROOT_PASSWORD
+            - name: MONGO_INITDB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: MONGO_INITDB_DATABASE
           command:
             - "numactl"
             - "--interleave=all"
             - "mongod"
             - "--bind_ip"
-            - "0.0.0.0"
+            - "0.0.0.0"  # 모든 IP에서 접근 가능
             - "--replSet"
-            - "MainRepSet"
+            - "MainRepSet"  # ReplicaSet 이름
             - "--setParameter"
-            - "authenticationMechanisms=SCRAM-SHA-1"
+            - "authenticationMechanisms=SCRAM-SHA-1"  # 인증 메커니즘 설정
+            - "--dbpath"
+            - "/mongo"  # EFS에 마운트된 PVC 경로
+          volumeMounts:
+            - name: mongo-storage
+              mountPath: /mongo  # PVC가 /mongo 경로에 마운트됨
           ports:
             - containerPort: 27017
-          volumeMounts:
-            - name: mongodb-storage
-              mountPath: /data  # MongoDB의 데이터 디렉토리
-      volumes:
-        - name: mongodb-storage
-          persistentVolumeClaim:
-            claimName: mongo-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-storage  # StatefulSet에서 생성할 고유한 PVC 이름
+      spec:
+        accessModes:
+          - ReadWriteOnce  # 각 Pod에서만 읽기/쓰기 가능
+        storageClassName: mongo-storageclass  # 수정된 StorageClass 사용 (EFS)
+        resources:
+          requests:
+            storage: 1Gi  # 요청하는 스토리지 크기
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb  # StatefulSet에서 사용할 서비스 이름
+  labels:
+    app: mongodb
+spec:
+  ports:
+    - port: 27017  # MongoDB 기본 포트
+      name: mongo
+  clusterIP: None  # Headless Service로 설정하여 ClusterIP를 사용하지 않음
+  selector:
+    app: mongodb  # StatefulSet의 Pod를 선택

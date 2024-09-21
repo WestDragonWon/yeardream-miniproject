@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-master
+  labels:
+    app: spark
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark
+      role: master
+  template:
+    metadata:
+      labels:
+        app: spark
+        role: master
+    spec:
+      containers:
+      - name: spark-master
+        image: bitnami/spark:latest
+        command: ["/bin/bash"]
+        ports:
+        - containerPort: 7077 # master
+        - containerPort: 8080 # web ui
+        env:
+        - name: SPARK_MODE
+          value: master
+        - name: SPARK_MASTER_HOST
+          value: spark-master
+        - name: SPARK_MASTER_PORT
+          value: "7077"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-master
+  labels:
+    app: spark
+spec:
+  type: ClusterIP
+  ports:
+  - name: spark-master-port
+    port: 7077
+    targetPort: 7077
+  - name: spark-master-ui
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: spark
+    role: master

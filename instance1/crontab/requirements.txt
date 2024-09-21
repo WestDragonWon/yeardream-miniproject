@@ -9,6 +9,7 @@ cloudpickle==3.0.0
 scipy==1.14.1
 packaging==24.1
 annotated-types==0.7.0
+setuptools==70.0.0
 smmap==5.0.1
 kiwisolver==1.4.6
 mlflow==2.16.0
@@ -19,7 +20,6 @@ pluggy==1.5.0
 urllib3==2.2.2
 opentelemetry-api==1.27.0
 matplotlib==3.9.2
-pyarrow==17.0.0
 Werkzeug==3.0.4
 h11==0.14.0
 opentelemetry-sdk==1.27.0
@@ -61,7 +61,6 @@ Jinja2==3.1.4
 opentelemetry-semantic-conventions==0.48b0
 s3transfer==0.10.2
 certifi==2024.8.30
-setuptools==65.5.0
 greenlet==3.0.3
 alembic==1.13.2
 pandas==2.2.2

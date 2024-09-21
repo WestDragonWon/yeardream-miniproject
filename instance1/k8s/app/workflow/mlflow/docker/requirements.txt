@@ -1,0 +1,6 @@
+fastapi==0.114.0
+pydantic==2.9.1
+mlflow==2.16.0
+numpy==2.1.1
+uvicorn==0.30.6
+boto3==1.35.14

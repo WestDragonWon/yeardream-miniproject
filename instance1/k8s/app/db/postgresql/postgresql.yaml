@@ -1,0 +1,95 @@
+apiVersion: v1           #mlflow에서 권한이 없어 postgres에 접근을 못하는 문제가 발생 -> pg_hba.conf 파일에 모든 IP에서 접근할 수 있도록 추가해주었다.
+kind: ConfigMap          #configmap을 사용하여 volume에 저장 후 컨테이너 속 pg_hba.conf 파일의 맨 뒤에 추가하는 형식으로 설계
+metadata:
+  name: postgres-config
+data:
+  pg_hba.append.conf: |
+    host    all             mlops_user      0.0.0.0/0      trust   #모든 IP로부터의 접속을 허용
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres 
+spec:
+  serviceName: "postgres"
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: postgres 
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      securityContext:      #postgres 이미지는 루트권한으로 파일을 생성하거나 수정하는 것을 금지하고있다. postgres 계정으로 명령을 수행하기 위한 설정
+        runAsUser: 999
+        fsGroup: 999
+      containers:
+        - name: postgres
+          image: postgres:13
+          env:             #postgres에 저장될 데이터들이 위치할 장소를 설정
+            - name: PGDATA
+              value: /var/lib/postgresql/data/mlops   #EFS 볼륨을 /var/lib/postgresql/data에 위치시키고, postgresql에 저장될 데이터는 EFS 볼륨에 하위 디렉토리(/mlops)를 만들어 저장하도록 하였다.
+          volumeMounts:    #EFS 볼륨이 마운트 될 장소를 설정
+            - name: postgres-storage 
+              mountPath: /var/lib/postgresql/data
+            - name: postgres-config-volume  #configmap에 등록된 파일의 디렉토리를 설정 
+              mountPath: /config
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              if [ ! -f "$PGDATA/.appendhba" ]; then
+                chown -R postgres:postgres /var/lib/postgresql/data
+                chmod 700 /var/lib/postgresql/data
+                echo "Appending custom pg_hba.conf settings..."
+                cat /config/pg_hba.append.conf >> $PGDATA/pg_hba.conf
+                touch "$PGDATA/.appendhba"
+              fi
+              if [ ! -f "$PGDATA/.initialized" ]; then
+                chown -R postgres:postgres /var/lib/postgresql/data 
+                chmod 700 /var/lib/postgresql/data
+                echo "Initializing database..."
+                rm -rf "$PGDATA"/*
+                mkdir -p "$PGDATA"
+                chown -R postgres:postgres "$PGDATA"
+                initdb -D "$PGDATA"
+                touch "$PGDATA/.initialized"
+              fi
+              echo "Starting PostgreSQL..."
+              exec postgres
+#인증을 제어하는 설정파일인 pg_hba.conf에 모든 IP로부터의 접근을 허용한다는 내용을 추가하고, 파드가 종료되어도 데>이터가 날아가지 않도록 하기 위해 컨테이너가 처음 실행된 경우에만 initdb(초기화)를 실행하도록 하였다
+          ports:
+            - containerPort: 5432 
+          envFrom:                                                       #secret을 불러오기 위한 세팅
+            - secretRef:
+                name: db 
+          resources:
+            requests:
+              cpu: 500m 
+              memory: 1Gi 
+            limits:
+              cpu: 500m
+              memory: 2Gi 
+      volumes:
+        - name: postgres-storage                                         #EFS 볼륨 마운트
+          persistentVolumeClaim:
+            claimName: postgres-pvc-postgres-0
+        - name: postgres-config-volume                                   #configmap에 등록된 내용을 마운트
+          configMap:
+            name: postgres-config
+            items:
+            - key: pg_hba.append.conf
+              path: pg_hba.append.conf
+---
+apiVersion: v1 
+kind: Service 
+metadata:
+  name: postgres 
+spec:
+  selector:
+    app: postgres 
+  ports:
+    - protocol: TCP 
+      port: 5432 
+      targetPort: 5432
+  clusterIP: None  
