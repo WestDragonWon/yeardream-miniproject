@@ -1,2 +1,2 @@
 # yeardream-miniproject
-![Not found!!](docs/images/servers.jpg)
+![Not found!!](instance1/docs/images/servers.jpg)
