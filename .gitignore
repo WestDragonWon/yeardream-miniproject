@@ -164,5 +164,8 @@ cython_debug/
 # model
 mlartifacts/
 mlruns/
+<<<<<<< HEAD
 
+=======
+>>>>>>> instance4
 data/

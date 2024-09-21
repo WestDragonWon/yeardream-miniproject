@@ -50,7 +50,11 @@ fi
 cd /home/ubuntu/yeardream-miniproject/
 
 # Git 설정: 사용자 이름과 이메일
+<<<<<<< HEAD
 git config --global user.name "westdragonwon"
+=======
+git config --global user.name "WestDragonWon"
+>>>>>>> instance4
 git config --global user.email "westdragonwon@gmail.com"
 
 # 변경사항 커밋 및 푸시
