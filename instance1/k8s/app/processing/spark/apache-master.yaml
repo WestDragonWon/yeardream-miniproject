@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-master
+  labels:
+    app: spark
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark
+      role: master
+  template:
+    metadata:
+      labels:
+        app: spark
+        role: master
+    spec:
+      containers:
+      - name: spark-master
+        image: apache/spark:latest
+        command: ["/bin/bash"]
+          #command: ["/bin/bash", "-c"] 
+          #args:
+          #- "/opt/spark/bin/spark-class org.apache.spark.deploy.master.Master --host 0.0.0.0 --port 7077 --webui-port 8080"
+        ports:
+        - containerPort: 7077
+        - containerPort: 8080
+        stdin: true
+        tty: true
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "1"
+            memory: "2Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-master
+  labels:
+    app: spark
+spec:
+  type: ClusterIP
+  ports:
+  - name: spark-master-port
+    port: 7077
+    targetPort: 7077
+  - name: spark-master-ui
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: spark
+    role: master

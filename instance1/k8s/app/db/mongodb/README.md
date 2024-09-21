@@ -26,3 +26,7 @@ mongodb가 띄워지는 시간을 주기 위해 sleep을 걸면 pod에 sleep이 
 -- k8s cronjob
 스케줄링을 통해 해결되는 듯 했으나 12일자 cronjob이 먼저돌고 pod가 생성되면 pod에 문제가 생기는 것을 확인, 수정중
 mongodb-0이 커맨드를 받는 pod인데 crashloopback 상태에 빠짐
+
+
+---
+### 클러스터구성시엔   volumeClaimTemplates: 옵션을 사용해야함

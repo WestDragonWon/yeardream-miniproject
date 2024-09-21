@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: redis-cluster
 spec:
-  serviceName: redis
+  serviceName: redis-cluster
   replicas: 3  # 마스터 노드 3개로 구성
   selector:
     matchLabels:
@@ -13,12 +13,9 @@ spec:
       labels:
         app: redis
     spec:
-      dnsPolicy: ClusterFirst  # 쿠버네티스 클러스터의 DNS 사용
-      nodeSelector:
-        type: worker  # worker 노드에 배포
       containers:
         - name: redis
-          image: redis:6.2  # Redis 버전 지정
+          image: redis:7.0.5
           ports:
             - containerPort: 6379
           volumeMounts:
@@ -27,11 +24,11 @@ spec:
           command:
             - "redis-server"
           args:
-            - "--cluster-enabled"      # 클러스터 모드 활성화
+            - "--cluster-enabled"
             - "yes"
-            - "--cluster-config-file"   # 클러스터 설정 파일 경로
+            - "--cluster-config-file"
             - "/data/nodes.conf"
-            - "--cluster-node-timeout"  # 타임아웃 설정
+            - "--cluster-node-timeout"
             - "5000"
             - "--appendonly"
             - "yes"
@@ -45,28 +42,11 @@ spec:
             - "60 10000"
             - "--dir"
             - "/data"
-      volumes:
-        - name: redis-storage
-          persistentVolumeClaim:
-            claimName: redis-pvc
-  volumeClaimTemplates:
+  volumeClaimTemplates:   
     - metadata:
         name: redis-storage
       spec:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: redis-storageclass
         resources:
           requests:
             storage: 5Gi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: redis
-spec:
-  ports:
-    - protocol: TCP
-      port: 6379
-  clusterIP: None  # StatefulSet의 각 파드에 고유한 DNS 이름 부여
-  selector:
-    app: redis
