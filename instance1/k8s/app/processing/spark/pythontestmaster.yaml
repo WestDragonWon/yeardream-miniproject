@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: spark-master-deployment
+  name: spark-master-test
   labels:
-    app: spark
+    app: spark-test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: spark
+      app: spark-test
       role: master
   template:
     metadata:
       labels:
-        app: spark
+        app: spark-test
         role: master
     spec:
       containers:
-      - name: spark-master-container
-        image: apache/spark:3.4.2
+      - name: spark-master-container-test
+        image: sparktestimage:latest
         ports:
         - containerPort: 7077
         - containerPort: 8080
@@ -64,20 +64,20 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: spark-master-service   ##!!!!반드시!!! spark-master라고 하면 안됨. spark가 사용하는 환경변수 이름이 SPARK_MASTER_PORT인데, 서비스 이름을 spark-master라고 지정하면 쿠버네티스도 같은 이름으로 다른 내용의 변수를 생성
+  name: spark-master-service-test   ##!!!!반드시!!! spark-master라고 하면 안됨. spark가 사용하는 환경변수 이름이 SPARK_MASTER_PORT인데, 서비스 이름을 spark-master라고 지정하면 쿠버네티스도 같은 이름으로 다른 내용의 변수를 생성
   labels:
-    app: spark
+    app: spark-test
 spec:
   type: NodePort
   ports:
-  - name: spark-master-port
+  - name: spark-master-port-test
     port: 7077
     targetPort: 7077
     nodePort: 32077
-  - name: spark-master-ui
+  - name: spark-master-ui-test
     port: 8080
     targetPort: 8080
     nodePort: 32080
   selector:
-    app: spark
+    app: spark-test
     role: master

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: spark-master
+  name: spark-master-deployment
   labels:
     app: spark
 spec:
@@ -17,7 +17,7 @@ spec:
         role: master
     spec:
       containers:
-      - name: spark-master
+      - name: spark-master-container
         image: apache/spark:latest
         command: ["/bin/bash"]
           #command: ["/bin/bash", "-c"] 
@@ -39,7 +39,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: spark-master
+  name: spark-master-service
   labels:
     app: spark
 spec:

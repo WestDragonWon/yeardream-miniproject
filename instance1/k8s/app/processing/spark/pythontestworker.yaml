@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: spark-worker-deployment
+  name: spark-worker-deployment-test
   labels:
-    app: spark
+    app: spark-test
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: spark
+      app: spark-test
       role: worker
   template:
     metadata:
       labels:
-        app: spark
+        app: spark-test
         role: worker
     spec:
       containers:
       - name: spark-worker-container
-        image: apache/spark:3.4.2
+        image: sparktestimage:latest
         ports:
         - containerPort: 8081
         env:
@@ -39,16 +39,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: spark-worker-service
+  name: spark-worker-service-test
   labels:
-    app: spark
+    app: spark-test
 spec:
   type: NodePort
   ports:
-  - name: spark-worker-ui
+  - name: spark-worker-ui-test
     port: 8081
     targetPort: 8081
     nodePort: 32081
   selector:
-    app: spark
+    app: spark-test
     role: worker

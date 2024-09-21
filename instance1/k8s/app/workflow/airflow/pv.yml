@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: airflow-logs-pv
+spec:
+  capacity:
+    storage: 1Gi  # 10GB의 스토리지
+  accessModes:
+    - ReadWriteMany  # 여러 파드에서 읽기/쓰기 가능
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/mnt/data/airflow-logs"  # 실제 스토리지 경로 (NFS 또는 다른 스토리지에 연결 가능)

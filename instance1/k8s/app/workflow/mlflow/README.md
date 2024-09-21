@@ -23,7 +23,11 @@ http://<EC2 퍼블릭 IP>:30003
 
 S3와의 연결, 모델 uri 연결 방법, 실험이 뭔지에 따라 결과값이 나타내는게 다르니 추후에 추가적인 설정, 데이터 입력 형식
 
-# 실행환경
+# fastAPI 접속방법
+
+http://<aws public ip>:31949
+
+# fastAPI 실행환경
 
 OS: Ubuntu 24.04.1 LTS
 Python: 3.11.9

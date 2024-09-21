@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      component: webserver
+  template:
+    metadata:
+      labels:
+        app: airflow
+        component: webserver
+    spec:
+      nodeSelector:  # 노드 셀렉터 유지
+        type: worker  # 해당 노드에만 배포되도록 설정
+      initContainers:
+        - name: initialize-airflow-db
+          image: apache/airflow:2.9.3-python3.8
+          command: ["airflow", "db", "migrate"]
+      containers:
+        - name: webserver
+          image: apache/airflow:2.9.3-python3.8
+          command: ["airflow", "webserver"]
+          args:
+            - "--port"
+            - "8080"
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: airflow-data
+              mountPath: /opt/airflow
+          env:
+            - name: AIRFLOW_FERNET_KEY  # 암호화 키 환경 변수
+              valueFrom:
+                secretKeyRef:
+                  name: airflow-fernet-key-secret
+                  key: AIRFLOW_FERNET_KEY
+      volumes:
+        - name: airflow-data
+          persistentVolumeClaim:
+            claimName: airflow-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow-webserver
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 31080
+  selector:
+    app: airflow
+    component: webserver
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: airflow-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: airflow-storageclass
+  resources:
+    requests:
+      storage: 1Gi

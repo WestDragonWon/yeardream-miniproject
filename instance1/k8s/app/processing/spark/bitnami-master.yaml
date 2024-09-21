@@ -19,6 +19,7 @@ spec:
       containers:
       - name: spark-master
         image: bitnami/spark:latest
+        command: ["/bin/bash"]
         ports:
         - containerPort: 7077 # master
         - containerPort: 8080 # web ui

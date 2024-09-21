@@ -1,44 +1,68 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: redis-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: redis-storageclass  # 정의한 gp3 스토리지 클래스 사용
-  resources:
-    requests:
-      storage: 5Gi  # 원하는 용량 설정
----
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: redis-deployment
+  name: redis-cluster
 spec:
-  replicas: 1
+  serviceName: redis-cluster
+  replicas: 3  # 마스터 노드를 3개로 구성하여 Redis 클러스터를 구성
   selector:
     matchLabels:
-      app: redis
+      app: redis  # redis 애플리케이션을 선택
   template:
     metadata:
       labels:
-        app: redis
+        app: redis  # 파드에 레이블을 지정하여 selector와 일치시킴
     spec:
       nodeSelector:
         type: worker  # worker 노드에 배포
       containers:
         - name: redis
-          image: redis:6.2  # Redis 버전 지정
+          image: redis:7.0.5  # Redis 7.0.5 이미지 사용
           ports:
-            - containerPort: 6379
-          resources:
-            limits:
-              memory: "1024Mi"  # 최대 사용할 메모리 제한
-              cpu: "1000m"  # 최대 사용할 CPU 제한
+            - containerPort: 6379  # Redis 기본 포트
           volumeMounts:
             - mountPath: /data
-              name: redis-storage
-      volumes:
-        - name: redis-storage
-          persistentVolumeClaim:
-            claimName: redis-pvc  # PVC 사용
+              name: redis-storage  # Redis 데이터 저장을 위한 볼륨 마운트
+          command:
+            - "redis-server"  # Redis 서버 실행
+          args:
+            - "--cluster-enabled"
+            - "yes"  # 클러스터 모드 활성화
+            - "--cluster-config-file"
+            - "/data/nodes.conf"  # 클러스터 설정 파일 경로
+            - "--cluster-node-timeout"
+            - "5000"  # 클러스터 노드 타임아웃 시간 설정 (단위: ms)
+            - "--appendonly"
+            - "yes"  # 데이터 지속성 기능 활성화 (AOF 사용)
+            - "--appendfsync"
+            - "everysec"  # 매 초마다 디스크로 동기화
+            - "--save"
+            - "900 1"  # 900초마다 1번 저장
+            - "--save"
+            - "300 10"  # 300초마다 10번의 변경이 있으면 저장
+            - "--save"
+            - "60 10000"  # 60초마다 10,000번의 변경이 있으면 저장
+            - "--dir"
+            - "/data"  # 데이터 저장 디렉토리 설정
+  volumeClaimTemplates:   
+    - metadata:
+        name: redis-storage  # 파드에서 사용할 볼륨 클레임 템플릿 정의
+      spec:
+        accessModes: ["ReadWriteOnce"]  # 한 파드에서만 쓰기 가능한 모드
+        resources:
+          requests:
+            storage: 5Gi  # 각 파드에 할당할 5GB의 스토리지 요청
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-cluster  # 서비스 이름
+  labels:
+    app: redis  # redis 애플리케이션 레이블
+spec:
+  ports:
+    - port: 6379  # Redis 기본 포트를 노출
+      name: redis
+  clusterIP: None  # Headless 서비스로 설정하여 StatefulSet 파드들에 개별 IP 할당
+  selector:
+    app: redis  # redis 레이블을 가진 파드들만 선택

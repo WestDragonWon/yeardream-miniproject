@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
         - name: kafka-exporter
-          image: danielqsj/kafka-exporter:latest
+          image: bitnami/kafka-exporter:1.7.0
+
           ports:
             - containerPort: 9308
           env:
