@@ -4,37 +4,23 @@ metadata:
   name: airflow-pv
 spec:
   capacity:
-    storage: 1Gi
+    storage: 2Gi  # 필요한 용량만큼 설정
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   storageClassName: airflow-storageclass
   csi:
     driver: efs.csi.aws.com
-    volumeHandle: fs-00fb81d888c7ed27c  # 사용 중인 EFS 파일 시스템 ID
-
+    volumeHandle: fs-00fb81d888c7ed27c  # EFS 파일 시스템 ID
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: airflow-logs-pvc
+  name: airflow-pvc
 spec:
   accessModes:
     - ReadWriteMany
   storageClassName: airflow-storageclass
   resources:
     requests:
-      storage: 1Gi
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: airflow-dags-pvc
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: airflow-storageclass
-  resources:
-    requests:
-      storage: 1Gi
+      storage: 2Gi  # 총 용량에 맞게 설정

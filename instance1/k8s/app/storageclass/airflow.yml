@@ -10,4 +10,3 @@ parameters:
   gidRangeStart: "1000"
   gidRangeEnd: "2000"
   basePath: "/airflow" # EFS에 마운트할 디렉터리 경로
-

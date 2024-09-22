@@ -11,3 +11,4 @@ end_time = time.time()
 
 print(f"@@@@@@@@@@@@@@@@@@@@@@@@@@@@{end_time - start_time}")
 
+spark.stop()

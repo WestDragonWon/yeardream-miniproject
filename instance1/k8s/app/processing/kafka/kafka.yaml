@@ -231,14 +231,9 @@ metadata:
 spec:
   type: ClusterIP  
   ports:
-  - name: plaintext  
-    port: 9092
-    targetPort: 9092
-    
-  - name: controller  
-    port: 9093
-    targetPort: 9093
-    
+    - name: plaintext  
+      port: 9092
+      targetPort: 9092
   selector:
     app: kafka
     instance: kafka-1
@@ -251,14 +246,9 @@ metadata:
 spec:
   type: ClusterIP 
   ports:
-  - name: plaintext
-    port: 9092
-    targetPort: 9092
-    
-  - name: controller  
-    port: 9093
-    targetPort: 9093
-    
+    - name: plaintext
+      port: 9092
+      targetPort: 9092
   selector:
     app: kafka
     instance: kafka-2
@@ -271,12 +261,9 @@ metadata:
 spec:
   type: ClusterIP  
   ports:
-  - name: plaintext
-    port: 9092
-    targetPort: 9092
-  - name: controller
-    port: 9093
-    targetPort: 9093
+    - name: plaintext
+      port: 9092
+      targetPort: 9092
   selector:
     app: kafka
     instance: kafka-3

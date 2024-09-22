@@ -84,3 +84,10 @@ aT5C3O9_YDFztF7NIlkjhg7VBH3hvZLlWXYPcvGr6Hk=
 현재 initContainers에서 Airflow 데이터베이스 마이그레이션(migrate)을 수행하도록 설정되어 있는데, 데이터베이스를 처음 초기화할 때는 migrate 대신 init을 사용해야 합니다.
 
 따라서 airflow db migrate 대신 airflow db init을 사용하면 Airflow 데이터베이스 초기화를 수행할 수 있습니다.
+
+
+
+----
+
+동시에 실행하면 왜 안되지??? 
+- pvc - pv 문제였고
