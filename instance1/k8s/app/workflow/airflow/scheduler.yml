@@ -12,33 +12,34 @@ spec:
       labels:
         app: airflow-scheduler
     spec:
+      serviceAccountName: airflow
       nodeSelector:
-        type: worker  # worker 노드에만 배포
+        type: worker
       initContainers:
         - name: initialize-airflow-db
           image: apache/airflow:2.9.3-python3.8
-          command: ["airflow", "db", "init"]  # 데이터베이스 초기화
+          command: ["airflow", "db", "init"]
           env:
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-              value: "postgresql+psycopg2://airflow:airflow@postgres:5432/airflow"
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
       containers:
         - name: airflow-scheduler
           image: apache/airflow:2.9.3-python3.8
           command: ["airflow", "scheduler"]
           env:
-            - name: AIRFLOW__CORE__EXECUTOR
-              value: "CeleryExecutor"
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-              value: "postgresql+psycopg2://airflow:airflow@postgres:5432/airflow"
-            - name: AIRFLOW__CELERY__BROKER_URL
-              value: "redis://redis-cluster:6379/0"
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
           volumeMounts:
-            - name: airflow-pvc
-              mountPath: /opt/airflow/logs # pod 경로
-              subPath: logs # efs 하위 폴더 생성
-            - name: airflow-pvc
-              mountPath: /opt/airflow/dags # pod 경로
-              subPath: dags # efs 하위 폴더 생성
+            - name: airflow-logs
+              mountPath: /opt/airflow/logs
+            - name: airflow-dags
+              mountPath: /opt/airflow/dags
           readinessProbe:
             exec:
               command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
@@ -52,6 +53,9 @@ spec:
             periodSeconds: 15
             timeoutSeconds: 5
       volumes:
-        - name: airflow-pvc
+        - name: airflow-logs
           persistentVolumeClaim:
-            claimName: airflow-pvc 
+            claimName: airflow-logs-pvc
+        - name: airflow-dags
+          persistentVolumeClaim:
+            claimName: airflow-dags-pvc

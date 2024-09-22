@@ -98,6 +98,18 @@ kubectl exec -it airflow-webserver-69f896489f-q859h -- celery --version
 Defaulted container "airflow-webserver" out of: airflow-webserver, initialize-airflow-db (init)
 5.4.0 (opalescent)
 
-celery excutor
+celery excutor / redis와 연결하는데 필요한 모듈
+-> redis 클러스터와는 아직 호환이안됨 망할 ㅠㅠ 아까운 내 시간
 
 worker 작동방식
+
+
+
+
+
+---
+scheduler // role-binding 성공
+worker // excutor 설정 필요
+
+
+---

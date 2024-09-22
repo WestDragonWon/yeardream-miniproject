@@ -31,5 +31,5 @@ with DAG(
             bash_command=f'python3 {SCRIPT_PATH}/kafka-producer.py {DATA_PATH} {TOPIC_NAME}',
     )
     
-    upload_task >> producer_task
+    producer_task
 

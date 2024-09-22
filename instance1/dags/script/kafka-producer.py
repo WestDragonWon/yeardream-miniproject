@@ -4,7 +4,7 @@ from confluent_kafka import Producer
 import pandas as pd
 import argparse
 
-producer = Producer({'bootstrap.servers': 'localhost:9092'})
+producer = Producer({'bootstrap.servers': ['10.98.218.95:9092', '10.110.230.222:9092', '10.101.191.226:9092']})
 
 chunk_size = 1000000  # Number of rows per chunk
 

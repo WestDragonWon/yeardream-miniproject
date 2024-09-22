@@ -12,17 +12,18 @@ spec:
       labels:
         app: airflow-webserver
     spec:
+      serviceAccountName: airflow
       nodeSelector:
-        type: worker  # worker 노드에만 배포
+        type: worker
       initContainers:
         - name: initialize-airflow-db
           image: apache/airflow:2.9.3-python3.8
-          command: ["airflow", "db", "init"]  # 데이터베이스 초기화
+          command: ["airflow", "db", "init"]
           env:
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
               valueFrom:
                 configMapKeyRef:
-                  name: airflow-config  # ConfigMap 이름
+                  name: airflow-config
                   key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
       containers:
         - name: airflow-webserver
@@ -32,51 +33,20 @@ spec:
           command: ["/bin/bash", "-c", "airflow webserver"]
           env:
             - name: AIRFLOW__CORE__EXECUTOR
-              valueFrom:
-                configMapKeyRef:
-                  name: airflow-config  # ConfigMap 이름
-                  key: AIRFLOW__CORE__EXECUTOR
+              value: "KubernetesExecutor"
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
               valueFrom:
                 configMapKeyRef:
                   name: airflow-config
                   key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-            - name: AIRFLOW__CELERY__RESULT_BACKEND
-              valueFrom:
-                configMapKeyRef:
-                  name: airflow-config
-                  key: AIRFLOW__CELERY__RESULT_BACKEND
-            - name: AIRFLOW__CELERY__BROKER_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: airflow-config
-                  key: AIRFLOW__CELERY__BROKER_URL
-            - name: AIRFLOW__SCHEDULER__CATCHUP_BY_DEFAULT
-              valueFrom:
-                configMapKeyRef:
-                  name: airflow-config
-                  key: AIRFLOW__SCHEDULER__CATCHUP_BY_DEFAULT
-            - name: AIRFLOW__LOGGING__LOGGING_LEVEL
-              valueFrom:
-                configMapKeyRef:
-                  name: airflow-config
-                  key: AIRFLOW__LOGGING__LOGGING_LEVEL
-            - name: AIRFLOW__CORE__DAGS_FOLDER
-              valueFrom:
-                configMapKeyRef:
-                  name: airflow-config
-                  key: AIRFLOW__CORE__DAGS_FOLDER
-            - name: AIRFLOW__CORE__LOAD_EXAMPLES
-              value: "false"
-            - name: AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK
-              value: "true"
           volumeMounts:
-            - name: airflow-pvc
-              mountPath: /opt/airflow/logs  # pod 경로
-              subPath: logs  # efs 하위 폴더 생성
-            - name: airflow-pvc
-              mountPath: /opt/airflow/dags  # pod 경로
-              subPath: dags  # efs 하위 폴더 생성
+            - name: airflow-logs
+              mountPath: /opt/airflow/logs
+            - name: airflow-dags
+              mountPath: /opt/airflow/dags
+            - name: airflow-config-vol
+              mountPath: /opt/airflow/pod_template.yaml
+              subPath: pod_template.yaml
           readinessProbe:
             httpGet:
               path: /health
@@ -91,9 +61,18 @@ spec:
             periodSeconds: 10
             failureThreshold: 5
       volumes:
-        - name: airflow-pvc
+        - name: airflow-logs
           persistentVolumeClaim:
-            claimName: airflow-pvc
+            claimName: airflow-logs-pvc
+        - name: airflow-dags
+          persistentVolumeClaim:
+            claimName: airflow-dags-pvc
+        - name: airflow-config-vol
+          configMap:
+            name: airflow-config
+            items:
+              - key: AIRFLOW__KUBERNETES__POD_TEMPLATE_FILE
+                path: pod_template.yaml
 ---
 apiVersion: v1
 kind: Service

@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: spark-worker-container
-        image: apache/spark:3.4.0
+        image: apache/spark:3.5.1
         ports:
         - containerPort: 8081
         env:
@@ -44,24 +44,28 @@ spec:
               secretKeyRef:
                 name: workflow
                 key: POSTGRES_PASSWORD
+          - name: SPARK_LOCAL_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
         command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker"]
-        args: ["spark://spark-master-service:7077", "--host", "0.0.0.0", "--webui-port", "8081"]
+        args: ["spark://spark-master-service:7077", "--host", "$(SPARK_LOCAL_IP)", "--webui-port", "8081"]
         volumeMounts:
-        - name: spark-jars-volume
-          mountPath: /opt/spark/jars
+          #- name: spark-jars-volume
+          #mountPath: /opt/spark/jars
         - name: spark-jobs-volume
           mountPath: /opt/spark/work-dir
         resources:
           requests:
-            cpu: "500m"
+            cpu: "1"
             memory: "1Gi"
           limits:
             cpu: "1"
-            memory: "2Gi"
+            memory: "1Gi"
       volumes:
-      - name: spark-jars-volume
-        persistentVolumeClaim:
-          claimName: spark-jars-pvc
+        #- name: spark-jars-volume
+        #persistentVolumeClaim:
+        #  claimName: spark-jars-pvc
       - name: spark-jobs-volume
         persistentVolumeClaim:
           claimName: spark-jobs-pvc

@@ -11,6 +11,12 @@ spark = SparkSession.builder \
         .config("spark.hadoop.fs.s3a.secret.key", aws_secret_key) \
         .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
         .config("spark.hadoop.fs.s3a.endpoint", "s3.amazonaws.com") \
+        .config("spark.driver.host", "10.106.174.245") \
+        .config("spark.driver.bindAddress", "0.0.0.0") \
+        .config("spark.dynamic.Allocation.enabled", "false") \
+        .config("spark.shuffle.service.enabled", "false") \
+        .config("spark.executor.memory", "1g") \
+        .config("spark.executor.cores", "1") \
         .getOrCreate()
 
 csv_file_path = "s3a://team06-mlflow-feature/data/employees.csv"

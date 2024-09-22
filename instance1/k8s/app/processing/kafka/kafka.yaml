@@ -24,12 +24,12 @@ spec:
                 values:
                 - worker1  
       initContainers:
-        - name: init-kafka-data
-          image: alpine
-          command: ['sh', '-c', 'mkdir -p /var/lib/kafka/data && chown -R 1000:1000 /var/lib/kafka/data']
-          volumeMounts:
-            - name: kafka-storage
-              mountPath: /var/lib/kafka/data 
+      - name: init-kafka
+        image: busybox
+        command: ['sh', '-c', 'rm -rf /var/lib/kafka/data/* && mkdir -p /var/lib/kafka/data && chown -R 1000:1000 /var/lib/kafka/data']
+        volumeMounts:
+        - name: kafka-storage
+          mountPath: /var/lib/kafka/data
       containers:
       - name: kafka
         image: apache/kafka:3.7.1
@@ -75,10 +75,15 @@ spec:
         volumeMounts:
         - name: kafka-storage
           mountPath: /var/lib/kafka/data
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000 
       volumes:
         - name: kafka-storage
           persistentVolumeClaim:
-            claimName: kafka-pvc
+            claimName: kafka-pvc-1
+
+
 
 ---
 apiVersion: apps/v1
@@ -105,15 +110,14 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - worker2  
-
+                - worker2     
       initContainers:
-        - name: init-kafka-data
-          image: alpine
-          command: ['sh', '-c', 'mkdir -p /var/lib/kafka/data && chown -R 1000:1000 /var/lib/kafka/data']
-          volumeMounts:
-            - name: kafka-storage
-              mountPath: /var/lib/kafka/data           
+      - name: init-kafka
+        image: busybox
+        command: ['sh', '-c', 'rm -rf /var/lib/kafka/data/* && mkdir -p /var/lib/kafka/data && chown -R 1000:1000 /var/lib/kafka/data']
+        volumeMounts:
+        - name: kafka-storage
+          mountPath: /var/lib/kafka/data                
       containers:
       - name: kafka
         image: apache/kafka:3.7.1
@@ -159,10 +163,14 @@ spec:
         volumeMounts:
         - name: kafka-storage
           mountPath: /var/lib/kafka/data
+
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000 
       volumes:
         - name: kafka-storage
           persistentVolumeClaim:
-            claimName: kafka-pvc
+            claimName: kafka-pvc-2
 
 ---
 apiVersion: apps/v1
@@ -190,14 +198,13 @@ spec:
                 operator: In
                 values:
                 - worker3  
-
       initContainers:
-        - name: init-kafka-data
-          image: alpine
-          command: ['sh', '-c', 'mkdir -p /var/lib/kafka/data && chown -R 1000:1000 /var/lib/kafka/data']
-          volumeMounts:
-            - name: kafka-storage
-              mountPath: /var/lib/kafka/data          
+      - name: init-kafka
+        image: busybox
+        command: ['sh', '-c', 'rm -rf /var/lib/kafka/data/* && mkdir -p /var/lib/kafka/data && chown -R 1000:1000 /var/lib/kafka/data']
+        volumeMounts:
+        - name: kafka-storage
+          mountPath: /var/lib/kafka/data                   
       containers:
       - name: kafka
         image: apache/kafka:3.7.1
@@ -243,10 +250,13 @@ spec:
         volumeMounts:
         - name: kafka-storage
           mountPath: /var/lib/kafka/data
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000  
       volumes:
         - name: kafka-storage
           persistentVolumeClaim:
-            claimName: kafka-pvc
+            claimName: kafka-pvc-3
 
 
 ---
