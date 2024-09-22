@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: spark-master-container
-        image: apache/spark:3.4.2
+        image: apache/spark:3.4.0
         ports:
         - containerPort: 7077
         - containerPort: 8080

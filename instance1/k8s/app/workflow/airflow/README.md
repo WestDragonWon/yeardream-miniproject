@@ -43,6 +43,19 @@ Kubernetes 환경에서 고가용성 Airflow 클러스터를 배포하기 위한
 
 ## 보안
 
+## 작업순서
+
+사용한 DB는 Redis / PostgreSQL
+
+1. airflow-webserver
+EFS 마운트 / postgresql 연결
+
+2. airflow-schedule
+Airflow는 기본적으로 DAG 파일을 /opt/airflow/dags/ 경로에서 찾습니다. 따라서 PersistentVolumeClaim을 DAG 파일 경로로 마운트하여 사용해야 합니다.
+
+3. airflow-worker
+redis 연결
+
 Airflow의 Fernét 암호화 키 사용처
 Connections (연결 정보)
 
@@ -66,3 +79,8 @@ pip install cryptography
 python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())'
 aT5C3O9_YDFztF7NIlkjhg7VBH3hvZLlWXYPcvGr6Hk=
 ```
+
+
+현재 initContainers에서 Airflow 데이터베이스 마이그레이션(migrate)을 수행하도록 설정되어 있는데, 데이터베이스를 처음 초기화할 때는 migrate 대신 init을 사용해야 합니다.
+
+따라서 airflow db migrate 대신 airflow db init을 사용하면 Airflow 데이터베이스 초기화를 수행할 수 있습니다.

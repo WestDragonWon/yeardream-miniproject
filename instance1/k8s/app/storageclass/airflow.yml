@@ -6,7 +6,7 @@ provisioner: efs.csi.aws.com  # AWS EFS CSI 드라이버를 사용
 parameters:
   provisioningMode: efs-ap  # EFS를 프로비저닝할 때 Access Point 사용
   fileSystemId: fs-00fb81d888c7ed27c  # 사용 중인 EFS 파일 시스템 ID
-  directoryPerms: "700"  # 디렉터리 권한 설정
+  directoryPerms: "775"  # 디렉터리 권한 설정
   gidRangeStart: "1000"
   gidRangeEnd: "2000"
   basePath: "/airflow" # EFS에 마운트할 디렉터리 경로

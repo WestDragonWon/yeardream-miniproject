@@ -3,26 +3,41 @@ kind: Deployment
 metadata:
   name: airflow-worker
 spec:
-  replicas: 3
+  replicas: 2  # 워커 복제본 수 설정
   selector:
     matchLabels:
-      app: airflow
-      component: worker
+      app: airflow-worker
   template:
     metadata:
       labels:
-        app: airflow
-        component: worker
+        app: airflow-worker
     spec:
       nodeSelector:
-        type: worker
+        type: worker  # worker 노드에만 배포
       containers:
-        - name: worker
+        - name: airflow-worker
           image: apache/airflow:2.9.3-python3.8
+          command: ["airflow", "celery", "worker"]
+          env:
+            - name: AIRFLOW__CELERY__BROKER_CONNECTION_RETRY_ON_STARTUP
+              value: "True"
+            - name: AIRFLOW__CORE__EXECUTOR
+              value: "CeleryExecutor"
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              value: "postgresql+psycopg2://airflow:airflow@postgres:5432/airflow"
+            - name: AIRFLOW__CELERY__BROKER_URL
+              value: "redis://redis-cluster:6379/0"
+            - name: AIRFLOW__CELERY__RESULT_BACKEND
+              value: "db+postgresql://airflow:airflow@postgres:5432/airflow"
           volumeMounts:
-            - name: airflow-data
-              mountPath: /opt/airflow
+            - name: airflow-logs
+              mountPath: /opt/airflow/logs
+            - name: airflow-dags
+              mountPath: /opt/airflow/dags
       volumes:
-        - name: airflow-data
+        - name: airflow-logs
           persistentVolumeClaim:
-            claimName: airflow-pvc
+            claimName: airflow-logs-pvc  # EFS에 마운트된 로그 PVC
+        - name: airflow-dags
+          persistentVolumeClaim:
+            claimName: airflow-dags-pvc  # EFS에 마운트된 DAG PVC

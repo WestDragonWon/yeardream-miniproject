@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: spark-worker-container
-        image: apache/spark:3.4.2
+        image: apache/spark:3.4.0
         ports:
         - containerPort: 8081
         env:

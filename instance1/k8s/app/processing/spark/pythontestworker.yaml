@@ -19,6 +19,7 @@ spec:
       containers:
       - name: spark-worker-container
         image: sparktestimage:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 8081
         env:

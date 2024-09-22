@@ -6,43 +6,64 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: airflow
-      component: webserver
+      app: airflow-webserver
   template:
     metadata:
       labels:
-        app: airflow
-        component: webserver
+        app: airflow-webserver
     spec:
-      nodeSelector:  # 노드 셀렉터 유지
-        type: worker  # 해당 노드에만 배포되도록 설정
+      nodeSelector:
+        type: worker  # worker 노드에만 배포
       initContainers:
         - name: initialize-airflow-db
           image: apache/airflow:2.9.3-python3.8
-          command: ["airflow", "db", "migrate"]
+          command: ["airflow", "db", "init"]  # 데이터베이스 초기화
+          env:
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              value: "postgresql+psycopg2://airflow:airflow@postgres:5432/airflow"
       containers:
-        - name: webserver
+        - name: airflow-webserver
           image: apache/airflow:2.9.3-python3.8
-          command: ["airflow", "webserver"]
-          args:
-            - "--port"
-            - "8080"
           ports:
             - containerPort: 8080
-          volumeMounts:
-            - name: airflow-data
-              mountPath: /opt/airflow
+          command: ["/bin/bash", "-c", "airflow webserver"]
           env:
-            - name: AIRFLOW_FERNET_KEY  # 암호화 키 환경 변수
-              valueFrom:
-                secretKeyRef:
-                  name: airflow-fernet-key-secret
-                  key: AIRFLOW_FERNET_KEY
+            - name: AIRFLOW__CORE__EXECUTOR
+              value: "CeleryExecutor"
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              value: "postgresql+psycopg2://airflow:airflow@postgres:5432/airflow"
+            - name: AIRFLOW__CELERY__RESULT_BACKEND
+              value: "db+postgresql://airflow:airflow@postgres:5432/airflow"
+            - name: AIRFLOW__CELERY__BROKER_URL
+              value: "redis://redis-cluster:6379/0"
+            - name: AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK
+              value: "true"
+            - name: AIRFLOW__CORE__LOAD_EXAMPLES
+              value: "false"
+          volumeMounts:
+            - name: airflow-logs
+              mountPath: /opt/airflow/logs
+            - name: airflow-dags
+              mountPath: /opt/airflow/dags
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
       volumes:
-        - name: airflow-data
+        - name: airflow-logs
           persistentVolumeClaim:
-            claimName: airflow-pvc
-
+            claimName: airflow-logs-pvc  # EFS에 마운트된 로그 PVC
+        - name: airflow-dags
+          persistentVolumeClaim:
+            claimName: airflow-dags-pvc  # EFS에 마운트된 DAG PVC
 ---
 apiVersion: v1
 kind: Service
@@ -53,19 +74,6 @@ spec:
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 31080
+      nodePort: 30091
   selector:
-    app: airflow
-    component: webserver
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: airflow-pvc
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: airflow-storageclass
-  resources:
-    requests:
-      storage: 1Gi
+    app: airflow-webserver
