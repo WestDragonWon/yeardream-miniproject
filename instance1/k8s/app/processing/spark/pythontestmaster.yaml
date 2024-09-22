@@ -18,7 +18,8 @@ spec:
     spec:
       containers:
       - name: spark-master-container-test
-        image: sparktestimage:latest
+        image: sparktestimage
+        imagePullPolicy: Never
         ports:
         - containerPort: 7077
         - containerPort: 8080

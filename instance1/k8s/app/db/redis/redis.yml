@@ -7,43 +7,48 @@ spec:
   replicas: 3  # 마스터 노드를 3개로 구성하여 Redis 클러스터를 구성
   selector:
     matchLabels:
-      app: redis  # redis 애플리케이션을 선택
+      app: redis
   template:
     metadata:
       labels:
-        app: redis  # 파드에 레이블을 지정하여 selector와 일치시킴
+        app: redis
     spec:
       nodeSelector:
-        type: worker  # worker 노드에 배포
+        type: worker
       containers:
         - name: redis
-          image: redis:7.0.5  # Redis 7.0.5 이미지 사용
+          image: redis:7.0.5
           ports:
-            - containerPort: 6379  # Redis 기본 포트
+            - containerPort: 6379
           volumeMounts:
             - mountPath: /data
-              name: redis-storage  # Redis 데이터 저장을 위한 볼륨 마운트
+              name: redis-storage
           command:
-            - "redis-server"  # Redis 서버 실행
+            - "redis-server"
           args:
             - "--cluster-enabled"
-            - "yes"  # 클러스터 모드 활성화
+            - "yes"
             - "--cluster-config-file"
-            - "/data/nodes.conf"  # 클러스터 설정 파일 경로
+            - "/data/nodes.conf"
             - "--cluster-node-timeout"
-            - "5000"  # 클러스터 노드 타임아웃 시간 설정 (단위: ms)
+            - "5000"
             - "--appendonly"
-            - "yes"  # 데이터 지속성 기능 활성화 (AOF 사용)
+            - "yes"
             - "--appendfsync"
-            - "everysec"  # 매 초마다 디스크로 동기화
+            - "everysec"
             - "--save"
-            - "900 1"  # 900초마다 1번 저장
+            - "900 1"
             - "--save"
-            - "300 10"  # 300초마다 10번의 변경이 있으면 저장
+            - "300 10"
             - "--save"
-            - "60 10000"  # 60초마다 10,000번의 변경이 있으면 저장
+            - "60 10000"
             - "--dir"
-            - "/data"  # 데이터 저장 디렉토리 설정
+            - "/data"
+          readinessProbe:
+            exec:
+              command: ["redis-cli", "ping"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
   volumeClaimTemplates:   
     - metadata:
         name: redis-storage  # 파드에서 사용할 볼륨 클레임 템플릿 정의
@@ -56,13 +61,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-cluster  # 서비스 이름
+  name: redis-cluster
   labels:
-    app: redis  # redis 애플리케이션 레이블
+    app: redis
 spec:
   ports:
-    - port: 6379  # Redis 기본 포트를 노출
+    - port: 6379  # Redis 기본 포트
       name: redis
+    - port: 16379  # Redis 클러스터 포트 추가
+      name: redis-cluster-port
   clusterIP: None  # Headless 서비스로 설정하여 StatefulSet 파드들에 개별 IP 할당
   selector:
-    app: redis  # redis 레이블을 가진 파드들만 선택
+    app: redis

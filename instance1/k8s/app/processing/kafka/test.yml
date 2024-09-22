@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kafka-client
+spec:
+  containers:
+  - name: kafka-client
+    image: bitnami/kafka:latest
+    command: ["sleep", "3600"]  # Pod가 1시간 동안 대기하도록 설정

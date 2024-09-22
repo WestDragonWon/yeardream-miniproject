@@ -12,6 +12,7 @@ spec:
       labels:
         app: airflow-webserver
     spec:
+      serviceAccountName: airflow
       nodeSelector:
         type: worker
       initContainers:
@@ -31,6 +32,8 @@ spec:
             - containerPort: 8080
           command: ["/bin/bash", "-c", "airflow webserver"]
           env:
+            - name: AIRFLOW__CORE__EXECUTOR
+              value: "KubernetesExecutor"
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
               valueFrom:
                 configMapKeyRef:
@@ -41,6 +44,9 @@ spec:
               mountPath: /opt/airflow/logs
             - name: airflow-dags
               mountPath: /opt/airflow/dags
+            - name: airflow-config-vol
+              mountPath: /opt/airflow/pod_template.yaml
+              subPath: pod_template.yaml
           readinessProbe:
             httpGet:
               path: /health
@@ -61,6 +67,12 @@ spec:
         - name: airflow-dags
           persistentVolumeClaim:
             claimName: airflow-dags-pvc
+        - name: airflow-config-vol
+          configMap:
+            name: airflow-config
+            items:
+              - key: AIRFLOW__KUBERNETES__POD_TEMPLATE_FILE
+                path: pod_template.yaml
 ---
 apiVersion: v1
 kind: Service

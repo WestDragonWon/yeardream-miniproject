@@ -1,23 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: airflow-webserver
+  name: airflow-scheduler
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: airflow-webserver
+      app: airflow-scheduler
   template:
     metadata:
       labels:
-        app: airflow-webserver
+        app: airflow-scheduler
     spec:
+      serviceAccountName: airflow
       nodeSelector:
-        type: worker
+        type: worker  # worker 노드에만 배포
       initContainers:
         - name: initialize-airflow-db
           image: apache/airflow:2.9.3-python3.8
-          command: ["airflow", "db", "init"]
+          command: ["airflow", "db", "init"]  # 데이터베이스 초기화
           env:
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
               valueFrom:
@@ -25,12 +26,12 @@ spec:
                   name: airflow-config
                   key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
       containers:
-        - name: airflow-webserver
+        - name: airflow-scheduler
           image: apache/airflow:2.9.3-python3.8
-          ports:
-            - containerPort: 8080
-          command: ["/bin/bash", "-c", "airflow webserver"]
+          command: ["airflow", "scheduler"]
           env:
+            - name: AIRFLOW__CORE__EXECUTOR
+              value: "KubernetesExecutor"
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
               valueFrom:
                 configMapKeyRef:
@@ -41,19 +42,21 @@ spec:
               mountPath: /opt/airflow/logs
             - name: airflow-dags
               mountPath: /opt/airflow/dags
+            - name: airflow-config-vol
+              mountPath: /opt/airflow/pod_template.yaml
+              subPath: pod_template.yaml
           readinessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 5
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
+            exec:
+              command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
             initialDelaySeconds: 30
-            periodSeconds: 10
-            failureThreshold: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
       volumes:
         - name: airflow-logs
           persistentVolumeClaim:
@@ -61,16 +64,9 @@ spec:
         - name: airflow-dags
           persistentVolumeClaim:
             claimName: airflow-dags-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: airflow-webserver
-spec:
-  type: NodePort
-  ports:
-    - port: 8080
-      targetPort: 8080
-      nodePort: 30091
-  selector:
-    app: airflow-webserver
+        - name: airflow-config-vol
+          configMap:
+            name: airflow-config
+            items:
+              - key: AIRFLOW__KUBERNETES__POD_TEMPLATE_FILE
+                path: pod_template.yaml
