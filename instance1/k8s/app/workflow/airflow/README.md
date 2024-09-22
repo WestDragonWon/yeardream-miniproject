@@ -90,4 +90,14 @@ aT5C3O9_YDFztF7NIlkjhg7VBH3hvZLlWXYPcvGr6Hk=
 ----
 
 동시에 실행하면 왜 안되지??? 
-- pvc - pv 문제였고
+- pvc - pv 문제였고 다중pvc -> pv1 불가 다중pod -> pvc1 가능
+
+
+---
+kubectl exec -it airflow-webserver-69f896489f-q859h -- celery --version
+Defaulted container "airflow-webserver" out of: airflow-webserver, initialize-airflow-db (init)
+5.4.0 (opalescent)
+
+celery excutor
+
+worker 작동방식

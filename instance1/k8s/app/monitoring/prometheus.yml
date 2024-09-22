@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      nodeSelector:
+        type: worker  # worker 노드에만 배포
+      containers:
+      - name: prometheus
+        image: prom/prometheus:latest
+        args:
+          - "--storage.tsdb.path=/prometheus"  # 메트릭 데이터 저장 경로
+        ports:
+        - containerPort: 9090  # Prometheus 기본 포트
+        volumeMounts:
+        - name: prometheus-storage
+          mountPath: /prometheus  # 기본 메트릭 저장 경로
+      volumes:
+      - name: prometheus-storage
+        persistentVolumeClaim:
+          claimName: prometheus-pvc  # PVC를 통해 EFS 볼륨에 연결
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+spec:
+  type: NodePort  # ClusterIP에서 NodePort로 변경
+  ports:
+    - port: 9090
+      targetPort: 9090
+      nodePort: 30111  
+  selector:
+    app: prometheus

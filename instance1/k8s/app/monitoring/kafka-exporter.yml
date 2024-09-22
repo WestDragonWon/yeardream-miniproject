@@ -16,29 +16,21 @@ spec:
       - name: kafka-exporter
         image: danielqsj/kafka-exporter:latest
         args:
-        - "--kafka.server=kafka-1:9092"
-        - "--kafka.server=kafka-2:9092"
-        - "--kafka.server=kafka-3:9092"
+        - "--kafka.server=kafka-1:9092"  # 첫 번째 Kafka 브로커 주소
+        - "--kafka.server=kafka-2:9092"  # 두 번째 Kafka 브로커 주소
+        - "--kafka.server=kafka-3:9092"  # 세 번째 Kafka 브로커 주소
         ports:
-        - containerPort: 9308
-        resources:
-          requests:
-            cpu: "250m"  
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
-
+        - containerPort: 9308  # Kafka Exporter 기본 포트
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: kafka-exporter
 spec:
-  type: NodePort
+  type: NodePort  # ClusterIP에서 NodePort로 변경
   ports:
     - port: 9308
       targetPort: 9308
-      nodePort: 30080
+      nodePort: 30112  # 원하는 포트를 설정
   selector:
     app: kafka-exporter

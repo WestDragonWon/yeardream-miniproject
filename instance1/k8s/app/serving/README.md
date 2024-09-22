@@ -1,0 +1,27 @@
+# 머신러닝 모델 FastAPI에 서빙
+
+1. 모델의 Run ID를 FastAPI 앱을 구성할 코드에 작성해야함.
+
+2. FastAPI앱에 MLflow tracking URI와 실험 설정을 꼭 작성해야함.
+
+3. uvicorn test_api:app --host 0.0.0.0 --port 8000 --reload : FastAPI docs 실행 명령어 
+
+4. http://ec2_public_ip:8000/docs로 들어가서 /predict 부분을 클릭하면 나오는 try it out 버튼을 클릭
+
+5. 생성된 창에 피쳐를 입력해주고 아래 Execute 버튼을 눌려주면 결과가 나온다.
+
+S3와의 연결, 모델 uri 연결 방법, 실험이 뭔지에 따라 결과값이 나타내는게 다르니 추후에 추가적인 설정, 데이터 입력 형식
+
+# fastAPI 접속방법
+
+http://<aws public ip>:31949
+
+# fastAPI 실행환경
+
+OS: Ubuntu 24.04.1 LTS
+Python: 3.11.9
+fastapi: 0.114.0
+pydantic: 2.9.1
+mlflow: 2.16.0
+numpy: 2.1.1
+uvicorn: 0.30.6

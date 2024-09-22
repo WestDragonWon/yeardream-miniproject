@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow-scheduler
+  template:
+    metadata:
+      labels:
+        app: airflow-scheduler
+    spec:
+      nodeSelector:
+        type: worker  # worker 노드에만 배포
+      initContainers:
+        - name: initialize-airflow-db
+          image: apache/airflow:2.9.3-python3.8
+          command: ["airflow", "db", "init"]  # 데이터베이스 초기화
+          env:
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+      containers:
+        - name: airflow-scheduler
+          image: apache/airflow:2.9.3-python3.8
+          command: ["airflow", "scheduler"]
+          env:
+            - name: AIRFLOW__CORE__EXECUTOR
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: AIRFLOW__CORE__EXECUTOR
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+            - name: AIRFLOW__CELERY__BROKER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: AIRFLOW__CELERY__BROKER_URL
+            - name: AIRFLOW__CELERY__RESULT_BACKEND
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: AIRFLOW__CELERY__RESULT_BACKEND
+          volumeMounts:
+            - name: airflow-pvc
+              mountPath: /opt/airflow/logs  # pod 경로
+              subPath: logs  # efs 하위 폴더 생성
+            - name: airflow-pvc
+              mountPath: /opt/airflow/dags  # pod 경로
+              subPath: dags  # efs 하위 폴더 생성
+          readinessProbe:
+            exec:
+              command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+      volumes:
+        - name: airflow-pvc
+          persistentVolumeClaim:
+            claimName: airflow-pvc

@@ -21,7 +21,7 @@ spec:
         image: apache/spark:3.4.0
         ports:
         - containerPort: 7077
-        - containerPort: 8080
+        - containerPort: 4040
         env:
         - name: SPARK_MODE
           value: "master"
@@ -48,7 +48,12 @@ spec:
             #- name: SPARK_WORKER_INSTANCES
             #value: "3"
         command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.master.Master"] 
-        args: ["--host", "0.0.0.0", "--port", "7077", "--webui-port", "8080"]
+        args: ["--host", "0.0.0.0", "--port", "7077", "--webui-port", "4040"]
+        volumeMounts:
+        - name: spark-jars-volume
+          mountPath: /opt/spark/jars
+        - name: spark-jobs-volume
+          mountPath: /opt/spark/work-dir
         resources:
           requests:
             cpu: "500m"
@@ -56,6 +61,14 @@ spec:
           limits:
             cpu: "1"
             memory: "2Gi"
+      volumes:
+      - name: spark-jars-volume
+        persistentVolumeClaim:
+          claimName: spark-jars-pvc
+      - name: spark-jobs-volume
+        persistentVolumeClaim:
+          claimName: spark-jobs-pvc
+
       #nodeSelector:
         #type: master
 ---
@@ -73,9 +86,9 @@ spec:
     targetPort: 7077
     nodePort: 32077
   - name: spark-master-ui
-    port: 8080
-    targetPort: 8080
-    nodePort: 32080
+    port: 4040 
+    targetPort: 4040
+    nodePort: 32040
   selector:
     app: spark
     role: master
