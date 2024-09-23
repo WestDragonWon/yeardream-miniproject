@@ -10,6 +10,6 @@ producer = KafkaProducer(
 )
 
 data = {'key': 'value'}
-producer.send('employee_data', value=data)
+producer.send('testL', value=data)
 producer.flush()
 
