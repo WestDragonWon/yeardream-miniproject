@@ -163,3 +163,7 @@ cython_debug/
 
 data/
 jars/
+mlruns/
+/home/ubuntu/yeardream-miniproject/instance1/k8s/app/workflow/airflow/dags/.*
+/home/ubuntu/yeardream-miniproject/instance1/k8s/app/workflow/airflow/dags/__pycache__
+/home/ubuntu/yeardream-miniproject/instance1/k8s/app/workflow/airflow/dags/runtime

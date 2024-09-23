@@ -11,13 +11,15 @@ DEFAULT_ARGS = {
 }
 #경로설정
 DIR_PATH=os.path.abspath(__file__)
-SCRIPT_PATH = f"{DIR_PATH}/script"
+SCRIPT_PATH = os.path.join(os.path.dirname(DIR_PATH), 'script')
+print(f"DIR_PATH: {DIR_PATH}, SCRIPT_PATH: {SCRIPT_PATH}")
+
 # DATA_PATH = Variable.get("DATA_PATH")
 # S3_PATH = Variable.get("S3_PATH")
 # TOPIC_NAME = Variable.get("TOPIC_NAME")
 
 with DAG(
-    'producer_task',
+    'upload_file_to_s3',
     default_args=DEFAULT_ARGS,
     schedule_interval=None,
 ) as dag:
@@ -28,7 +30,7 @@ with DAG(
 
     producer_task = BashOperator(
             task_id='producer_to_kafka',
-            bash_command=f'python3 {SCRIPT_PATH}/kafka-producer.py {DIR_PATH}/employee.csv producerTest',
+            bash_command=f'python3 {SCRIPT_PATH}/kafka-producer.py',
     )
 
     producer_task

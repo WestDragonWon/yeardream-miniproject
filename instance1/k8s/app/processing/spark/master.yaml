@@ -22,6 +22,7 @@ spec:
         ports:
         - containerPort: 7077
         - containerPort: 4040
+        - containerPort: 8080
         env:
         - name: SPARK_MODE
           value: "master"
@@ -45,13 +46,17 @@ spec:
             secretKeyRef:
               name: workflow
               key: POSTGRES_PASSWORD
+        - name: SPARK_LOCAL_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
             #- name: SPARK_WORKER_INSTANCES
             #value: "3"
         command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.master.Master"] 
-        args: ["--host", "0.0.0.0", "--port", "7077", "--webui-port", "4040"]
+        args: ["--host", "$(SPARK_LOCAL_IP)", "--port", "7077", "--webui-port", "8080"]
         volumeMounts:
-          #- name: spark-jars-volume
-          #mountPath: /opt/spark/jars
+        - name: spark-jars-volume
+          mountPath: /opt/spark/jars
         - name: spark-jobs-volume
           mountPath: /opt/spark/work-dir
         resources:
@@ -62,9 +67,9 @@ spec:
             cpu: "500m"
             memory: "1Gi"
       volumes:
-        #- name: spark-jars-volume
-        #persistentVolumeClaim:
-        #  claimName: spark-jars-pvc
+      - name: spark-jars-volume
+        persistentVolumeClaim:
+          claimName: spark-jars-pvc
       - name: spark-jobs-volume
         persistentVolumeClaim:
           claimName: spark-jobs-pvc
@@ -86,7 +91,11 @@ spec:
     targetPort: 7077
     nodePort: 32077
   - name: spark-master-ui
-    port: 4040 
+    port: 8080 
+    targetPort: 8080
+    nodePort: 32080
+  - name: spark-master-ui2
+    port: 4040
     targetPort: 4040
     nodePort: 32040
   selector:

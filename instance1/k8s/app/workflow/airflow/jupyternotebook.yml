@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupyter-notebook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jupyter-notebook
+  template:
+    metadata:
+      labels:
+        app: jupyter-notebook
+    spec:
+      securityContext:              # Pod 레벨의 securityContext에서 fsGroup 정의
+        fsGroup: 50000              # 파일 시스템 그룹을 50000으로 설정
+      containers:
+        - name: jupyter-container
+          image: jupyter/base-notebook:latest
+          ports:
+            - containerPort: 8888
+          env:
+            - name: JUPYTER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: airflow
+                  key: JUPYTER_TOKEN  # Secret에서 가져올 키
+          volumeMounts:
+            - name: airflow-dags
+              mountPath: /home/jovyan  # /home/jovyan 경로에 마운트
+          securityContext:              # 여기에는 runAsUser와 runAsGroup만 정의
+            runAsUser: 50000            # 유저 UID를 50000으로 설정
+            runAsGroup: 50000           # 그룹 GID를 50000으로 설정
+      volumes:
+        - name: airflow-dags
+          persistentVolumeClaim:
+            claimName: airflow-dags-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyter-notebook
+spec:
+  type: NodePort
+  ports:
+    - port: 8888
+      targetPort: 8888
+      nodePort: 30092  # Jupyter Notebook을 NodePort로 노출
+  selector:
+    app: jupyter-notebook

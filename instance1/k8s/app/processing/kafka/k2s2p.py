@@ -2,7 +2,7 @@ from pyspark.sql import SparkSession
 
 # Spark 세션 생성
 spark = SparkSession.builder \
-    .appName("KafkaToPostgres") \
+    .appName("Kafka2Postgres") \
     .getOrCreate()
 
 # Kafka로부터 데이터 읽기

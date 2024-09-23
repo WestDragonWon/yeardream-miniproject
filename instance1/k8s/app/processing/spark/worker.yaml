@@ -22,32 +22,32 @@ spec:
         ports:
         - containerPort: 8081
         env:
-          - name: SPARK_MODE
-            value: "worker"
-          - name: AWS_ACCESS_KEY_ID
-            valueFrom:
-              secretKeyRef:
-                name: workflow
-                key: AWS_ACCESS_KEY_ID
-          - name: AWS_SECRET_ACCESS_KEY
-            valueFrom:
-              secretKeyRef:
-                name: workflow
-                key: AWS_SECRET_ACCESS_KEY
-          - name: POSTGRES_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: workflow
-                key: POSTGRES_USER
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: workflow
-                key: POSTGRES_PASSWORD
-          - name: SPARK_LOCAL_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
+        - name: SPARK_MODE
+          value: "worker"
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: workflow
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: workflow
+              key: AWS_SECRET_ACCESS_KEY
+        - name: POSTGRES_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: workflow
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: workflow
+              key: POSTGRES_PASSWORD
+        - name: SPARK_LOCAL_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker"]
         args: ["spark://spark-master-service:7077", "--host", "$(SPARK_LOCAL_IP)", "--webui-port", "8081"]
         volumeMounts:
@@ -58,10 +58,10 @@ spec:
         resources:
           requests:
             cpu: "1"
-            memory: "1Gi"
+            memory: "3Gi"
           limits:
             cpu: "1"
-            memory: "1Gi"
+            memory: "3Gi"
       volumes:
         #- name: spark-jars-volume
         #persistentVolumeClaim:
@@ -89,4 +89,3 @@ spec:
   selector:
     app: spark
     role: worker
-
