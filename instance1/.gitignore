@@ -167,7 +167,9 @@ mlruns/
 k8s/app/workflow/airflow/dags/.*
 k8s/app/workflow/airflow/dags/__pycache__
 k8s/app/workflow/airflow/dags/runtime
-.jupyter
+k8s/app/workflow/airflow/dags/.jupyter
 k8s/app/workflow/airflow/dags/.local/
 k8s/app/workflow/airflow/dags/ipython
 #??
+local-app/
+spark-on-k8s-operator/

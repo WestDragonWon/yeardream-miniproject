@@ -16,7 +16,15 @@ Kubernetes 환경에서 고가용성 Airflow 클러스터를 배포하기 위한
 
 
 ## airflow 사용법
-실행중인 pod의 서비스 ip:port 로 접속한다. 
+
+실행중인 pod의 서비스 노드외부ip:30091 로 접속한다. 
+.env의 AIRFLOW_ADMIN_USERNAME / AIRFLOW_ADMIN_PASSWORD 값을 확인하여 인증한다.
+
+추가한 dag를 airflow 웹서버 pod내에 /opt/airflow/dags 파일 디렉토리내에서 다음 명령어실행 dags `airflow dags list`
+
+## DAGs 작성할 jupyternote 사용법
+
+실행중인 pod의 서비스 노드외부ip:30092 로 접속한다. 
 .env의 JUPYTER_TOKEN 값을 입력하여 보안 인증한다.
 
 ## 개요

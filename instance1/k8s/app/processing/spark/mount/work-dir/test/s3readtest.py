@@ -4,6 +4,9 @@ from pyspark.sql import SparkSession
 aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
 aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
 
+print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+print(aws_access_key)
+
 spark = SparkSession.builder \
         .appName("readCSV") \
         .config("spark.jars", "/opt/spark/jars/hadoop-aws-3.3.4.jar,/opt/spark/jars/aws-java-sdk-bundle-1.12.262.jar") \
