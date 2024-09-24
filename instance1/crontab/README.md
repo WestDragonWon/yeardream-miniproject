@@ -15,6 +15,8 @@
 
 3. [Python 라이브러리 자동 백업](#python-라이브러리-자동-백업)
    - [자동 백업 개요](#자동-백업-개요)
+   - [파이썬 파일 코드](#파이썬-파일-코드)
+   - [crontab을 이용한 업데이트 자동화](#crontab을-이용한-업데이트-자동화)
 
 
 
@@ -121,6 +123,41 @@ CMD ["airflow", "webserver"]
 
 ## Python 라이브러리 자동 백업
 
-### ㅁㄴㅇㄹ
+### 자동 백업 개요
 
-빽업
+인스턴스 내에 환경설정에 필요한 라이브러리 목록을 자동으로 갱신하기 위해 만들어진 파이썬 파일입니다. crontab을 통해 하루에 한번 지정한 시간에 인스턴스 내부 라이브러리 목록을 requirements.txt 파일에 저장하게 됩니다.
+
+### 파이썬 파일 코드
+
+		from importlib.metadata import distributions
+		import sys
+
+		# 현재 파이썬이 설치된 경로
+		sys.path.append('/home/ubuntu/.pyenv/shims/python3')
+
+		# 현재 설치된 패키지 메타데이터를 반환 패키지 이름을 키로, 버전을 값으로 가지게 됨
+		installed_packages = {dist.metadata['Name']: dist.version for dist in distributions()}
+
+		# requirements.txt 파일 경로를 설정
+		requirements_file = '/home/ubuntu/yeardream-miniproject/instance1/crontab/requirements.txt'
+
+		# w 쓰기 모드로 설치된 버전을 설정한 형식으로 저장
+		try:
+			
+			with open(requirements_file, 'w') as f:
+				for package, version in installed_packages.items():
+					f.write(f"{package}=={version}\n")
+			print(f"{requirements_file}가 성공적으로 업데이트되었습니다.")
+		except Exception as e:
+			print(f"오류 발생: {e}")
+
+
+importlib.metadata: 이 모듈은 Python 패키지의 메타데이터에 접근할 수 있게 해줍니다.
+
+### crontab을 이용한 업데이트 자동화
+
+	30 17 * * * /home/ubuntu/.pyenv/shims/python3 /home/ubuntu/yeardream-miniproject/instance1/crontab/update_requirements.py >> /home/ubuntu/yeardream-miniproject/instance1/crontab/logs/requirements/req_log_$(date +%Y-%m-%d).log 2>&1
+
+하루에 한 번만 오후 5시 30분에 실행되고 파이썬 파일로 작성했기 때문에 실행하기 위해 파이썬 인터프리터 경로를 지정해줍니다. 
+
+지정한 경로에 그날 날짜를 이름으로 한 log 파일이 생성되는 설정을 추가했습니다.

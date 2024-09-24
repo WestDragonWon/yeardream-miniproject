@@ -31,7 +31,9 @@ AWS CLI(Amazon Web Services Command Line Interface)는 AWS 서비스와 상호�
 ## 설치 방법
 
 ### 의존성 unzip 설치
+```
 sudo apt install unzip
+```
 
 ### AWS CLI 설치
 

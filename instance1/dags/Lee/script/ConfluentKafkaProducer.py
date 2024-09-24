@@ -1,9 +1,7 @@
-
 from confluent_kafka import Producer
 
-conf = {
-    'bootstrap.servers': '10.98.218.95:9092,10.110.230.222:9092,10.101.191.226:9092',
-    'enable.idempotence': False
+conf ={ 
+    'bootstrap.servers': 'kafka-1:9092',
 }
 
 producer = Producer(**conf)
@@ -14,9 +12,7 @@ def delivery_report(err, msg):
     else:
         print(f'Message delivered to {msg.topic()} [{msg.partition()}]')
 
-# Produce a message
-producer.produce('testL', key='key', value='your_message', callback=delivery_report)
+producer.produce('testL', key='test', value='message', callback=delivery_report)
 
-# Wait for the message to be delivered
 producer.flush()
 

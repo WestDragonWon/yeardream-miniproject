@@ -4,9 +4,9 @@ from confluent_kafka import Producer
 import pandas as pd
 import argparse
 
-producer = Producer({'bootstrap.servers': ['10.98.218.95:9092', '10.110.230.222:9092', '10.101.191.226:9092']})
+producer = Producer({'bootstrap.servers': 'kafka-1:9092'})
 
-chunk_size = 1000000  # Number of rows per chunk
+chunk_size = 1000000  
 
 #에러 확인용 콜백함수
 def delivery_report(err, msg):
@@ -16,9 +16,9 @@ def delivery_report(err, msg):
         print(f"Message delivered to {msg.topic()} [{msg.partition()}]")
 
 #데이터파일경로, 토픽이름 파라미터로 설정
-parser = argparse.ArgumentParser(description="Producer to kafka")
-parser.add_argument('file_path', type=str, help="Path to the local file")
-parser.add_argument('topic', type=str, help="Kafka topic name")
+parser = argparse.ArgumentParser()
+parser.add_argument('file_path', type=str)
+parser.add_argument('topic', type=str)
 args = parser.parse_args() 
 
 parquet_file = args.file_path
