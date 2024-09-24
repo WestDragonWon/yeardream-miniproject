@@ -16,4 +16,4 @@ for message in consumer:
     data = message.value.decode('utf-8')
     
     # Write to S3
-    s3.put_object(Bucket='your-bucket', Key='your-key', Body=data)
+    s3.put_object(Bucket='team06-mlflow-feature' Key='/data/topic', Body=data)

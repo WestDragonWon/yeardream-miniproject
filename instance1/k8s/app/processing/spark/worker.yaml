@@ -16,6 +16,7 @@ spec:
         app: spark
         role: worker
     spec:
+      serviceAccountName: spark  # ServiceAccount를 지정
       containers:
       - name: spark-worker-container
         image: apache/spark:3.5.1
