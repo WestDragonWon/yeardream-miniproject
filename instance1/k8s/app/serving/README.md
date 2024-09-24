@@ -21,11 +21,17 @@ API를 쉽게 구축하게 해주고 비동기 프로그래밍을 지원하기 �
 ## 실행환경
 
 OS: Ubuntu 24.04.1 LTS
+
 Python: 3.11.9
+
 fastapi: 0.114.0
+
 pydantic: 2.9.1
+
 mlflow: 2.16.0
+
 numpy: 2.1.1
+
 uvicorn: 0.30.6
 
 ## 설치방법
@@ -192,4 +198,18 @@ uvicorn: 0.30.6
 
 이렇게 접근이 가능하게 된다.
 
+### health check
+
+![alt text](image-1.png)
+
+try it out 버튼을 누르고 아래 생성되는 execute 버튼을 누르면 health check가 가능하다.
+
+![alt text](image-2.png)
+
+
+### predict
+
+![alt text](image-4.png)
+
+마찬가지로 try it out 버튼을 눌러주면 request body 부분에 모델 명과 버전을 명시해주고 테스트 할 값을 넣어준 뒤 execute 버튼을 누르면 결과값이 도출된다.
 
