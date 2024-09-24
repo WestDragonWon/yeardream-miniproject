@@ -1,5 +1,14 @@
-FROM apache/spark-py:3.4.0
+# Dockerfile
+FROM python:3.11.9
 
-COPY k2s2p.py /app/k2s2p.py
+# 작업 디렉토리 설정
+WORKDIR /app
 
-CMD ["spark-submit", "/app/k2s2p.py"]
+# 필요한 패키지 설치
+RUN pip install --no-cache-dir confluent_kafka
+
+# ConfigMap에서 스크립트를 복사
+COPY produce.py .
+
+# 기본 명령어 설정
+CMD ["python", "-u", "produce.py"]

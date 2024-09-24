@@ -1,0 +1,33 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: spark-role  # Spark 클러스터에 필요한 권한을 정의하는 ClusterRole
+rules:
+- apiGroups: [""]  # 기본 API 그룹 (v1)
+  resources: ["pods", "pods/log", "services", "persistentvolumeclaims", "configmaps"]
+  verbs: ["create", "get", "list", "watch", "delete"]  # 필요한 동작
+- apiGroups: ["batch"]  # 배치 작업 관련 API 그룹
+  resources: ["jobs"]
+  verbs: ["create", "get", "list", "watch", "delete"]
+- apiGroups: ["apps"]  # 애플리케이션 관련 API 그룹
+  resources: ["deployments"]
+  verbs: ["create", "get", "list", "watch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: spark-role-binding  # ClusterRoleBinding 이름
+subjects:
+- kind: ServiceAccount  # 권한을 부여할 서비스 계정
+  name: spark  # 서비스 계정 이름
+  namespace: default  # 서비스 계정이 속한 네임스페이스
+roleRef:
+  kind: ClusterRole
+  name: spark-role  # 위에서 정의한 ClusterRole 참조
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spark
+  namespace: default

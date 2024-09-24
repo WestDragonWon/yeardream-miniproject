@@ -7,7 +7,7 @@ sys.path.append('/home/ubuntu/.pyenv/shims/python3')
 installed_packages = {dist.metadata['Name']: dist.version for dist in distributions()}
 
 # requirements.txt 파일 경로를 설정합니다.
-requirements_file = '/home/ubuntu/yeardream-miniproject/instance1/crontab/requirements.txt'
+requirements_file = '/home/ubuntu/yeardream-miniproject/instance1/docs/require/requirements.txt'
 
 try:
     # 설치된 패키지를 requirements.txt에 덮어씁니다.

@@ -4,7 +4,7 @@ DASHBOARD_PROXY="kubectl proxy"
 
 if ! pgrep -f "$DASHBOARD_PORT_FORWARDING" > /dev/null; then
     echo "Starting port-forwarding for dashboard"
-    nohup kubectl port-forward -n system service/dashboard-kong-proxy 8443:443 --address 0.0.0.0 > /home/ubuntu/yeardream-miniproject/instance1/k8s/app/system/dashboard/helm/port-forward.log 2>&1 & \
+    nohup kubectl port-forward -n system service/dashboard-kong-proxy 8443:443 --address 0.0.0.0 > /home/ubuntu/yeardream-miniproject/instance1/k8s/system/dashboard/helm/port-forward.log 2>&1 & \
     PORT_FORWARD_PID=$!
 
     sleep 5
@@ -20,7 +20,7 @@ fi
 #kubectl apply -f /home/ubuntu/yeardream-miniproject/instance1/k8s/app/system/dashboard/helm/dashboard-adminuser.yaml
 
 if ! kubectl get secret $SECRET_NAME -n $NAMESPACE > /dev/null 2>&1; then
-    kubectl apply -f /home/ubuntu/yeardream-miniproject/instance1/k8s/app/system/dashboard/helm/secret.yaml
+    kubectl apply -f /home/ubuntu/yeardream-miniproject/instance1/k8s/system/dashboard/helm/secret.yaml
     echo "Creating token for admin user"
     TOKEN=$(kubectl get secret admin-user -n system -o jsonpath={".data.token"} | base64 -d)
 fi
@@ -28,5 +28,5 @@ fi
 echo "PORTFORWARD PID: $PORT_FORWARD_PID"
 echo "PROXY_PID: $PROXY_PID"
 echo "token:"
-echo "$TOKEN">/home/ubuntu/yeardream-miniproject/instance1/k8s/app/system/dashboard/helm/.env
-cat /home/ubuntu/yeardream-miniproject/instance1/k8s/app/system/dashboard/helm/.env
+echo "$TOKEN">/home/ubuntu/yeardream-miniproject/instance1/k8s/system/dashboard/helm/.env
+cat /home/ubuntu/yeardream-miniproject/instance1/k8s/system/dashboard/helm/.env

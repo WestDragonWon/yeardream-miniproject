@@ -47,5 +47,6 @@ spec:
   ports:
   - port: 8000        # 외부에서 접근할 포트
     targetPort: 8000  # 컨테이너 내의 포트
+    nodePort: 31949   # 노드에서 사용할 포트 (명시적으로 설정)
   selector:
     app: fastapi
