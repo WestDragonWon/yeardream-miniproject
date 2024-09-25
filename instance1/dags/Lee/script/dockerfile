@@ -14,8 +14,8 @@ RUN pip install --no-cache-dir confluent-kafka pyspark boto3
 
 # Copy your Kafka producer script to the container
 COPY ConfluentKafkaProducer.py /app/ConfluentKafkaProducer.py
-COPY sparkScript.py /app/s3Script.py
+#COPY sparkScript.py /app/s3Script.py
 # Set the default command to run the script
 CMD ["python", "/app/ConfluentKafkaProducer.py"]
-CMD ["spark-submit", "/app/s3Script.py"]
-CMD ["tail", "-f", "/dev/null"]
+#CMD ["spark-submit", "/app/s3Script.py"]
+#CMD ["tail", "-f", "/dev/null"]

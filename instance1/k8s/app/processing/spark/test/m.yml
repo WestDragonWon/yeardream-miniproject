@@ -59,6 +59,8 @@ spec:
           mountPath: /opt/spark/jars
         - name: spark-jobs-volume
           mountPath: /opt/spark/work-dir
+        - name: spark-logs-volume
+          mountPath: /opt/spark/logs
         resources:
           requests:
             cpu: "1000m"
@@ -73,6 +75,9 @@ spec:
       - name: spark-jobs-volume
         persistentVolumeClaim:
           claimName: spark-jobs-pvc
+      - name: spark-logs-volume
+        persistentVolumeClaim:
+          claimName: spark-logs-pvc
 
       #nodeSelector:
         #type: master

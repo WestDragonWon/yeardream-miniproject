@@ -12,6 +12,8 @@ spec:
       labels:
         app: elasticsearch
     spec:
+      nodeSelector:
+        role: dedicated-worker
       containers:
         - name: elasticsearch
           image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
@@ -30,6 +32,6 @@ spec:
   ports:
     - port: 9200
       targetPort: 9200
-      nodePort: 30010
+      nodePort: 30302
   selector:
     app: elasticsearch

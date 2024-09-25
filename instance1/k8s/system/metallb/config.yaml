@@ -3,7 +3,6 @@ apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
   name: my-metallb-config
-  namespace: system
 spec:
   addresses: 
   - 172.31.41.221-172.31.41.231
@@ -13,7 +12,6 @@ apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
   name: my-metallb-config
-  namespace: system
 spec:
   ipAddressPools:
     - my-metallb-config

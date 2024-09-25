@@ -52,10 +52,10 @@ spec:
         command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker"]
         args: ["spark://spark-master-service:7077", "--host", "$(SPARK_LOCAL_IP)", "--webui-port", "8081"]
         volumeMounts:
-          #- name: spark-jars-volume
-          #mountPath: /opt/spark/jars
         - name: spark-jobs-volume
           mountPath: /opt/spark/work-dir
+        - name: spark-logs-volume
+          mountPath: /opt/spark/logs  # 로그도 동일한 PVC에 저장
         resources:
           requests:
             cpu: "1"
@@ -64,15 +64,14 @@ spec:
             cpu: "1"
             memory: "5Gi"
       volumes:
-        #- name: spark-jars-volume
-        #persistentVolumeClaim:
-        #  claimName: spark-jars-pvc
       - name: spark-jobs-volume
         persistentVolumeClaim:
-          claimName: spark-jobs-pvc
+          claimName: spark-jobs-pvc  # 기존 PVC에 저장
+      - name: spark-logs-volume
+        persistentVolumeClaim:
+          claimName: spark-logs-pvc  # 로그도 동일한 PVC에 저장
       nodeSelector:
         type: worker
-
 ---
 apiVersion: v1
 kind: Service
