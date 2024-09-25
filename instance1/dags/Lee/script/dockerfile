@@ -10,10 +10,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-RUN pip install --no-cache-dir confluent-kafka pyspark boto3
+RUN pip install --no-cache-dir confluent-kafka pandas 
 
 # Copy your Kafka producer script to the container
 COPY ConfluentKafkaProducer.py /app/ConfluentKafkaProducer.py
+COPY iris_dataset20.csv /app/iris_dataset20.csv 
 #COPY sparkScript.py /app/s3Script.py
 # Set the default command to run the script
 CMD ["python", "/app/ConfluentKafkaProducer.py"]

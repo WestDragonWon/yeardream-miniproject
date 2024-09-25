@@ -5,11 +5,10 @@ USER root
 
 # rsync와 confluent_kafka 설치
 RUN apt-get update && \
-    apt-get install -y rsync && \
-    pip install confluent-kafka  # Kafka 클라이언트 설치
+    apt-get install -y rsync
 
 # Airflow 실행에 필요한 사용자로 다시 전환
 USER airflow
-
+RUN pip install confluent-kafka  # Kafka 클라이언트 설치
 # Airflow 웹서버 시작 명령어
 CMD ["airflow", "webserver"]

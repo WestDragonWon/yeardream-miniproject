@@ -7,7 +7,7 @@ s3 = boto3.client('s3')
 # 업로드할 CSV 파일 경로 및 S3 버킷 정보
 file_path = '/home/ubuntu/yeardream-miniproject/instance1/k8s/app/processing/kafka/iris.csv'  # 로컬 CSV 파일 경로
 bucket_name = 'team06-mlflow-feature'      # S3 버킷 이름
-s3_object_name = os.path.basename(file_path)  # S3에 저장할 파일 이름 (로컬 파일 이름 사용)
+s3_object_name = 'data-1/iris/iris.csv'
 
 # 파일 업로드
 try:

@@ -1,0 +1,2 @@
+boto3==1.26.143  # S3와 연동하기 위한 AWS SDK
+pymongo==4.3.3   # MongoDB와 연결을 위한 라이브러리

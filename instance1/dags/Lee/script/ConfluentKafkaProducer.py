@@ -4,20 +4,21 @@ import json
 import os
 
 KAFKA_TOPIC = 'large-csv-topic'
-KAFKA_BOOTSTRAP_SERVERS = ['kafka-1:9092']
+KAFKA_BOOTSTRAP_SERVERS = 'kafka-1:9092,kafka-2:9092,kafka-3:9092'
 
 # CSV file
 CSV_FILE_PATH = './iris_dataset20.csv'
 
-CHUNK_SIZE = 1024*1024
+CHUNK_SIZE = 1000
 
 def send_chunk_to_kafka(chunk_number):
-    producer = Producer(
-        bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
-        value_serializer=lambda v: json.dumps(v).encode('utf-8'),
-        max_request_size=10485760  # 10MB, adjust as needed
-    )
-
+    conf = {
+        'bootstrap.servers': KAFKA_BOOTSTRAP_SERVERS,
+        'batch.size': 32000,  # Adjust batch size as needed
+        'queue.buffering.max.messages': 1000000,
+        'queue.buffering.max.kbytes': 10485760  # 10MB buffer size
+    }
+    producer = Producer(conf)
     start_row = chunk_number * CHUNK_SIZE
     end_row = (chunk_number + 1) * CHUNK_SIZE
 
@@ -25,20 +26,21 @@ def send_chunk_to_kafka(chunk_number):
         chunk = pd.read_csv(CSV_FILE_PATH, skiprows=range(1, start_row + 1), nrows=CHUNK_SIZE, header=0)
 
         for _, row in chunk.iterrows():
-            producer.send(KAFKA_TOPIC, value=row.to_dict())
+            producer.produce(KAFKA_TOPIC, key=str(row.name), value=json.dumps(row.to_dict()))
 
         producer.flush()
         return f"Chunk {chunk_number} sent successfully"
     except Exception as e:
         return f"Error processing chunk {chunk_number}: {str(e)}"
-    finally:
-        producer.close()
 
 def count_chunks():
     total_rows = sum(1 for _ in open(CSV_FILE_PATH)) - 1
     return (total_rows // CHUNK_SIZE) + (1 if total_rows % CHUNK_SIZE else 0)
 
 chunknum = count_chunks()
+print(chunknum,"chunks")
 for i in range(chunknum):
-    send_chunk_to_kafka(i)
+    try:
+        send_chunk_to_kafka(i)
+    except Exception as e: print(e)
 

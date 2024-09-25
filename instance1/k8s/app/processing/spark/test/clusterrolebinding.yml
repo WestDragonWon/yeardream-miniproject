@@ -5,13 +5,17 @@ metadata:
 rules:
 - apiGroups: [""]  # 기본 API 그룹 (v1)
   resources: ["pods", "pods/log", "services", "persistentvolumeclaims", "configmaps"]
-  verbs: ["create", "get", "list", "watch", "delete"]  # 필요한 동작
+  verbs: ["create", "get", "list", "watch", "delete", "deletecollection", "update", "patch"]  # deletecollection 추가
 - apiGroups: ["batch"]  # 배치 작업 관련 API 그룹
   resources: ["jobs"]
-  verbs: ["create", "get", "list", "watch", "delete"]
+  verbs: ["create", "get", "list", "watch", "delete", "deletecollection", "update", "patch"]
 - apiGroups: ["apps"]  # 애플리케이션 관련 API 그룹
   resources: ["deployments"]
-  verbs: ["create", "get", "list", "watch", "delete"]
+  verbs: ["create", "get", "list", "watch", "delete", "deletecollection", "update", "patch"]
+- apiGroups: ["rbac.authorization.k8s.io"]  # RBAC 관련 API 그룹
+  resources: ["roles", "rolebindings"]
+  verbs: ["create", "get", "list", "watch", "delete", "deletecollection", "update", "patch"]
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

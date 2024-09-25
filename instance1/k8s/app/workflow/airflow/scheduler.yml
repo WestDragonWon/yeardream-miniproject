@@ -17,7 +17,7 @@ spec:
         type: worker
       initContainers:
         - name: initialize-airflow-db
-          image: apache/airflow:2.9.3-python3.8
+          image: westdragonwon/airflow-rsync:latest 
           command: ["airflow", "db", "init"]
           env:
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
@@ -27,7 +27,7 @@ spec:
                   key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
       containers:
         - name: airflow-scheduler
-          image: apache/airflow:2.9.3-python3.8
+          image: westdragonwon/airflow-rsync:latest
           command: ["airflow", "scheduler"]
           env:
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN

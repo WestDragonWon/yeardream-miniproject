@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-historyserver
+  labels:
+    app: spark-historyserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark-historyserver
+  template:
+    metadata:
+      labels:
+        app: spark-historyserver
+    spec:
+      containers:
+      - name: spark-historyserver
+        image: apache/spark:3.5.2
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: spark-history
+          mountPath: /mnt/spark-history-logs
+        env:
+        - name: SPARK_HISTORY_OPTS
+          value: "-Dspark.history.fs.logDirectory=/mnt/spark-history-logs -Dspark.history.fs.cleaner.enabled=true -Dspark.history.fs.cleaner.interval=1d -Dspark.history.fs.cleaner.maxAge=7d"
+      volumes:
+      - name: spark-history
+        persistentVolumeClaim:
+          claimName: sparkhistoryserver-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-historyserver
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 32088
+  selector:
+    app: spark-historyserver
