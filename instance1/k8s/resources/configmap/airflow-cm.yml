@@ -15,3 +15,4 @@ data:
   AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "True"  # 작업이 끝난 후 Pod 삭제
   AIRFLOW__KUBERNETES__WORKER_CONTAINER_IMAGE_PULL_POLICY: "IfNotPresent"  # 이미지 pull 정책
   AIRFLOW__KUBERNETES__POD_TEMPLATE_FILE: "/opt/airflow/pod_template.yaml"  # Pod 템플릿 파일 경로
+  AIRFLOW__CORE__DEFAULT_TIMEZONE: "Asia/Seoul"

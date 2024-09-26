@@ -25,3 +25,16 @@ spec:
   resources:
     requests:
       storage: 5Gi  # 총 용량에 맞게 설정
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sparkhistoryserver-pvc
+  namespace: spark
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: spark-storageclass
+  resources:
+    requests:
+      storage: 5Gi  # 총 용량에 맞게 설정

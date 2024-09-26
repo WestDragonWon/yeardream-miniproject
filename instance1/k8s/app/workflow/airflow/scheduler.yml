@@ -35,6 +35,31 @@ spec:
                 configMapKeyRef:
                   name: airflow-config
                   key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+            - name: AIRFLOW__CORE__DEFAULT_TIMEZONE
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: AIRFLOW__CORE__DEFAULT_TIMEZONE
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: POSTGRES_PASSWORD
           volumeMounts:
             - name: airflow-logs
               mountPath: /opt/airflow/logs

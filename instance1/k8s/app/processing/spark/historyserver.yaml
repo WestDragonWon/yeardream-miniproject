@@ -18,13 +18,14 @@ spec:
       - name: spark-historyserver
         image: apache/spark:3.5.2
         ports:
-        - containerPort: 8080
+        - containerPort: 18080
         volumeMounts:
         - name: spark-history
-          mountPath: /mnt/spark-history-logs
+          mountPath: /opt/logs
         env:
         - name: SPARK_HISTORY_OPTS
-          value: "-Dspark.history.fs.logDirectory=/mnt/spark-history-logs -Dspark.history.fs.cleaner.enabled=true -Dspark.history.fs.cleaner.interval=1d -Dspark.history.fs.cleaner.maxAge=7d"
+          value: "-Dspark.history.fs.logDirectory=/opt/logs"
+            #command: ["/bin/bash", "-c", "/opt/spark/sbin/start-history-server.sh"]
       volumes:
       - name: spark-history
         persistentVolumeClaim:
@@ -37,8 +38,8 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 8080
-    targetPort: 8080
+  - port: 18080
+    targetPort: 18080
     nodePort: 32088
   selector:
     app: spark-historyserver

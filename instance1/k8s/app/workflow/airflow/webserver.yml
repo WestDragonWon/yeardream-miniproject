@@ -36,6 +36,28 @@ spec:
                 configMapKeyRef:
                   name: airflow-config
                   key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+            - name: AIRFLOW__CORE__DEFAULT_TIMEZONE  # Airflow에서 사용하는 시간대를 설정
+              value: Asia/Seoul
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: AWS_ACCESS_KEY_ID
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: POSTGRES_PASSWORD
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: AWS_SECRET_ACCESS_KEY
           volumeMounts:
             - name: airflow-logs
               mountPath: /opt/airflow/logs
