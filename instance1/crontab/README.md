@@ -1,4 +1,4 @@
-# Crontab 스케쥴링 설명서
+# Crontab Scheduling
 
 ## 목차
 1. [Git Repository 자동화 및 알람](#git-repository-자동화-및-알람)
@@ -31,7 +31,7 @@
 
 2. **Slack 메시지 전송**:
    Git 작업의 성공 또는 실패 여부를 Slack 웹훅을 통해 알림으로 전송합니다. 메시지에는 성공 시 ✅ 이모지가, 실패 시 ⚠️ 이모지가 포함됩니다.
-![alt text](image.png)
+![alt text](/yeardream-miniproject/instance1/docs/images/github-slack.png)
 - instance1에선 용량이 100MB 초과되는 파일은 push되지 않기때문에 오류 메세지가 왔네요! 해당파일을 ignore추가하여 해결하였습니다.
 - instance5에서도 push되지 않았기에 ⚠️이모지로 메세지가 왔지만 변경된 commit이 없는 경우라 해당 경우도 ✅가 뜨도록 옵션을 추가하면 됩니다.
 
@@ -64,7 +64,7 @@
    ```bash
    30 12 * * * /home/ubuntu/yeardream-miniproject/instance1/crontab/gitpush.sh >> /home/ubuntu/yeardream-miniproject/instance1/crontab/logs/gitpush/logfile_$(date +\%Y\%m\%d_\%H\%M\%S).log 2>&1
    30 17 * * * /home/ubuntu/yeardream-miniproject/instance1/crontab/gitpush.sh >> /home/ubuntu/yeardream-miniproject/instance1/crontab/logs/gitpush/logfile_$(date +\%Y\%m\%d_\%H\%M\%S).log 2>&1
-![alt text](image-1.png)
+![alt text](/yeardream-miniproject/instance1/docs/images/crontab-log.png)
 ### 설정 방법
 
 ### 1. `.env` 파일

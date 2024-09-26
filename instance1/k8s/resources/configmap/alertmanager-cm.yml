@@ -6,15 +6,28 @@ data:
   alertmanager.yml: |
     global:
       slack_api_url: 'SLACK_WEBHOOK_URL_PLACEHOLDER'
-    
+
     route:
       receiver: 'slack-notifications'
+      group_by: ['alertname', 'instance']  # 그룹화 기준
       group_wait: 10s
       group_interval: 5m
-      repeat_interval: 3h
+      repeat_interval: 3h  # 동일 알람 3시간 간격으로 재발송
+      routes:
+      - match:
+          alertname: 'ServerDown'  # 특정 알람을 위한 라우트
+        receiver: 'slack-notifications'
 
     receivers:
     - name: 'slack-notifications'
       slack_configs:
       - channel: '#alerts'
         send_resolved: true
+
+#  그룹화 기준 group_by: ['alertname', 'instance']  
+# group_wait: 10s
+# group_interval: 5m
+#  동일 알람 3시간 간격으로 재발송  repeat_interval: 3h  
+# routes:
+# - match:
+# 특정 알람을 위한 라우트     alertname: 'ServerDown'  
