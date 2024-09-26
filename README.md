@@ -21,33 +21,45 @@ see the [LICENSE](./LICENSE) file for details.
 이 프로젝트는 **MLOps**와 **데이터 파이프라인**을 통합한 견고한 시스템을 구축하는 것을 목표로 합니다. **AWS**와 **Kubernetes**를 기반으로 머신러닝 워크플로우 및 데이터 처리 파이프라인을 자동화하여, 머신러닝 모델의 확장과 대규모 데이터 처리를 위한 프로덕션 수준의 솔루션을 제공합니다.
 
 ## 프로젝트 목표
-1. 머신러닝 모델을 프로덕션에 배포하는 완전 자동화된 **MLOps** 시스템 구축.
+
+1. 머신러닝 모델을 프로덕션에 배포하는 자동화된 **MLOps** 시스템 구축.
 2. 대량의 데이터를 처리할 수 있는 안정적이고 확장 가능한 **데이터 파이프라인** 구축.
 3. 워크플로우 전반에 걸쳐 보안과 데이터 영속성을 보장.
 4. Kubernetes와 클라우드 네이티브 도구를 적용하여 고가용성과 장애 허용성 달성.
-5. CI/CD 관행을 도입하여 개발 프로세스를 최적화.
-6. 단순히 도구를 구축하고 이용해보는 실습이 아닌 / 서비스를 배포하기 위한 도구들의 작동 방식과 각각의 주요 옵션들에 대한 정확한 이해를 기반으로 이후 원하는 서비스를 제약없이 구축 할 수 있는 능력을 기르기.
+### 5. 단순히 도구를 이용해보는 실습이 아닌 / 서비스를 배포하기 위한 도구들의 작동 방식과 각각의 주요 옵션들에 대한 이해를 기반으로 이후 원하는 서비스를 제약없이 구축 할 수 있는 능력을 기르기.
 
 
 ## 주요 기능
-- **MLOps 자동화**: MLflow, FastAPI, S3를 사용하여 머신러닝 모델 개발, 배포 및 모니터링 프로세스를 자동화.
-- **데이터 파이프라인**: Apache Airflow를 활용하여 데이터 워크플로우를 관리하고 ETL 파이프라인을 효율적으로 처리.
-- **고가용성 (HA)**: Kubernetes 오케스트레이션 및 AWS 다중 리전 아키텍처를 사용하여 시스템의 안정성과 가용성 보장.
-- **보안 및 확장성**: 여러 클라우드 환경에서 데이터의 안전한 처리와 서비스 확장을 목표.
-- **CI/CD 통합**: 지속적인 통합 및 배포를 통해 개발 효율성을 높이고 프로덕션 배포 시간을 단축.
-- **비용 효율성**: 한정된 예산 내에서 고가용성과 성능을 유지하면서 리소스를 최적화하여 비용 절감.
+
 
 ## 기술 스택
+### Base System
 - **Cloud Provider**: AWS
-- **Container Orchestration**: Kubernetes (K8s)
+- **Container Orchestration**: Kubernetes
 
 ### Data Pipeline
 - **Workflow Management**: Apache Airflow
 - **Data Message Que**: Apache Kafka
-- **Data Processing**: Apache Spark
+- **Data Processing**: Apache Spark, S3 Glue, ELK 
 - **Data DB & Storage**: Redis, MongoDB, AWS-EBS-gp3, AWS-EFS, AWS-S3
 - **Data Engineering Automation**: Bash sh + Crontab, AWS CLI
 - **Monitoring**: K8s-Dashboard, Prometheus, Grafana
+
+### Data Pipeline
+- **Workflow** Management: Apache Airflow
+- **Data Message Queue**: Apache Kafka
+- **Data Processing**: Apache Spark, S3 Glue, ELK, AWS Athena
+- **Data DB & Storage**: Redis, MongoDB, PostgreSQL, AWS-EBS-gp3, AWS-EFS, AWS-S3
+- **Data Engineering Automation**: Bash sh + Crontab, AWS CLI, GitHub
+### Infrastructure
+- **Load Balancer**: nginx-ingress-controller, metallb
+- **Containerization**: Docker, DockerHub
+### Monitoring & Alerts
+- **Monitoring**: K8s-Dashboard, Prometheus, Grafana
+- **Alerting**: Alertmanager
+### Version Control
+- **Version Control**: GitHub
+
 
 ### MLOps
 - **MLOps**: MLFlow 
@@ -63,10 +75,9 @@ see the [LICENSE](./LICENSE) file for details.
 - **1차 스프린트**: 프로젝트 계획 & K8s 기반 구축 (8월 28일 - 9월 3일)
 - **2차 스프린트**: MLOps 구축 (9월 3일 - 9월 12일)
 - **3차 스프린트**: 데이터 파이프라인 구축 (9월 13일 - 9월 23일)
-- **4차 스프린트**: 시스템 자동화 (9월 25일 - 9월 30일)
-- **5차 스프린트**: 테스트 및 디버깅 (10월 1일 - 10월 4일)
-- **6차 스프린트**: 포트폴리오 준비 (10월 7일 - 10월 10일)
-- **최종 발표**: 10월 11일 배포
+- **4차 스프린트**: 전체 시스템 고도화 (9월 25일 - 9월 30일)
+- **5차 스프린트**: 전체 시스템 테스트 및 디버깅 (10월 1일 - 10월 4일)
+- **6차 스프린트**: 포트폴리오 제작 및 배포 (10월 7일 - 10월 10일)
 
 
 ---
