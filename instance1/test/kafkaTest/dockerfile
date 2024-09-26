@@ -1,0 +1,16 @@
+FROM python:3.11.9-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    librdkafka-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir confluent-kafka pandas 
+
+# Pod에서 실행할 파이썬 파일과 데이터를 도커이미지에 복사
+COPY ConfluentKafkaProducer.py /app/ConfluentKafkaProducer.py
+COPY iris_dataset20.csv /app/iris_dataset20.csv 
+
+# Pod에서 실행하는 명령어
+CMD ["python", "/app/ConfluentKafkaProducer.py"]

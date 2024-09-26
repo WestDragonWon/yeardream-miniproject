@@ -1,21 +1,28 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: logstash-config
-  labels:
-    app: logstash
+  name: logstash-configmap
 data:
   logstash.conf: |
     input {
-      file {
-        path => "/var/log/*.log"
-        start_position => "beginning"
+      kafka {
+        bootstrap_servers => "10.111.57.133:9092"
+        topics => ["my-topic"]
+        codec => plain
       }
     }
+    
     output {
-      elasticsearch {
-        hosts => ["http://elasticsearch:9200"]
-        index => "logstash-%{+YYYY.MM.dd}"
+      file{
+        path => "/usr/share/logstash/tmp/logstash.log"
       }
-      stdout { codec => rubydebug }
+      elasticsearch{
+        hosts => ["http://10.110.24.173:9200"]
+        user => "elastic"
+        password => "elastic"
+        index => "kafka-logstash-%{+YYYY.MM.dd}"
+      }
+      stdout {
+        codec => rubydebug
+      }
     }

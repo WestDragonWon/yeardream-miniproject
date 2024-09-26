@@ -37,7 +37,7 @@ def send_chunk_to_kafka(chunk_number, **kwargs):
         
         # Convert chunk to CSV string
         csv_buffer = io.StringIO()
-        chunk.to_csv(csv_buffer, index=False)
+        chunk.to_csv(csv_buffer, index=True)
         csv_string = csv_buffer.getvalue()
 
         # Send the entire chunk as one message

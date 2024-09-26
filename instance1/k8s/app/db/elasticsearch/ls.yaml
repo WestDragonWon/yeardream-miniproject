@@ -27,7 +27,7 @@ spec:
       volumes:
       - name: logstash-config-volume
         configMap:
-          name: logstash-config
+          name: logstash-configmap
 ---
 apiVersion: v1
 kind: Service

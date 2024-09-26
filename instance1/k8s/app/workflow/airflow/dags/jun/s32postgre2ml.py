@@ -22,8 +22,8 @@ AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 S3_REGION = 'ap-northeast-2'                        # S3 버킷이 위치한 지역
 
 # PostgreSQL 접속 정보
-db_user = 'mlops_user'     # PostgreSQL 사용자 이름
-db_password = '1234'   # PostgreSQL 비밀번호
+db_user = os.getenv("POSTGRES_USER")     # PostgreSQL 사용자 이름
+db_password = os.getenv("POSTGRES_PASSWORD")   # PostgreSQL 비밀번호
 db_host = 'postgres' 
 db_port = '5432'                # PostgreSQL 포트
 db_name = 's32db'               # 데이터베이스 이름
@@ -66,7 +66,7 @@ def load_data_and_train_model():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # MLflow 설정
-    mlflow.set_tracking_uri("http://10.103.73.87:8080")  # MLflow 서버 URL
+    mlflow.set_tracking_uri("http://mlflow:8080")  # MLflow 서버 URL
     mlflow.set_experiment("testjun")  # 실험 이름 설정
 
     # MLflow 실행 시작

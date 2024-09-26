@@ -26,6 +26,8 @@ spec:
           value: "true"
         - name: cluster.initial_master_nodes
           value: "elasticsearch-0"
+        - name: network.host
+          value: "0.0.0.0"
         ports:
         - containerPort: 9200
         - containerPort: 9300

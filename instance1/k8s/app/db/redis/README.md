@@ -47,3 +47,18 @@ Kubernetes 환경에서 고가용성 Redis 클러스터를 배포하기 위한 �
 
 ## 모니터링
 
+kubectl exec -it <pod> /bin/bash
+
+redis-cli -h redis-cluster-0.redis-cluster.default.svc.cluster.local -p 6379 FLUSHALL
+redis-cli -h redis-cluster-0.redis-cluster.default.svc.cluster.local -p 6379 CLUSTER RESET HARD
+
+redis-cli -h redis-cluster-1.redis-cluster.default.svc.cluster.local -p 6379 FLUSHALL
+redis-cli -h redis-cluster-1.redis-cluster.default.svc.cluster.local -p 6379 CLUSTER RESET HARD
+
+redis-cli -h redis-cluster-2.redis-cluster.default.svc.cluster.local -p 6379 FLUSHALL
+redis-cli -h redis-cluster-2.redis-cluster.default.svc.cluster.local -p 6379 CLUSTER RESET HARD
+
+
+redis-cli --cluster create redis-cluster-0.redis-cluster.default.svc.cluster.local:6379 \
+                             redis-cluster-1.redis-cluster.default.svc.cluster.local:6379 \
+                             redis-cluster-2.redis-cluster.default.svc.cluster.local:6379 --cluster-replicas 0

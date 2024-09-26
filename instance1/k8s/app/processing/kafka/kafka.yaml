@@ -51,7 +51,7 @@ spec:
         - name: KAFKA_CONTROLLER_LISTENER_NAMES
           value: "CONTROLLER"
         - name: KAFKA_LOG_RETENTION_MS
-          value: "300000"
+          value: "604800000"
         - name: KAFKA_MESSAGE_MAX_BYTES
           value: "2000000000"  
         - name: KAFKA_REPLICA_FETCH_MAX_BYTES
@@ -123,7 +123,7 @@ spec:
         - name: KAFKA_CONTROLLER_LISTENER_NAMES
           value: "CONTROLLER"
         - name: KAFKA_LOG_RETENTION_MS
-          value: "300000"
+          value: "604800000"
         - name: KAFKA_MESSAGE_MAX_BYTES
           value: "2000000000"  
         - name: KAFKA_REPLICA_FETCH_MAX_BYTES
@@ -195,7 +195,7 @@ spec:
         - name: KAFKA_CONTROLLER_LISTENER_NAMES
           value: "CONTROLLER"
         - name: KAFKA_LOG_RETENTION_MS
-          value: "300000"
+          value: "604800000"
         - name: KAFKA_MESSAGE_MAX_BYTES
           value: "2000000000"  
         - name: KAFKA_REPLICA_FETCH_MAX_BYTES
