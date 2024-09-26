@@ -1,3 +1,0 @@
-{
-  "accuracy_score_X_test": "accuracy_score(y_true=y_test, y_pred=y_pred)"
-}
