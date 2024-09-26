@@ -1,115 +1,31 @@
-# Yeardream Miniproject - MLOps & 데이터 파이프라인 시스템
+# Yeardream Miniproject - MLOps & DataPipeline System
+
+## License
+이 프로젝트는 MIT License에 따라 배포됩니다.
+다음을 참고 해주세요. [LICENSE](./LICENSE)
+
+This project is licensed under the MIT License
+see the [LICENSE](./LICENSE) file for details.
 
 ## 프로젝트 개요
-이 프로젝트는 **MLOps**와 **데이터 파이프라인**을 통합한 견고한 시스템을 구축하는 것을 목표로 합니다. **AWS**와 **Kubernetes (K8s)**를 활용하여 머신러닝 워크플로우 및 데이터 처리 파이프라인을 자동화하여, 머신러닝 모델의 확장과 대규모 데이터 처리를 위한 프로덕션 수준의 솔루션을 제공합니다.
+이 프로젝트는 **MLOps**와 **데이터 파이프라인**을 통합한 견고한 시스템을 구축하는 것을 목표로 합니다. **AWS**와 **Kubernetes**를 기반으로 머신러닝 워크플로우 및 데이터 처리 파이프라인을 자동화하여, 머신러닝 모델의 확장과 대규모 데이터 처리를 위한 프로덕션 수준의 솔루션을 제공합니다.
 
 
-## 팀 구성
-- **팀 리더**: 서용원
-- **팀원**:
-    - 변준호
-    - 김민규
-    - 이시형
-
-## Instance1
-아래는 프로젝트 내 각 디렉토리와 그에 관련된 설명을 포함하고 있으며, 각 디렉토리의 `README.md` 파일에 대한 링크를 제공합니다.
-
----
-
-## 목차
-1. [awscli](#awscli)
-2. [crontab](#crontab)
-3. [dags](#dags)
-4. [docs](#docs)
-5. [k8s](#k8s)
-   - [app](#app)
-     - [db](#db)
-       - [mongodb](#db)
-       - [postgresql](#db)
-       - [redis](#db)
-     - [processing](#processing)
-       - [kafka](#processing)
-       - [spark](#processing)
-     - [serving](#serving)
-     - [workflow](#workflow)
-       - [airflow](#workflow)
-       - [mlflow](#workflow)
-   - [resources](#resources)
-     - [configmap](#resources)
-     - [pv](#resources)
-     - [secret](#resources)
-     - [storageclass](#resources)
-   - [system](#system)
-     - [aws-ebs-efs](#system)
-     - [dashboard](#system)
-     - [helm](#system)
-     - [metallb](#system)
-     - [namespace](#system)
-     - [nginx-ingress-controller](#system)
-
----
-
-## 각 디렉토리 설명
-
-### awscli
-`awscli` 디렉토리에서는 AWS CLI 관련 작업과 설정을 관리합니다. [README.md](./instance1/awscli/README.md)
-
-### crontab
-`crontab` 디렉토리는 주기적으로 실행되는 스크립트를 관리하는 공간입니다. [README.md](./instance1/crontab/README.md)
-
-### dags
-`dags` 디렉토리는 Airflow DAGs 파일들을 저장하고 관리합니다. [README.md](./instance1/dags/README.md)
-
-### docs
-`docs` 디렉토리에는 프로젝트와 관련된 문서 파일들이 포함되어 있습니다. [README.md](./instance1/docs/README.md)
-
-### k8s
-`k8s` 디렉토리는 Kubernetes 리소스와 설정 파일을 관리합니다. [README.md](./instance1/k8s/README.md)
-
-#### app
-`app` 디렉토리는 애플리케이션 관련 설정과 구성을 담당하는 공간입니다. [README.md](./instance1/k8s/app/README.md)
-
-##### db
-`db` 디렉토리에는 데이터 베이스 관련된 도구들이 포함됩니다.[README.md](./instance1/k8s/app/db/README.md)
-- [mongodb](./instance1/k8s/app/db/mongodb/README.md)
-- [postgresql](./instance1/k8s/app/db/postgresql/README.md)
-- [redis](./instance1/k8s/app/db/redis/README.md)
-
-##### processing
-`processing` 디렉토리에는 데이터 처리와 관련된 도구들이 포함됩니다. [README.md](./instance1/k8s/app/processing/README.md)
-- [kafka](./instance1/k8s/app/processing/kafka/README.md)
-- [spark](./instance1/k8s/app/processing/spark/README.md)
-
-##### serving
-[README.md](./instance1/k8s/app/serving/README.md)
-`serving` 디렉토리에는 모델 서빙 관련 파일들이 저장됩니다. [README.md](./instance1/k8s/app/serving/README.md)
-
-##### workflow
-`workflow` 디렉토리에는 워크플로우 관리 도구들이 포함됩니다. [README.md](./instance1/k8s/app/workflow/README.md)
-- [airflow](./instance1/k8s/app/workflow/airflow/README.md)
-- [mlflow](./instance1/k8s/app/workflow/mlflow/README.md)
-
-#### resources
-`resources` 디렉토리에는 Kubernetes 리소스 관리 파일들이 포함됩니다. [README.md](./instance1/k8s/app/resources/README.md)
-- [configmap](./instance1/k8s/resources/configmap/README.md)
-- [pv](./instance1/k8s/resources/pv/README.md)
-- [secret](./instance1/k8s/resources/secret/README.md)
-- [storageclass](./instance1/k8s/resources/storageclass/README.md)
-
-#### system
-`system` 디렉토리에는 시스템 설정 및 다양한 도구들이 포함됩니다. [README.md](./instance1/k8s/app/system/README.md)
-- [aws-ebs-efs](./instance1/k8s/system/aws-ebs-efs/README.md)
-- [dashboard](./instance1/k8s/system/dashboard/README.md)
-- [helm](./instance1/k8s/system/helm/README.md)
-- [metallb](./instance1/k8s/system/metallb/README.md)
-- [namespace](./instance1/k8s/system/namespace/README.md)
-- [nginx-ingress-controller](./instance1/k8s/system/nginx-ingress-controller/README.md)
+## Team Composition (GitHub IDs)
+- **Team Leader**: 서용원 - WestDragonWon
+- **Team Members**:
+  - 변준호 - Loafingcat
+  - 김민규 - xxxmingyu
+  - 이시형 - FirstBright
+- **Contributors**:
+  - 전영남 - 00nam11
+  - 강재국 - kangjaeguk
 
 ---
 
 ## 프로젝트 진행 방식
 
-위 링크들을 통해 각 디렉토리의 상세 설명과 작업 방식에 대해 확인할 수 있습니다. 각 디렉토리에서 관리되는 리소스나 도구는 이 프로젝트의 중요한 부분이며, 해당하는 `README.md` 파일을 통해 각각의 역할과 사용법을 확인할 수 있습니다.
+각 디렉토리에서 관리되는 리소스나 도구는 이 프로젝트의 중요한 부분이며, 해당하는 `README.md` 파일을 통해 각각의 역할과 사용법을 확인할 수 있습니다.
 
 
 
@@ -147,22 +63,71 @@
 - **data storage**: Amazon S3(artifact), PostgreSQL(meta)
 - **CI/CD**: GitHub Actions
 
-
-
-
 ## 프로젝트 일정
 - **1차 스프린트**: 계획 및 환경 설정 (8월 28일 - 9월 3일)
-![alt text](image-2.png)
-![alt text](image-3.png)
+![alt text](images/sprint1-1.png)
+![alt text](images/sprint1-2.png)
 - **2차 스프린트**: MLOps 설정 (9월 3일 - 9월 12일)
-![alt text](image.png)
+![alt text](images/sprint2.png)
 - **3차 스프린트**: 데이터 파이프라인 개발 (9월 13일 - 9월 23일)
-![alt text](image-1.png)
+![alt text](images/sprint3.png)
 
 - **4차 스프린트**: 시스템 자동화 (9월 25일 - 9월 30일)
 - **5차 스프린트**: 테스트 및 디버깅 (10월 1일 - 10월 4일)
 - **6차 스프린트**: 포트폴리오 준비 (10월 7일 - 10월 10일)
 - **최종 발표**: 10월 11일
 
+
+---
+
+
+## 목차
+### 디렉토리와 `README.md` 파일에 대한 링크를 제공합니다.
+1. [aws](./instance1/aws/README.md)
+    - [athena](./instance1/aws/athena/README.md)
+    - [awscli](./instance1/aws/awscli/README.md)
+    - [glue](./instance1/aws/glue/README.md)
+2. [crontab](./instance1/crontab/README.md)
+3. [docs](./instance1/docs/README.md)
+4. [k8s](./instance1/k8s/app/README.md)
+   - [app](./instance1/k8s/app/README.md)
+     - [db]
+       - [elasticsearch]
+       - [mongodb](./instance1/k8s/app/db/mongodb/README.md)
+       - [postgresql](./instance1/k8s/app/db/postgresql/README.md)
+       - [redis](./instance1/k8s/app/db/redis/README.md)
+     - [monitoring]
+       - [alertmanager](./instance1/k8s/app/monitoring/README.md)
+     - [processing](./instance1/k8s/app/processing/README.md)
+       - [kafka](./instance1/k8s/app/processing/kafka/README.md)
+       - [spark](./instance1/k8s/app/processing/spark/README.md)
+     - [serving](./instance1/k8s/app/serving/README.md)
+     - [system]
+       - [aws-ebs-efs](./instance1/k8s/app/system/README.md)
+       - [dashboard](./instance1/k8s/app/system/dashboard/helm/README.md)
+       - [helm]
+       - [metallb](./instance1/k8s/app/systeam/metallb/README.md)
+       - [namespace](#system)
+       - [nginx-ingress-controller](#system)
+     - [workflow](./instance1/k8s/app/workflow/README.md)
+       - [airflow](./instance1/k8s/app/workflow/airflow/README.md)
+       - [mlflow](./instance1/k8s/app/workflow/mlflow/README.md)
+   - [resources](#resources)
+     - [configmap](#resources)
+     - [namespace]
+     - [pv](#resources)
+     - [role]
+     - [secret](#resources)
+     - [serviceaccount]
+     - [storageclass](./instance1/k8s/resources/storageclass/README.md)
+     - [job/cronjob]
+
+
+---
+
 ## License
 이 프로젝트는 MIT License에 따라 배포됩니다.
+다음을 참고 해주세요. [LICENSE](./LICENSE)
+
+This project is licensed under the MIT License
+see the [LICENSE](./LICENSE) file for details.
