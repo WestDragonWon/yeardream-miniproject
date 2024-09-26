@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sparkhistoryserver-pv
+spec:
+  capacity:
+    storage: 5Gi  # 스토리지 크기 (EFS는 실제 크기 제한 없음)
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany  # 다수의 Pod에서 읽기/쓰기 가능
+  persistentVolumeReclaimPolicy: Retain  # PVC가 삭제되어도 PV 유지
+  storageClassName: spark-storageclass  # 수정된 StorageClass 이름
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-00fb81d888c7ed27c::fsap-0af7f09cb85f9428a # EFS 파일 시스템 ID
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sparkhistoryserver-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: spark-storageclass
+  resources:
+    requests:
+      storage: 5Gi  # 총 용량에 맞게 설정
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sparkhistoryserver-pvc
+  namespace: spark
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: spark-storageclass
+  resources:
+    requests:
+      storage: 5Gi  # 총 용량에 맞게 설정

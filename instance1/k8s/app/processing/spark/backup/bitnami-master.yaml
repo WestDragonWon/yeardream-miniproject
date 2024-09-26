@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitnami-spark-master-deployment
+  labels:
+    app: bitnami-spark
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bitnami-spark
+      role: master
+  template:
+    metadata:
+      labels:
+        app: bitnami-spark
+        role: master
+    spec:
+      containers:
+      - name: bitnami-spark-master-container
+        image: bitnami/spark:3.5.1
+        ports:
+        - containerPort: 7077
+        - containerPort: 4040
+        - containerPort: 8080
+        env:
+        - name: SPARK_MODE
+          value: "master"
+        - name: SPARK_RPC_AUTHENTICATION_ENABLED
+          value: "no"
+        - name: SPARK_RPC_ENCRYPTION_ENABLED
+          value: "no"
+        - name: SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED
+          value: "no"
+        - name: SPARK_SSL_ENABLED
+          value: "no"
+        - name: SPARK_USER
+          value: "spark"
+        - name: SPARK_LOCAL_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+            #- name: SPARK_WORKER_INSTANCES
+            #value: "3"
+            #volumeMounts:
+            #- name: spark-jars-volume
+            #mountPath: /opt/spark/jars
+            #- name: spark-jobs-volume
+            #mountPath: /opt/spark/work-dir
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "4Gi"
+          limits:
+            cpu: "1000m"
+            memory: "4Gi"
+              #volumes:
+              #- name: spark-jars-volume
+              #persistentVolumeClaim:
+              #claimName: spark-jars-pvc
+              #- name: spark-jobs-volume
+              #persistentVolumeClaim:
+              #claimName: spark-jobs-pvc
+
+      #nodeSelector:
+        #type: master
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bitnami-spark-master-service   ##!!!!반드시!!! spark-master라고 하면 안됨. spark가 사용하는 환경변수 이름이 SPARK_MASTER_PORT인데, 서비스 이름을 spark-master라고 지정하면 쿠버네티스도 같은 이름으로 다른 내용의 변수를 생성
+  labels:
+    app: bitnami-spark
+spec:
+  type: NodePort
+  ports:
+  - name: bitnami-spark-master-port
+    port: 7077
+    targetPort: 7077
+    nodePort: 32177
+  - name: bitnami-spark-master-ui
+    port: 8080 
+    targetPort: 8080
+    nodePort: 32180
+  - name: bitnami-spark-master-ui2
+    port: 4040
+    targetPort: 4040
+    nodePort: 32140
+  selector:
+    app: bitnami-spark
+    role: master

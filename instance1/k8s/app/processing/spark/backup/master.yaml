@@ -61,11 +61,11 @@ spec:
           mountPath: /opt/spark/work-dir
         resources:
           requests:
-            cpu: "500m"
-            memory: "1Gi"
+            cpu: "1000m"
+            memory: "4Gi"
           limits:
-            cpu: "500m"
-            memory: "1Gi"
+            cpu: "1000m"
+            memory: "4Gi"
       volumes:
       - name: spark-jars-volume
         persistentVolumeClaim:

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+data:
+  logstash.conf: |
+    input {
+      s3 {
+        bucket => "team06-mlflow-feature"
+        region => "ap-northeast-2"
+        access_key_id => "${AWS_ACCESS_KEY_ID}"
+        secret_access_key => "${AWS_SECRET_ACCESS_KEY}"
+        codec => "json"
+      }
+    }
+ 
+    output {
+      mongodb {
+        uri => "mongodb://mongodb:27017"
+        database => "mongo"
+        collection => "test"
+        isodate => true
+      }
+    }
+  logstash.yml: |
+    xpack.monitoring.enabled: false

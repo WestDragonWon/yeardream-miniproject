@@ -1,0 +1,315 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+      instance: kafka-1
+  template:
+    metadata:
+      labels:
+        app: kafka
+        instance: kafka-1
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - worker1  
+      initContainers:
+      - name: init-kafka
+        image: busybox
+        command: ['sh', '-c', 'rm -rf /var/lib/kafka/data/* && mkdir -p /var/lib/kafka/data && chown -R 1000:1000 /var/lib/kafka/data']
+        volumeMounts:
+        - name: kafka-storage
+          mountPath: /var/lib/kafka/data
+      containers:
+      - name: kafka
+        image: apache/kafka:3.7.1
+        ports:
+        - containerPort: 9092
+        - containerPort: 9093
+        env:
+        - name: KAFKA_PROCESS_ROLES
+          value: "broker,controller"
+        - name: KAFKA_NODE_ID
+          value: "1"
+        - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+          value: "1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093"
+        - name: KAFKA_LISTENERS
+          value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: "PLAINTEXT://kafka-1:9092"
+        - name: KAFKA_LOG_DIRS
+          value: "/var/lib/kafka/data"
+        - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+          value: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+        - name: KAFKA_INTER_BROKER_LISTENER_NAME
+          value: "PLAINTEXT"
+        - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+          value: "false"
+        - name: KAFKA_CONTROLLER_LISTENER_NAMES
+          value: "CONTROLLER"
+        - name: KAFKA_LOG_RETENTION_MS
+          value: "300000"
+        - name: KAFKA_MESSAGE_MAX_BYTES
+          value: "2000000000"  
+        - name: KAFKA_REPLICA_FETCH_MAX_BYTES
+          value: "2000000000"  
+        - name: KAFKA_MAX_PARTITION_FETCH_BYTES
+          value: "2000000000" 
+        resources:
+          requests:
+            memory: "1Gi"  
+            cpu: "500m"    
+          limits:
+            memory: "2Gi"  
+            cpu: "1"       
+        volumeMounts:
+        - name: kafka-storage
+          mountPath: /var/lib/kafka/data
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000 
+      volumes:
+        - name: kafka-storage
+          persistentVolumeClaim:
+            claimName: kafka-pvc-1
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+      instance: kafka-2
+  template:
+    metadata:
+      labels:
+        app: kafka
+        instance: kafka-2
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - worker2     
+      initContainers:
+      - name: init-kafka
+        image: busybox
+        command: ['sh', '-c', 'rm -rf /var/lib/kafka/data/* && mkdir -p /var/lib/kafka/data && chown -R 1000:1000 /var/lib/kafka/data']
+        volumeMounts:
+        - name: kafka-storage
+          mountPath: /var/lib/kafka/data                
+      containers:
+      - name: kafka
+        image: apache/kafka:3.7.1
+        ports:
+        - containerPort: 9092
+        - containerPort: 9093
+        env:
+        - name: KAFKA_PROCESS_ROLES
+          value: "broker,controller"
+        - name: KAFKA_NODE_ID
+          value: "2"
+        - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+          value: "1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093"
+        - name: KAFKA_LISTENERS
+          value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: "PLAINTEXT://kafka-2:9092"
+        - name: KAFKA_LOG_DIRS
+          value: "/var/lib/kafka/data"
+        - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+          value: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+        - name: KAFKA_INTER_BROKER_LISTENER_NAME
+          value: "PLAINTEXT"
+        - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+          value: "false"
+        - name: KAFKA_CONTROLLER_LISTENER_NAMES
+          value: "CONTROLLER"
+        - name: KAFKA_LOG_RETENTION_MS
+          value: "300000"
+        - name: KAFKA_MESSAGE_MAX_BYTES
+          value: "2000000000"  
+        - name: KAFKA_REPLICA_FETCH_MAX_BYTES
+          value: "2000000000"  
+        - name: KAFKA_MAX_PARTITION_FETCH_BYTES
+          value: "2000000000"  
+        resources:
+          requests:
+            memory: "1Gi"  
+            cpu: "500m"    
+          limits:
+            memory: "2Gi"  
+            cpu: "1"       
+        volumeMounts:
+        - name: kafka-storage
+          mountPath: /var/lib/kafka/data
+
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000 
+      volumes:
+        - name: kafka-storage
+          persistentVolumeClaim:
+            claimName: kafka-pvc-2
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+      instance: kafka-3
+  template:
+    metadata:
+      labels:
+        app: kafka
+        instance: kafka-3
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - worker3  
+      initContainers:
+      - name: init-kafka
+        image: busybox
+        command: ['sh', '-c', 'rm -rf /var/lib/kafka/data/* && mkdir -p /var/lib/kafka/data && chown -R 1000:1000 /var/lib/kafka/data']
+        volumeMounts:
+        - name: kafka-storage
+          mountPath: /var/lib/kafka/data                   
+      containers:
+      - name: kafka
+        image: apache/kafka:3.7.1
+        ports:
+        - containerPort: 9092
+        - containerPort: 9093
+        env:
+        - name: KAFKA_PROCESS_ROLES
+          value: "broker,controller"
+        - name: KAFKA_NODE_ID
+          value: "3"
+        - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+          value: "1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093"
+        - name: KAFKA_LISTENERS
+          value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: "PLAINTEXT://kafka-3:9092"
+        - name: KAFKA_LOG_DIRS
+          value: "/var/lib/kafka/data"
+        - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+          value: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+        - name: KAFKA_INTER_BROKER_LISTENER_NAME
+          value: "PLAINTEXT"
+        - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+          value: "false"
+        - name: KAFKA_CONTROLLER_LISTENER_NAMES
+          value: "CONTROLLER"
+        - name: KAFKA_LOG_RETENTION_MS
+          value: "300000"
+        - name: KAFKA_MESSAGE_MAX_BYTES
+          value: "2000000000"  
+        - name: KAFKA_REPLICA_FETCH_MAX_BYTES
+          value: "2000000000"  
+        - name: KAFKA_MAX_PARTITION_FETCH_BYTES
+          value: "2000000000"  
+        resources:
+          requests:
+            memory: "1Gi"  
+            cpu: "500m"    
+          limits:
+            memory: "2Gi" 
+            cpu: "1"      
+        volumeMounts:
+        - name: kafka-storage
+          mountPath: /var/lib/kafka/data
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000  
+      volumes:
+        - name: kafka-storage
+          persistentVolumeClaim:
+            claimName: kafka-pvc-3
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-1
+spec:
+  ports:
+  - name: plaintext
+    port: 9092
+    targetPort: 9092
+    protocol: TCP
+  - name: controller
+    port: 9093
+    targetPort: 9093
+    protocol: TCP
+  selector:
+    app: kafka
+    instance: kafka-1
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-2
+spec:
+  ports:
+  - name: plaintext
+    port: 9092
+    targetPort: 9092
+    protocol: TCP
+  - name: controller
+    port: 9093
+    targetPort: 9093
+    protocol: TCP
+  selector:
+    app: kafka
+    instance: kafka-2
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-3
+spec:
+  ports:
+  - name: plaintext
+    port: 9092
+    targetPort: 9092
+    protocol: TCP
+  - name: controller
+    port: 9093
+    targetPort: 9093
+    protocol: TCP
+  selector:
+    app: kafka
+    instance: kafka-3

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: airflow-config
+data:
+  AIRFLOW__CORE__DAGS_FOLDER: "/opt/airflow/dags"
+  AIRFLOW__CORE__EXECUTOR: "KubernetesExecutor"
+  AIRFLOW__LOGGING__LOGGING_LEVEL: "INFO"
+  AIRFLOW__SCHEDULER__CATCHUP_BY_DEFAULT: "False"
+  AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: "postgresql+psycopg2://airflow:airflow@postgres:5432/airflow"
+  AIRFLOW__KUBERNETES__NAMESPACE: "default" 
+  AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: "apache/airflow" 
+  AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: "2.9.3-python3.8"
+  # 추가 항목
+  AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "True"  # 작업이 끝난 후 Pod 삭제
+  AIRFLOW__KUBERNETES__WORKER_CONTAINER_IMAGE_PULL_POLICY: "IfNotPresent"  # 이미지 pull 정책
+  AIRFLOW__KUBERNETES__POD_TEMPLATE_FILE: "/opt/airflow/pod_template.yaml"  # Pod 템플릿 파일 경로
+  AIRFLOW__CORE__DEFAULT_TIMEZONE: "Asia/Seoul"

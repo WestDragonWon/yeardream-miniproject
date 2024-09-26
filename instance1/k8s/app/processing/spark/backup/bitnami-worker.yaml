@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitnami-spark-worker-deployment
+  labels:
+    app: bitnami-spark
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: bitnami-spark
+      role: worker
+  template:
+    metadata:
+      labels:
+        app: bitnami-spark
+        role: worker
+    spec:
+      containers:
+      - name: bitnami-spark-worker-container
+        image: bitnami/spark:3.5.1
+        ports:
+        - containerPort: 8081
+        env:
+        - name: SPARK_MODE
+          value: "worker"
+        - name: SPARK_MASTER_URL
+          value: "spark://10.105.74.144:7077"
+        - name: SPARK_WORKER_MEMORY
+          value: "5G"
+        - name: SPARK_WORKER_CORES
+          value: "2"
+        - name: SPARK_RPC_AUTHENTICATION_ENABLED
+          value: "no"
+        - name: SPARK_RPC_ENCRYPTION_ENABLED
+          value: "no"
+        - name: SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED
+          value: "no"
+        - name: SPARK_SSL_ENABLED
+          value: "no"
+        - name: SPARK_USER
+          value: "spark"
+        - name: SPARK_LOCAL_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+                #volumeMounts:
+          #- name: spark-jars-volume
+          #mountPath: /opt/spark/jars
+          #- name: spark-jobs-volume
+          #mountPath: /opt/spark/work-dir
+        resources:
+          requests:
+            cpu: "1"
+            memory: "5Gi"
+          limits:
+            cpu: "1"
+            memory: "5Gi"
+              #volumes:
+        #- name: spark-jars-volume
+        #persistentVolumeClaim:
+        #  claimName: spark-jars-pvc
+        #- name: spark-jobs-volume
+        #persistentVolumeClaim:
+        #claimName: spark-jobs-pvc
+      nodeSelector:
+        type: worker
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bitnami-spark-worker-service
+  labels:
+    app: bitnami-spark
+spec:
+  type: NodePort
+  ports:
+  - name: bitnami-spark-worker-ui
+    port: 8081
+    targetPort: 8081
+    nodePort: 32181
+  selector:
+    app: bitnami-spark
+    role: worker

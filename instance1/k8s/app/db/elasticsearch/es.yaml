@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  labels:
+    app: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: elastic/elasticsearch:7.17.24
+        env:
+        - name: ELASTIC_PASSWORD
+          value: "elastic"
+        - name: xpack.security.enabled
+          value: "true"
+        - name: xpack.security.transport.ssl.enabled
+          value: "true"
+        - name: cluster.initial_master_nodes
+          value: "elasticsearch-0"
+        - name: network.host
+          value: "0.0.0.0"
+        ports:
+        - containerPort: 9200
+        - containerPort: 9300
+        volumeMounts:
+        - name: elastic-volume
+          mountPath: /usr/share/elasticsearch/data
+      volumes:
+      - name: elastic-volume
+        emptyDir:
+          sizeLimit: 3Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elastic-service
+  labels:
+    app: elasticsearch
+spec:
+  ports:
+  - name: elasticsearch
+    port: 9200
+    targetPort: 9200
+  - name: elistic-transport
+    port: 9300
+    targetPort: 9300
+  selector:
+    app: elasticsearch
+  type: ClusterIP

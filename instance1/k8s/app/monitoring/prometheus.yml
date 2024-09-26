@@ -18,16 +18,22 @@ spec:
       - name: prometheus
         image: prom/prometheus:latest
         args:
+          - "--config.file=/etc/prometheus/prometheus.yml"  # ConfigMap에서 설정 파일을 사용
           - "--storage.tsdb.path=/prometheus"  # 메트릭 데이터 저장 경로
         ports:
         - containerPort: 9090  # Prometheus 기본 포트
         volumeMounts:
         - name: prometheus-storage
           mountPath: /prometheus  # 기본 메트릭 저장 경로
+        - name: prometheus-config  # ConfigMap을 마운트
+          mountPath: /etc/prometheus
       volumes:
       - name: prometheus-storage
         persistentVolumeClaim:
           claimName: prometheus-pvc  # PVC를 통해 EFS 볼륨에 연결
+      - name: prometheus-config  # ConfigMap 정의
+        configMap:
+          name: prometheus-config
 ---
 apiVersion: v1
 kind: Service

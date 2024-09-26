@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3-to-mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: s3-to-mongo
+  template:
+    metadata:
+      labels:
+        app: s3-to-mongo
+    spec:
+      containers:
+        - name: s3-to-mongo
+          image: westdragonwon/s3-to-mongo:latest  # 빌드한 Docker 이미지 경로
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: AWS_SECRET_ACCESS_KEY

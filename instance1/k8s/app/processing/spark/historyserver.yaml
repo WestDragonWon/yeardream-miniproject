@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-historyserver
+  labels:
+    app: spark-historyserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark-historyserver
+  template:
+    metadata:
+      labels:
+        app: spark-historyserver
+    spec:
+      containers:
+      - name: spark-historyserver
+        image: apache/spark:3.5.2
+        ports:
+        - containerPort: 18080
+        volumeMounts:
+        - name: spark-history
+          mountPath: /opt/logs
+        env:
+        - name: SPARK_HISTORY_OPTS
+          value: "-Dspark.history.fs.logDirectory=/opt/logs"
+            #command: ["/bin/bash", "-c", "/opt/spark/sbin/start-history-server.sh"]
+      volumes:
+      - name: spark-history
+        persistentVolumeClaim:
+          claimName: sparkhistoryserver-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-historyserver
+spec:
+  type: NodePort
+  ports:
+  - port: 18080
+    targetPort: 18080
+    nodePort: 32088
+  selector:
+    app: spark-historyserver
