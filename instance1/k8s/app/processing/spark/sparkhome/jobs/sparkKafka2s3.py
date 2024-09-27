@@ -22,7 +22,7 @@ spark = SparkSession.builder \
 df = spark \
     .readStream \
     .format("kafka") \
-    .option("kafka.bootstrap.servers", "kafka-1:9092,kafka-2:9092,kafka-3:9092") \
+    .option("kafka.bootstrap.servers", "kafka-1.default.svc.cluster.local:9092,kafka-2.default.svc.cluster.local:9092,kafka-3.default.svc.cluster.local:9092") \
     .option("subscribe", "large-csv-topic") \
     .load()
 
@@ -31,10 +31,8 @@ parsed_df = df.select(from_json(
     regexp_replace(col("value").cast("string"), "^\"|\"$", ""),
     schema
 ).alias("parsed_value"))
-
 # Select the fields you want to write to S3
 output_df = parsed_df.select("parsed_value.*")
-
 # Write to S3
 query = output_df \
     .writeStream \

@@ -14,7 +14,11 @@ kubectl exec -it (카프카 pod name) -- /bin/bash
 
 /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092
 
-4. 클라이언트와 연결
+4. 토픽 읽기
+
+/opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic <토픽이름> --from-beginning
+
+5. 클라이언트와 연결
 
 서비스 이름은 kafka-1, kafka-2, kafka-3 중 택 1
 
