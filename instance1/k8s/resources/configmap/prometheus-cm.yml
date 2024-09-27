@@ -38,3 +38,12 @@ data:
           annotations:
             summary: "Server {{ $labels.instance }} is down"
             description: "The server at {{ $labels.instance }} has been down for more than 1 minute."
+
+      - alert: PostgresDown
+            expr: pg_up == 0
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: "PostgreSQL instance is down"
+              description: "PostgreSQL instance {{ $labels.instance }} is down."

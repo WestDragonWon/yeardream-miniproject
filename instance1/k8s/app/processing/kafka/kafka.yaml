@@ -53,11 +53,11 @@ spec:
         - name: KAFKA_LOG_RETENTION_MS
           value: "604800000"
         - name: KAFKA_MESSAGE_MAX_BYTES
-          value: "2000000000"  
+          value: "10485760"  
         - name: KAFKA_REPLICA_FETCH_MAX_BYTES
-          value: "2000000000"  
+          value: "10485760"  
         - name: KAFKA_MAX_PARTITION_FETCH_BYTES
-          value: "2000000000"     
+          value: "10485760"     
         volumeMounts:
         - name: kafka-storage
           mountPath: /var/lib/kafka/data
@@ -125,11 +125,11 @@ spec:
         - name: KAFKA_LOG_RETENTION_MS
           value: "604800000"
         - name: KAFKA_MESSAGE_MAX_BYTES
-          value: "2000000000"  
+          value: "10485760"  
         - name: KAFKA_REPLICA_FETCH_MAX_BYTES
-          value: "2000000000"  
+          value: "10485760"  
         - name: KAFKA_MAX_PARTITION_FETCH_BYTES
-          value: "2000000000"  
+          value: "10485760"  
         volumeMounts:
         - name: kafka-storage
           mountPath: /var/lib/kafka/data
@@ -197,11 +197,11 @@ spec:
         - name: KAFKA_LOG_RETENTION_MS
           value: "604800000"
         - name: KAFKA_MESSAGE_MAX_BYTES
-          value: "2000000000"  
+          value: "10485760"  
         - name: KAFKA_REPLICA_FETCH_MAX_BYTES
-          value: "2000000000"  
+          value: "10485760"  
         - name: KAFKA_MAX_PARTITION_FETCH_BYTES
-          value: "2000000000"     
+          value: "10485760"     
         volumeMounts:
         - name: kafka-storage
           mountPath: /var/lib/kafka/data
