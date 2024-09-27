@@ -114,12 +114,12 @@ see the [LICENSE](./LICENSE) file for details.
      - [workflow](./instance1/k8s/app/workflow/README.md)
        - [airflow](./instance1/k8s/app/workflow/airflow/README.md)
        - [mlflow](./instance1/k8s/app/workflow/mlflow/README.md)
-   - [resources](#resources)
-     - [configmap](#resources)
+   - [resources](./instance1/k8s/resources/README.md)
+     - [configmap](./instance1/k8s/resources/configmap/README.md)
      - [namespace]
-     - [pv](#resources)
+     - [pv](./instance1/k8s/resources/pv/README.md)
      - [role]
-     - [secret](#resources)
+     - [secret](./instance1/k8s/resources/secret/README.md)
      - [serviceaccount]
      - [storageclass](./instance1/k8s/resources/storageclass/README.md)
      - [job/cronjob]
