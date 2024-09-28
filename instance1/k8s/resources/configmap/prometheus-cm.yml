@@ -26,20 +26,19 @@ data:
         static_configs:
         - targets: ['kafka-exporter:9308']  # Kafka Exporter 서비스 이름과 포트
 
+      - job_name: 'redis-exporter'
+        static_configs:
+        - targets: ['redis-exporter:9121']
+
+      - job_name: 'mongodb-exporter'  # MongoDB Exporter 추가
+        static_configs:
+        - targets: ['mongodb-exporter:9216']
+
   alert.rules: |
     groups:
       - name: server-down-alert
         rules:
-        - alert: ServerDown
-          expr: up == 0
-          for: 1m
-          labels:
-            severity: critical
-          annotations:
-            summary: "Server {{ $labels.instance }} is down"
-            description: "The server at {{ $labels.instance }} has been down for more than 1 minute."
-
-      - alert: PostgresDown
+          - alert: PostgresDown
             expr: pg_up == 0
             for: 1m
             labels:
@@ -47,3 +46,12 @@ data:
             annotations:
               summary: "PostgreSQL instance is down"
               description: "PostgreSQL instance {{ $labels.instance }} is down."
+
+        # - alert: ServerDown
+        #   expr: up == 0
+        #   for: 1m
+        #   labels:
+        #     severity: critical
+        #   annotations:
+        #     summary: "Server {{ $labels.instance }} is down"
+        #     description: "The server at {{ $labels.instance }} has been down for more than 1 minute."

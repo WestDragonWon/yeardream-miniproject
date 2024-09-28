@@ -20,10 +20,13 @@ spec:
         ports:
         - containerPort: 5044  # Logstash에서 사용하는 기본 포트
         - containerPort: 9600  # Logstash HTTP API 포트
-        volumeMounts:
+        volumeMounts:  #현재 configmap에 두 conf파일 존재, subpath로 구분하여 따로 저장해야 함
         - name: logstash-config-volume
-          mountPath: /usr/share/logstash/pipeline/logstash.conf
-          subPath: logstash.conf
+          mountPath: /usr/share/logstash/pipeline/kafka-collect.conf
+          subPath: kafka-collect.conf
+        - name: logstash-config-volume
+          mountPath: /usr/share/logstash/pipeline/event-collect.conf
+          subPath: event-collect.conf
       volumes:
       - name: logstash-config-volume
         configMap:

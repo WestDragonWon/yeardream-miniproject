@@ -2,6 +2,15 @@
 
 
 
+
+kafka_up
+
+![alt text](image-2.png)
+
 pg_up
 
 ![alt text](image.png)
+
+redis_up
+
+![alt text](image-1.png)

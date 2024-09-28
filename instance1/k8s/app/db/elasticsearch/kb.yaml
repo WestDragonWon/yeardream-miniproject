@@ -5,6 +5,7 @@ metadata:
   labels:
     app: kibana
 spec:
+  serviceName: "kibana"
   replicas: 1
   selector:
     matchLabels:
