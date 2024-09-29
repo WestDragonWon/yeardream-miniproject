@@ -1,0 +1,73 @@
+[33m6363290[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32minstance1[m[33m)[m Remove large files from history
+[33maebfc69[m Added large files to .gitignore
+[33m948edbe[m Removed large files from tracking and added to .gitignore
+[33md8d11a7[m Automated commit from instance1 at Sun Sep 29 17:37:02 KST 2024
+[33mdcf10cf[m Automated commit from instance1 at Sun Sep 29 17:30:21 KST 2024
+[33m29ea22d[m[33m ([m[1;31morigin/instance1[m[33m)[m Automated commit from instance1 at Sat Sep 28 17:37:01 KST 2024
+[33mb590cb8[m Automated commit from instance1 at Sat Sep 28 17:30:01 KST 2024
+[33m5c2a0b6[m slack app test
+[33m043ad4a[m Automated commit from instance1 at Fri Sep 27 17:37:01 KST 2024
+[33mfea325e[m Automated commit from instance1 at Fri Sep 27 17:30:01 KST 2024
+[33me9ec7b3[m Automated commit from instance1 at Fri Sep 27 12:30:01 KST 2024
+[33mdcbf3e0[m Sprint 3
+[33m6fe5bf2[m Sprint 3
+[33ma4d1fba[m Automated commit from instance1 at Thu Sep 26 17:30:01 KST 2024
+[33m196dd5b[m Automated commit from instance1 at Thu Sep 26 12:30:01 KST 2024
+[33m577ff92[m Automated commit from instance1 at Wed Sep 25 17:30:01 KST 2024
+[33m79fda30[m Automated commit from instance1 at Wed Sep 25 12:30:01 KST 2024
+[33m8771d8d[m Automated commit from instance1 at Tue Sep 24 17:30:01 KST 2024
+[33mac8ea43[m Automated commit from instance1 at Tue Sep 24 15:00:01 KST 2024
+[33md9d52f0[m Automated commit from instance1 at Tue Sep 24 12:30:01 KST 2024
+[33m2a14be4[m Automated commit from instance1 at Mon Sep 23 17:30:01 KST 2024
+[33m43fa3d6[m Ignore .local and .jupyter
+[33ma75e83f[m Ignore .local and .jupyter
+[33m76742bf[m Ignore .local and .jupyter
+[33m8287d18[m Ignore .local and .jupyter
+[33ma667618[m ignore
+[33ma826525[m Automated commit from instance1 at Mon Sep 23 12:30:01 KST 2024
+[33m7f7803a[m Automated commit from instance1 at Mon Sep 23 08:18:01 KST 2024
+[33md81c6b6[m --
+[33m360bbf3[m Automated commit from instance1 at Sun Sep 22 17:30:01 KST 2024
+[33ma573d3d[m except jars
+[33mf68fe49[m except jars
+[33mfc1e8ea[m except jars
+[33m9c451e5[m except jars
+[33m38f5395[m Automated commit from instance1 at Sun Sep 22 12:30:36 KST 2024
+[33m789b3c5[m Automated commit from instance1 at Sat Sep 21 17:30:01 KST 2024
+[33mc40cab6[m Automated commit from instance1 at Sat Sep 21 12:30:01 KST 2024
+[33m38cfd39[m Automated commit from instance1 at Fri Sep 20 17:30:01 KST 2024
+[33m72d09b6[m Automated commit from instance1 at Fri Sep 20 12:30:01 KST 2024
+[33mbaf746c[m Automated commit from instance1 at Thu Sep 19 17:30:01 KST 2024
+[33md5958df[m Automated commit from instance1 at Thu Sep 19 12:30:01 KST 2024
+[33m5c48040[m Automated commit from instance1 at Fri Sep 13 17:30:01 KST 2024
+[33mbe5dbcb[m Automated commit from instance1 at Fri Sep 13 12:30:01 KST 2024
+[33me61d71b[m Automated commit from instance1 at Thu Sep 12 17:30:01 KST 2024
+[33m0d5f04e[m Automated commit from instance1 at Thu Sep 12 12:30:01 KST 2024
+[33mb28af61[m 2차 스프린트 mlops 종료 - instance1 업데이트
+[33m11d185d[m 2차 스프린트 mlops 종료
+[33m7060027[m 2차 스프린트 mlops 종료
+[33m35563a8[m imagetest
+[33m24cdad7[m Automated commit from instance1 at Wed Sep 11 17:30:01 KST 2024
+[33m1fded6b[m Automated commit from instance1 at Wed Sep 11 12:30:01 KST 2024
+[33m0ad4dde[m Automated commit from instance1 at Tue Sep 10 17:30:01 KST 2024
+[33ma38fb2f[m Automated commit from instance1 at Tue Sep 10 17:09:01 KST 2024
+[33m130a73e[m Automated commit from instance1 at Tue Sep 10 12:30:01 KST 2024
+[33mf47744d[m Automated commit from instance1 at Mon Sep  9 17:30:01 KST 2024
+[33m93d13f5[m Automated commit from instance1 at Mon Sep  9 12:30:01 KST 2024
+[33m8db22d3[m Automated commit from instance1 at Sat Sep  7 17:30:01 KST 2024
+[33m9aba33d[m Automated commit from instance1 at Sat Sep  7 12:30:01 KST 2024
+[33mda84ef8[m Automated commit from instance1 at Fri Sep  6 17:30:01 KST 2024
+[33mb679a36[m Automated commit from instance1 at Fri Sep  6 12:30:01 KST 2024
+[33mfa9259b[m Automated commit from instance1 at Thu Sep  5 17:30:01 KST 2024
+[33m8c16177[m Automated commit from instance1 at Thu Sep  5 12:30:01 KST 2024
+[33ma707520[m Automated commit from instance1 at Thu Sep  5 10:01:01 KST 2024
+[33m3519364[m test2
+[33m256e9f6[m trigger test commit
+[33m34c275e[m Automated commit from instance1 at Wed Sep  4 17:45:01 KST 2024
+[33md8af530[m Automated commit from instance1 at Wed Sep  4 17:21:02 KST 2024
+[33m34f7dda[m Automated commit from instance1 at Wed Sep  4 16:53:01 KST 2024
+[33me5db766[m Automated commit from instance1 at Wed Sep  4 16:49:01 KST 2024
+[33mbdcf4ec[m Automated commit from instance1 at Wed Sep  4 16:43:01 KST 2024
+[33m5f7cbdd[m 09-03
+[33ma4efe4c[m Merge local files with remote repository
+[33maac3ac2[m Initial commit
