@@ -5,6 +5,7 @@ metadata:
   labels:
     app: kibana
 spec:
+  serviceName: "kibana"
   replicas: 1
   selector:
     matchLabels:
@@ -21,9 +22,15 @@ spec:
         - name: ELASTICSEARCH_HOSTS
           value: "http://elastic-service:9200"
         - name: ELASTICSEARCH_USERNAME
-          value: "elastic"
-        - name: ELASTICSEARCH_PASSWORD
-          value: "elastic"
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: ELASTICSEARCH_USERNAME
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: ELASTICSEARCH_PASSWORD
         ports:
         - containerPort: 5601
 ---

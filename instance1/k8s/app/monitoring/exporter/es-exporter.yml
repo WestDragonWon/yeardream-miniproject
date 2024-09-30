@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch-exporter
+  labels:
+    app: elasticsearch-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch-exporter
+  template:
+    metadata:
+      labels:
+        app: elasticsearch-exporter
+    spec:
+      containers:
+      - name: elasticsearch-exporter
+        image: prometheuscommunity/elasticsearch-exporter:latest
+        args:
+        - '--es.uri=http://elasticsearch:9200/'  # Elasticsearch URL
+        ports:
+        - containerPort: 9114  # 기본 포트
+        env:
+        - name: ES_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: ELASTICSEARCH_USERNAME
+        - name: ES_PASSWORD 
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: ELASTICSEARCH_PASSWORD
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-exporter
+  labels:
+    app: elasticsearch-exporter
+spec:
+  type: NodePort
+  ports:
+  - name: metrics
+    port: 9114
+    targetPort: 9114
+    nodePort: 30333
+  selector:
+    app: elasticsearch-exporter

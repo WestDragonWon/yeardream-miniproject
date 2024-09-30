@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-exporter
+  template:
+    metadata:
+      labels:
+        app: mongodb-exporter
+    spec:
+      nodeSelector:
+        type: worker  # worker 노드에 배포
+      containers:
+      - name: mongodb-exporter
+        image: bitnami/mongodb-exporter:latest
+        ports:
+        - containerPort: 9216  # MongoDB Exporter 기본 포트
+        env:
+        - name: MONGODB_URI
+          value: "mongodb://mongodb:27017/mongo?replicaSet=MainRepSet"  # MongoDB 연결 URI
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-exporter
+spec:
+  type: NodePort  
+  ports:
+    - port: 9216
+      targetPort: 9216
+      nodePort: 30123  
+  selector:
+    app: mongodb-exporter

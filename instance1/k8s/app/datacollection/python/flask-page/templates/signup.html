@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+</head>
+<body>
+    <h1>회원가입</h1>
+
+    <!-- 플래시 메시지 표시 -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/">
+        <label for="name">이름:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="user_id">ID:</label>
+        <input type="text" id="user_id" name="user_id" required><br><br>
+
+        <label for="password">비밀번호(4자리 숫자):</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button type="submit">회원가입</button>
+    </form>
+</body>
+</html>

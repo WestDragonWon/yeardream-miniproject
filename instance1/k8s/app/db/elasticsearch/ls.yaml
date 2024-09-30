@@ -17,13 +17,31 @@ spec:
       containers:
       - name: logstash
         image: elastic/logstash:7.17.24
+        env:
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: ELASTICSEARCH_PASSWORD
+        - name: ELASTIC_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: ELASTICSEARCH_USERNAME
         ports:
         - containerPort: 5044  # Logstash에서 사용하는 기본 포트
         - containerPort: 9600  # Logstash HTTP API 포트
-        volumeMounts:
+        volumeMounts: 
         - name: logstash-config-volume
-          mountPath: /usr/share/logstash/pipeline/logstash.conf
-          subPath: logstash.conf
+          mountPath: /usr/share/logstash/pipeline/kafka-collect.conf
+          subPath: kafka-collect.conf
+        resources:
+            requests:
+              cpu: 500m 
+              memory: 1Gi 
+            limits:
+              cpu: 500m
+              memory: 2Gi 
       volumes:
       - name: logstash-config-volume
         configMap:

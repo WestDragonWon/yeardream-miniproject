@@ -1,29 +1,40 @@
 # `K8s` 디렉토리에는 Kubernetes 와 관련된 모든 리소스가 포함됩니다.
 ## 
-   - [app](./instance1/k8s/app/README.md)
-     - [db](./instance1/k8s/app/db/README.md)
-       - [mongodb](./instance1/k8s/app/db/mongodb/README.md)
-       - [postgresql](./instance1/k8s/app/db/postgresql/README.md)
-       - [redis](./instance1/k8s/app/db/redis/README.md)
-     - [processing](./instance1/k8s/app/processing/README.md)
-       - [kafka](./instance1/k8s/app/processing/kafka/README.md)
-       - [spark](./instance1/k8s/app/processing/spark/README.md)
-     - [serving](./instance1/k8s/app/serving/README.md)
-     - [workflow](./instance1/k8s/app/workflow/README.md)
-       - [airflow](#workflow)
-       - [mlflow](#workflow)
-   - [resources](#resources)
-     - [configmap](#resources)
-     - [pv](#resources)
-     - [secret](#resources)
-     - [storageclass](#resources)
-   - [system](#system)
-     - [aws-ebs-efs](#system)
-     - [dashboard](#system)
-     - [helm](#system)
-     - [metallb](#system)
-     - [namespace](#system)
-     - [nginx-ingress-controller](#system)
+   - [app]
+     - [datacollection]
+     - [db]
+       - [elasticsearch]
+       - [mongodb](./app/db/mongodb/README.md)
+       - [postgresql](./app/db/postgresql/README.md)
+       - [redis](./app/db/redis/README.md)
+     - [monitoring]
+       - [alertmanager](./app/monitoring/alertmanager/README.md)
+       - [exporter]
+       - [grafana]
+       - [prometheus]
+     - [processing]
+       - [kafka](./app/processing/kafka/README.md)
+       - [spark](./app/processing/spark/README.md)
+     - [serving]
+       - [FastAPI](./app/serving/README.md)
+     - [systeam]
+       - [aws-ebs-efs](./app/system/aws-ebs-efs/README.md)
+       - [dashboard](./app/system/dashboard/README.md)
+       - [helm]
+       - [metallb]
+       - [nginx-ingress-controller]
+     - [workflow]
+       - [airflow](./app/workflow/airflow/README.md)
+       - [mlflow](./app/workflow/mlflow/README.md)
+   - [resources]
+     - [configmap]
+     - [ingress]
+     - [namespace]
+     - [pv]
+     - [role&serviceaccount](./resources/role&serviceaccount/README.md)
+     - [secret](./resources/secret/README.md)
+     - [service]
+     - [storageclass](./resources/storageclass/README.md)
 
 
 # Pod가 특정 노드에 배치될 수 있도록 제어하는 방법
@@ -136,16 +147,5 @@ spec:
 ---
 
 
-# Secret 리소스 사용법
-
-- 각 폴더마다 .env 파일을 생성하여 secret 정보를 key=value 값으로 저장한다.
-
-## 저장한 .env파일을 통해 secret 생성 (이때 secret 명은 K8s의 각 최상위 폴더로 통일한다.)
-
-`kubectl create generic secret '생성할 시크릿명' --from-env-file=.env`
-
-## 만약 수정했다면 기존 secret 삭제후 재생성
-
-`kubectl delete secret '삭제할 시크릿명'
 
 

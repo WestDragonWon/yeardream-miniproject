@@ -2,135 +2,133 @@
 ## 목차
 
 1. [개요](#개요)
-2. [사전 요구 사항](#사전-요구-사항)
+2. [필요 환경](#필요-환경)
 3. [구성 요소](#구성-요소)
-4. [설치 방법](#설치-방법)
-5. [사용 방법](#사용-방법)
-6. [구현](#구현)
+4. [실행 방법](#실행-방법)
+5. [트러블 슈팅](#트러블-슈팅)
+6. [시행 착오](#시행-착오)
+
 
 ## 개요
 
-Kubernetes 안에 Stand Alone 형식으로 Spark Cluster 환경을 구성하려고 했으나 실패했습니다.
+로컬 서버에 Spark submit 할 수 있는 환경을 만들고, 쿠버네티스 API 서버에 Job을 제출하여 driver, executor 파드를 동적으로 만드는 방법을 사용하는 방식으로 스파크를 사용합니다. 
 
-Master 역할을 할 파드를 하나 띄우고, Worker 역할을 할 파드 세개를 띄운 뒤 서로 연결하였지만, Master에서 Job submit시 워커에 Executor가 생성되지 않는 문제를 겪었습니다.
+ ![alt text](img/image.png)
 
-로컬 서버에 스파크를 설치하고, 마스터를 쿠버네티스 API 서버로 설정하여 워커 파드를 동적으로 만드는 방법을 사용하는 방법으로 해결하는 중입니다.
 
-초기 구상 : ![alt text](<img/Pasted image 20240924144004.png>)
-
-## 사전 요구 사항
+## 필요 환경
 
 - Kubernetes 클러스터
-- EFS 파일 시스템
-- 클러스터에 설치된 EFS CSI 드라이버
-- SPARK에서 사용할 jar 파일, Job 파일 등 필요에 따라 커스텀
+- Spark 엔진 (K8s에 Job 제출 용도)
+- Docker 이미지를 빌드하고, Docker Hub에 배포할 수 있는 환경
+- Java 17
+
 
 ## 구성 요소
 
-- Spark 클러스터를 위한 Master, Worker의 Deployment, Service
-- (선택) jar, py 파일 등 커스텀 파일을 마운트 할 EFS
-- (EFS를 선택한 경우) EFS를 사용하기위한 PersistentVolume, PersistentVolumeClaim
+- Spark Job Submit을 위한 파일들 (sparkhome 디렉토리)
+- 실행을 원하는 파일들을 묶어 이미지로 만들기 위한 Dockerfile (sparkhome/docker 디렉토리)
+- 구현하려고 했으나 실패하여 흔적으로 남은 파일들 (backup 디렉토리)
 
-## 설치 방법
+
+## 실행 방법
 
 1. 저장소를 클론합니다. 파일은 instance1/k8s/app/processing/spark에 위치합니다.:
-   ```
-   git clone https://github.com/WestDragonWon/yeardream-miniproject.git
-   cd instance1/k8s/app/processing/spark
-   ```
-
-2. 구성을 적용합니다:
-   ```
-       EFS를 사용하는 경우 : kubectl apply -f spark-pv.yaml
-   kubectl apply -f master.yaml
-   kubectl apply -f worker.yaml
-   ```
-
-## 사용 방법
-
-- SPARK master 인스턴스에 연결 :
-  ```
-  kubectl exec -it <SPARK-master 파드 이름> /bin/bash
-  ```
-
-- 잡 제출 (Stand alone의 클라이언트 모드) - Executor 생성에 실패 :
-  ```
-  /opt/spark/bin/spark-submit \
-  --master spark://spark-master-service:7077 \
-  --conf spark.driver.host=spark-master-service \
-  --conf spark.driver.bindAddress=0.0.0.0 \
-  --deploy-mode client \
-  /<잡이 위치한 경로>
+    ```
+    git clone https://github.com/WestDragonWon/yeardream-miniproject.git
+    cd instance1/k8s/app/processing/spark
     ```
 
-- 잡 제출 (로컬 모드) :
-```
-  /opt/spark/bin/spark-submit <잡이 위치한 경로>
-```
+2. 디렉토리를 SPARK_HOME 환경변수로 등록해줍니다.
+    ```
+    vim ~/.bashrc
+    
+    마지막 줄에
+    SPARK_HOME=<커밋한 디렉토리>/instance1/k8s/app/processing/spark
+    export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+    추가
+    ```
+
+3. 실행시키고 싶은 파일들과, 실행하기 위해 필요한 파일 등을 sparkhome 디렉토리 속 원하는 위치에 넣습니다. (실행 파일은 jobs 디렉토리에, jar 파일의 경우 sparkhome디렉토리에 jars 디렉토리를 만들어 넣으면 됩니다. 실행시 사용한 jar파일들은 용량제한 문제로 포함하지 않았습니다.)
+
+4. 도커 파일을 커스텀합니다. sparkhome/dockerfile/Dockerfile에 위치하고있으며, 기본적으로 spark:3.5.2, Java17을 사용할 수 있는 환경에 jars 디렉토리와 jobs 디렉토리를 컨테이너 안에 복사하도록 구성되어있습니다.
+    ```
+    FROM spark:3.5.2-scala2.12-java17-ubuntu
+    
+    USER root
+    
+    RUN set -ex; \
+        apt-get update; \
+        apt-get install -y python3 python3-pip; \
+        rm -rf /var/lib/apt/lists/*
+    
+    COPY jars /opt/spark/jars
+    COPY jobs /opt/spark/jobs
+    
+    USER spark
+    ```
+
+5. 이미지로 만들어 빌드, 배포합니다.
+    ```
+    docker build -t <DockerHub ID>/<이미지 이름>:<태그> \ 
+    -f $SPARK_HOME/docker/Dockerfile \ 
+    $SPARK_HOME
+    ```
+    ```
+    docker push <DockerHub ID>/<이미지 이름>:<태그>
+    ```
+
+6. K8s API서버에 잡을 제출합니다.
+    ```
+    $SPARK_HOME/bin/spark-submit \ 
+      --master k8s://https://master:6443 \ 
+      --deploy-mode cluster \ 
+      --name <파드 이름> \ 
+      --conf spark.executor.instances=2 \ 
+      --conf spark.executor.cores=1 \ 
+      --conf spark.executor.memory=2g \ 
+      --conf spark.kubernetes.container.image=westdragonwon/<이미지 이름>:<태그> \ 
+      --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \ 
+      --conf spark.kubernetes.namespace=spark \ 
+      local:///opt/spark/jobs/<파일 이름>
+    ```
+
+보안상의 이유로 하드코딩 하거나, 명령어에 직접 작성하기 어려운 값들도 SECRET에 key:value 형식으로 등록하여 환경변수로 사용할 수 있습니다.
+  ```
+  --conf spark.driverEnv.<Pod 내에서 사용될 환경변수 이름>=$(kubectl get secret <secret 이름> -o jsonpath="{.data.<Secret에 저장된 키>}" | base64 --decode)
+  ```
 
 
-## 구현
+다음은 workflow 시크릿에 저장된 AWS_ACCESS_KEY_ID와 AWS_SECRET_ACCESS_KEY를 driver, executor에 전달하는 방법입니다.
+  ```
+  --conf spark.driverEnv.AWS_ACCESS_KEY_ID=$(kubectl get secret workflow -o jsonpath="{.data.AWS_ACCESS_KEY_ID}" | base64 --decode) \ 
+  --conf spark.driverEnv.AWS_SECRET_ACCESS_KEY=$(kubectl get secret workflow -o jsonpath="{.data.AWS_SECRET_ACCESS_KEY}" | base64 --decode) \  
+  --conf spark.executorEnv.AWS_ACCESS_KEY_ID=$(kubectl get secret workflow -o jsonpath="{.data.AWS_ACCESS_KEY_ID}" | base64 --decode) \ 
+  --conf spark.executorEnv.AWS_SECRET_ACCESS_KEY=$(kubectl get secret workflow -o jsonpath="{.data.AWS_SECRET_ACCESS_KEY}" | base64 --decode) \ 
+  ```
 
-파일 명 : spark-pv.yaml
-목적 : jar, job이 저장된 EFS를 Pod들과 연결한다.
-내용 :
-```
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: spark-jars-pv
-spec:
-  capacity:
-    storage: 3Gi  # 스토리지 크기 (EFS는 실제 크기 제한 없음)
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteMany  # Master, Worker 등 다수의 Pod에서 접근 가능
-  persistentVolumeReclaimPolicy: Retain  # PVC가 삭제되어도 PV 유지 (EFS와 연동하였으므로 Delete여도 될 것으로 예상)
-  storageClassName: spark-storageclass  # 수정된 StorageClass 이름
-  csi:
-    driver: efs.csi.aws.com
-    volumeHandle: fs-00fb81d888c7ed27c::fsap-0d9a6814ce62a4ba1  # <jar 파일이 저장된 EFS ID>::<경로>
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: spark-jobs-pv
-spec:
-  capacity:
-    storage: 1Gi  # 스토리지 크기 (EFS는 실제 크기 제한 없음)
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteMany  # Master, Worker 등 다수의 Pod에서 접근 가능
-  persistentVolumeReclaimPolicy: Retain  # PVC가 삭제되어도 PV 유지 (EFS와 연동하였으므로 Delete여도 될 것으로 예상)
-  storageClassName: spark-storageclass  # 수정된 StorageClass 이름
-  csi:
-    driver: efs.csi.aws.com
-    volumeHandle: fs-00fb81d888c7ed27c::fsap-0a5131b6e82bd3039  # <job 파일이 저장된 EFS ID>::<경로>
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: spark-jars-pvc
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: spark-storageclass
-  resources:
-    requests:
-      storage: 3Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: spark-jobs-pvc
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: spark-storageclass
-  resources:
-    requests:
-      storage: 1Gi
-```
+
+## 트러블 슈팅
+현상 : 잡 제출시 포트가 int 형식 7077이 아닌 string 형식"spark://spark-master:7077"로 입력되는 현상 발생
+원인 : spark 에서는 SPARK_MASTER_PORT 환경변수를 7077로 지정하는 방식으로 포트를 찾는다. service name을 spark-master로 작성시 이 환경변수가 덮어씌워지므로 반드시 서비스의 이름을 spark-master와 다르게 만들어야 한다.
+
+History Server관련 내용 추가해야 함!
+
+
+## 시행착오
+
+구상 초기, Kubernetes 안에 Stand Alone 형식으로 Spark Cluster 환경을 구성하려고 했으나 실패했습니다.
+
+Master 역할을 할 파드를 하나 띄우고, Worker 역할을 할 파드 세개를 띄운 뒤 서로 연결하는 방식으로,
+- 스파크를 사용하기 위한 자원이 항상 준비되어있다
+- 잡이 종료되어도 로그를 확인할 수 있다
+- Job이나 jar 등 실행시 필요한 파일들을 도커 이미지에 포함시켜 빌드, 푸시하지 않고 간편하게 copy할 수 있다
+등의 장점이 있습니다.
+
+Master 파드와 Worker 파드를 연결하는 데 성공했으나, 잡 제출시 Worker 파드에 Executor가 생성되지 않았습니다.
+
+많은 노력을 했으나 결국 구현하지 못한 것이 아쉬워  작성했던 코드들에 대한 기록을 남깁니다.
+
 
 파일 명 : master.yaml
 목적 : Spark 클러스터의 master 역할을 할 Deployment, Service를 만든다.
@@ -305,7 +303,7 @@ spec:
           #mountPath: /opt/spark/jars
         - name: spark-jobs-volume
           mountPath: /opt/spark/work-dir
-        resources:    #메모리 리소스가 부족하여 executor가 생성이 안 되는 가능성도 있어서 넉넉하게 설정해보았다.
+        resources:    #메모리 리소스가 부족하여 executor가 생성이 안 될 가능성도 있어서 넉넉하게 설정해보았다.
           requests:
             cpu: "1"
             memory: "3Gi"
@@ -339,9 +337,66 @@ spec:
   selector:
     app: spark
     role: worker
-
 ```
 
-## 트러블 슈팅
-현상 : 잡 제출시 포트가 int 형식 7077이 아닌 string 형식"spark://spark-master:7077"로 입력되는 현상 발생
-원인 : spark 에서는 SPARK_MASTER_PORT 환경변수를 7077로 지정하는 방식으로 포트를 찾는다. service name을 spark-master로 작성시 이 환경변수가 덮어씌워지므로 반드시 서비스의 이름을 spark-master와 다르게 만들어야 한다.
+파일 명 : spark-pv.yaml
+목적 : jar, job이 저장된 EFS를 Pod에 마운트하여 원하는 파일들을 쉽게 파드에 전달한다.
+내용 :
+```
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: spark-jars-pv
+spec:
+  capacity:
+    storage: 3Gi  # 스토리지 크기 (EFS는 실제 크기 제한 없음)
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany  # Master, Worker 등 다수의 Pod에서 접근 가능
+  persistentVolumeReclaimPolicy: Retain  # PVC가 삭제되어도 PV 유지 (EFS와 연동하였으므로 Delete여도 될 것으로 예상)
+  storageClassName: spark-storageclass  # 수정된 StorageClass 이름
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-00fb81d888c7ed27c::fsap-0d9a6814ce62a4ba1  # <jar 파일이 저장된 EFS ID>::<경로>
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: spark-jobs-pv
+spec:
+  capacity:
+    storage: 1Gi  # 스토리지 크기 (EFS는 실제 크기 제한 없음)
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany  # Master, Worker 등 다수의 Pod에서 접근 가능
+  persistentVolumeReclaimPolicy: Retain  # PVC가 삭제되어도 PV 유지 (EFS와 연동하였으므로 Delete여도 될 것으로 예상)
+  storageClassName: spark-storageclass  # 수정된 StorageClass 이름
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-00fb81d888c7ed27c::fsap-0a5131b6e82bd3039  # <job 파일이 저장된 EFS ID>::<경로>
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: spark-jars-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: spark-storageclass
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: spark-jobs-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: spark-storageclass
+  resources:
+    requests:
+      storage: 1Gi
+```
+

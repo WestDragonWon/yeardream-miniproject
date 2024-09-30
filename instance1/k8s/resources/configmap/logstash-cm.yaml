@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-configmap
+data:
+  #Kafka가 전송하는 데이터를 Elastic Search에 보관하기 위한 Logstash conf파일
+  kafka-collect.conf: |
+    input {
+      kafka {
+        bootstrap_servers => "kafka-1:9092"   #같은 namespace에서 실행해야 함! 다른 namespace에서 실행하는 경우 namespace관련 추가적인 지정이 필요
+        topics => ["my-topic"]
+        codec => plain  #plain과 json중 형식에 맞게 설정
+      }
+    }
+    
+    output {
+      file{
+        path => "/usr/share/logstash/tmp/kafka-collect.log"
+      }
+      elasticsearch{
+        hosts => ["http://elasticsearch:9200"]  #마찬가지로 같은 namespace에서 실행되어야 함
+        user => $ELASTIC_USERNAME
+        password => $ELASTIC_PASSWORD
+        index => "kafka-logstash-%{+YYYY.MM.dd}"
+      }
+    }
+
+  #filebeat로 수집한 쿠버네티스 이벤트들을  Elastic Search에 보관하기 위한 Logstash conf파일
+  event-collect.conf: |
+    input {
+      beats{
+        port => 5044
+      }
+    }
+
+    output{
+      file{
+        path => "/usr/share/logstash/tmp/event-collect.log"
+      }
+      elasticsearch {
+        hosts => ["http://elasticsearch:9200"]
+        user => "elastic"
+        password => "elastic"
+        index => "k8s-events-%{YYYY.MM.dd}"
+      }
+    }

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-exporter
+  template:
+    metadata:
+      labels:
+        app: kafka-exporter
+    spec:
+      containers:
+      - name: kafka-exporter
+        image: danielqsj/kafka-exporter:latest
+        args:
+        - "--kafka.server=kafka-1:9092"  
+        - "--kafka.server=kafka-2:9092"  
+        - "--kafka.server=kafka-3:9092"  
+        ports:
+        - containerPort: 9308  # Kafka Exporter 기본 포트
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-exporter
+spec:
+  type: NodePort  # ClusterIP에서 NodePort로 변경
+  ports:
+    - port: 9308
+      targetPort: 9308
+      nodePort: 30112  # 원하는 포트를 설정
+  selector:
+    app: kafka-exporter

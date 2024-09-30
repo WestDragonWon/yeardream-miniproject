@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-exporter
+  template:
+    metadata:
+      labels:
+        app: postgres-exporter
+    spec:
+      containers:
+        - name: postgres-exporter
+          image: wrouesnel/postgres_exporter:latest
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: POSTGRES_PASSWORD
+            - name: DATA_SOURCE_NAME
+              value: "user=$(POSTGRES_USER) password=$(POSTGRES_PASSWORD) host=postgres port=5432 dbname=s32db sslmode=disable"  # 데이터 소스 이름 설정
+          ports:
+            - containerPort: 9187  # Exporter 기본 포트
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "User: $(POSTGRES_USER), Password: $(POSTGRES_PASSWORD)"; \
+              /postgres_exporter --web.listen-address=:9187 --web.telemetry-path=/metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-exporter
+spec:
+  type: NodePort          
+  ports:
+    - port: 9187          
+      targetPort: 9187    
+      nodePort: 30000
+  selector:
+    app: postgres-exporter
