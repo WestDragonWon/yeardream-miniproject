@@ -10,3 +10,9 @@ subjects:
 - kind: ServiceAccount
   name: admin-user
   namespace: system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: system

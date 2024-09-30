@@ -15,7 +15,7 @@ CSV_FILE_PATH = './iris_dataset20.csv'
 
 CHUNK_SIZE = 1024*1024 
 
-def send_chunk_to_kafka(chunk_number, ti):
+def send_chunk_to_kafka(chunk_number, **kwargs):
     producer = Producer(
         bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
         value_serializer=lambda v: json.dumps(v).encode('utf-8'),
@@ -28,6 +28,7 @@ def send_chunk_to_kafka(chunk_number, ti):
     try:
         chunk = pd.read_csv(CSV_FILE_PATH, skiprows=range(1, start_row + 1), nrows=CHUNK_SIZE, header=0)
         
+        # CSV to JSON
         for _, row in chunk.iterrows():
             producer.send(KAFKA_TOPIC, value=row.to_dict())
         
@@ -43,12 +44,12 @@ def count_chunks():
     return (total_rows // CHUNK_SIZE) + (1 if total_rows % CHUNK_SIZE else 0)
 
 with DAG(
-    'send_large_csv_to_kafka',
+    'send_json_chunk_to_kafka',
     default_args={'owner': 'airflow'},
-    description='Send a large CSV file to Kafka in chunks',
+    description='Send a json file to Kafka in chunks',
     schedule_interval=None,
     start_date=days_ago(1),
-    tags=['kafka', 'csv'],
+    tags=['kafka', 'json'],
 ) as dag:
     # 청크 개수 확인
     count_chunks_task = PythonOperator(

@@ -34,6 +34,10 @@ data:
         static_configs:
         - targets: ['mongodb-exporter:9216']
 
+      - job_name: 'elasticsearch-exporter'  # Elasticsearch Exporter 추가
+        static_configs:
+        - targets: ['elasticsearch-exporter:9114']
+
   alert.rules: |
     groups:
       - name: server-down-alert

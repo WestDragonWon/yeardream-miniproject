@@ -16,9 +16,9 @@ spec:
       - name: kafka-exporter
         image: danielqsj/kafka-exporter:latest
         args:
-        - "--kafka.server=kafka-1:9092"  # 첫 번째 Kafka 브로커 주소
-        - "--kafka.server=kafka-2:9092"  # 두 번째 Kafka 브로커 주소
-        - "--kafka.server=kafka-3:9092"  # 세 번째 Kafka 브로커 주소
+        - "--kafka.server=kafka-1:9092"  
+        - "--kafka.server=kafka-2:9092"  
+        - "--kafka.server=kafka-3:9092"  
         ports:
         - containerPort: 9308  # Kafka Exporter 기본 포트
 ---

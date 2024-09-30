@@ -18,5 +18,3 @@ with DAG('simple_hello_world3',
         task_id='hello_task',
         python_callable=print_hello
     ) 
-
-123

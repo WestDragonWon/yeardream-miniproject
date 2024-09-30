@@ -163,6 +163,9 @@ cython_debug/
 
 data/
 jars/
+.jar/
+sparkhome/bin/
+sparkhome/sbin/
 mlruns/
 k8s/app/workflow/airflow/dags/.*
 k8s/app/workflow/airflow/dags/__pycache__
