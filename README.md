@@ -45,12 +45,6 @@ see the [LICENSE](./LICENSE) file for details.
 - **Data Engineering Automation**: Bash sh + Crontab, AWS CLI
 - **Monitoring**: K8s-Dashboard, Prometheus, Grafana
 
-### Data Pipeline
-- **Workflow** Management: Apache Airflow
-- **Data Message Queue**: Apache Kafka
-- **Data Processing**: Apache Spark, S3 Glue, ELK, AWS Athena
-- **Data DB & Storage**: Redis, MongoDB, PostgreSQL, AWS-EBS-gp3, AWS-EFS, AWS-S3
-- **Data Engineering Automation**: Bash sh + Crontab, AWS CLI, GitHub
 ### Infrastructure
 - **Load Balancer**: nginx-ingress-controller, metallb
 - **Containerization**: Docker, DockerHub
@@ -59,7 +53,6 @@ see the [LICENSE](./LICENSE) file for details.
 - **Alerting**: Alertmanager
 ### Version Control
 - **Version Control**: GitHub
-
 
 ### MLOps
 - **MLOps**: MLFlow 
@@ -79,50 +72,53 @@ see the [LICENSE](./LICENSE) file for details.
 - **5차 스프린트**: 전체 시스템 테스트 및 디버깅 (10월 1일 - 10월 4일)
 - **6차 스프린트**: 포트폴리오 제작 및 배포 (10월 7일 - 10월 10일)
 
-
 ---
 
 
 ## 목차
 ### 디렉토리와 `README.md` 파일에 대한 링크를 제공합니다.
-1. [aws](./instance1/aws/README.md)
+1. [aws]
     - [athena](./instance1/aws/athena/README.md)
     - [awscli](./instance1/aws/awscli/README.md)
     - [glue](./instance1/aws/glue/README.md)
 2. [crontab](./instance1/crontab/README.md)
-3. [docs](./instance1/docs/README.md)
+3. [docs]
 4. [k8s](./instance1/k8s/app/README.md)
-   - [app](./instance1/k8s/app/README.md)
+   - [app]
+     - [datacollection]
      - [db]
        - [elasticsearch]
        - [mongodb](./instance1/k8s/app/db/mongodb/README.md)
        - [postgresql](./instance1/k8s/app/db/postgresql/README.md)
        - [redis](./instance1/k8s/app/db/redis/README.md)
      - [monitoring]
-       - [alertmanager](./instance1/k8s/app/monitoring/README.md)
-     - [processing](./instance1/k8s/app/processing/README.md)
+       - [alertmanager](./instance1/k8s/app/monitoring/alertmanager/README.md)
+       - [exporter]
+       - [grafana]
+       - [prometheus]
+     - [processing]
        - [kafka](./instance1/k8s/app/processing/kafka/README.md)
        - [spark](./instance1/k8s/app/processing/spark/README.md)
-     - [serving](./instance1/k8s/app/serving/README.md)
-     - [system]
-       - [aws-ebs-efs](./instance1/k8s/app/system/README.md)
-       - [dashboard](./instance1/k8s/app/system/dashboard/helm/README.md)
+     - [serving]
+       - [FastAPI](./instance1/k8s/app/serving/README.md)
+     - [systeam]
+       - [aws-ebs-efs](./instance1/k8s/app/system/aws-ebs-efs/README.md)
+       - [dashboard](./instance1/k8s/app/system/dashboard/README.md)
        - [helm]
-       - [metallb](./instance1/k8s/app/systeam/metallb/README.md)
-       - [namespace](#system)
-       - [nginx-ingress-controller](#system)
-     - [workflow](./instance1/k8s/app/workflow/README.md)
-       - [airflow](./instance1/k8s/app/workflow/airflow/README.md)
-       - [mlflow](./instance1/k8s/app/workflow/mlflow/README.md)
-   - [resources](./instance1/k8s/resources/README.md)
-     - [configmap](./instance1/k8s/resources/configmap/README.md)
+       - [metallb]
+       - [nginx-ingress-controller]
+     - [workflow]
+       - [airflow](#workflow)
+       - [mlflow](#workflow)
+   - [resources]
+     - [configmap]
+     - [ingress]
      - [namespace]
-     - [pv](./instance1/k8s/resources/pv/README.md)
-     - [role]
+     - [pv]
+     - [role&serviceaccount](./instance1/k8s/resources/role&serviceaccount/README.md)
      - [secret](./instance1/k8s/resources/secret/README.md)
-     - [serviceaccount]
+     - [service]
      - [storageclass](./instance1/k8s/resources/storageclass/README.md)
-     - [job/cronjob]
 
 
 ---
