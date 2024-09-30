@@ -57,6 +57,7 @@ fastapi==0.114.0
 pydantic_core==2.23.3
 pyparsing==3.1.4
 threadpoolctl==3.5.0
+prometheus_client==0.21.0
 graphql-relay==3.2.0
 Deprecated==1.2.14
 joblib==1.4.2

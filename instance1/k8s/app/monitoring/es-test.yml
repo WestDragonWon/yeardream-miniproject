@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch-exporter
+  labels:
+    app: elasticsearch-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch-exporter
+  template:
+    metadata:
+      labels:
+        app: elasticsearch-exporter
+    spec:
+      containers:
+      - name: kafka-exporter
+        image: prometheuscommunity/elasticsearch-exporter:latest  # Docker Hub에서 가져오는 이미지
+        args:
+        - '--es.uri=http://elasticsearch:9200/'  # Elasticsearch URL
+        ports:
+        - containerPort: 9114  # Elasticsearch Exporter의 기본 포트
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-exporter
+  labels:
+    app: elasticsearch-exporter
+spec:
+  ports:
+  - name: metrics
+    port: 9114
+    targetPort: 9114
+  selector:
+    app: elasticsearch-exporter
+  type: ClusterIP
