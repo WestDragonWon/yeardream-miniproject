@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-kafka-deployment
+  labels:
+    app: flask-kafka-app
+spec:
+  replicas: 1 # 원하는 파드 수
+  selector:
+    matchLabels:
+      app: flask-kafka-app
+  template:
+    metadata:
+      labels:
+        app: flask-kafka-app
+    spec:
+      containers:
+      - name: flask-kafka-container
+        image: westdragonwon/signup:1.0  # Docker Hub에 푸시한 이미지
+        ports:
+        - containerPort: 5000  # Flask 기본 포트
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka-1:9092,kafka-2:9092"  # Kafka 브로커 주소 설정
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-kafka-service
+spec:
+  selector:
+    app: flask-kafka-app
+  ports:
+    - protocol: TCP
+      port: 80  # 외부에서 접근할 포트
+      targetPort: 5000  # 컨테이너 내부에서 사용하는 포트
+      nodePort: 32232
+  type: NodePort  

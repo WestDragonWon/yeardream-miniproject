@@ -24,7 +24,11 @@ AWS EBS 볼륨을 동적으로 스토리지를 프로비저닝하는 데 사용�
 
 volumeBindingMode: WaitForFirstConsumer
 기본값: Immediate
-스토리지 볼륨을 생성할 시기를 제어합니다. Immediate는 PVC가 생성되면 즉시 볼륨을 생성합니다. WaitForFirstConsumer는 PVC가 특정 노드에 바인딩될 때까지 (첫 번째 소비자가 있을 때까지) 볼륨 생성을 지연시킵니다. 즉, PersistentVolumeClaim이 특정 노드에 바인딩될 때까지 볼륨이 생성되지 않습니다. 이는 리소스를 최적화하고 스케줄링을 개선하는 데 유용합니다
+스토리지 볼륨을 생성할 시기를 제어합니다. Immediate는 PVC가 생성되면 즉시 볼륨을 생성합니다. WaitForFirstConsumer는 PVC가 특정 노드에 바인딩될 때까지 (첫 번째 소비자가 있을 때까지) 볼륨 생성을 지연시킵니다. 즉, PersistentVolumeClaim이 특정 노드에 바인딩될 때까지 볼륨이 생성되지 않습니다. 이는 리소스를 최적화하고 스케줄링을 개선하는 데 유용합니다.
+
+중요한 부분은 volumeBindingMode: WaitForFirstConsumer 설정입니다. 이 설정이 PVC가 생성될 때 EBS 볼륨이 어느 가용영역에서 생성될지 결정하는 핵심입니다. 이 모드는 PVC가 Pod와 바인딩되는 시점에 해당 Pod가 실행되는 노드의 가용영역에 맞게 EBS 볼륨을 생성하도록 보장합니다.
+
+WaitForFirstConsumer 모드를 사용하면 Kubernetes는 PVC가 실제로 사용되는 노드에 맞춰 EBS 볼륨을 동적으로 프로비저닝합니다.
 
 volumeBindingMode: Immediate
 스토리지 프로비저닝의 바인딩 방식을 지정합니다.
