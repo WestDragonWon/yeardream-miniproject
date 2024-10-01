@@ -1,3 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: elasticsearch-efs-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi  # 요청하는 스토리지 크기
+  storageClassName: es-storageclass  # 사용 중인 StorageClass 이름
+
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -40,8 +53,9 @@ spec:
           mountPath: /usr/share/elasticsearch/data
       volumes:
       - name: elastic-volume
-        emptyDir:
-          sizeLimit: 3Gi
+        persistentVolumeClaim:
+          claimName: elasticsearch-efs-claim  # PVC 이름
+
 ---
 apiVersion: v1
 kind: Service
@@ -54,7 +68,7 @@ spec:
   - name: elasticsearch
     port: 9200
     targetPort: 9200
-  - name: elistic-transport
+  - name: elastic-transport
     port: 9300
     targetPort: 9300
   selector:

@@ -31,7 +31,7 @@
 
 2. **Slack 메시지 전송**:
    Git 작업의 성공 또는 실패 여부를 Slack 웹훅을 통해 알림으로 전송합니다. 메시지에는 성공 시 ✅ 이모지가, 실패 시 ⚠️ 이모지가 포함됩니다.
-![alt text](/yeardream-miniproject/instance1/docs/images/github-slack.png)
+![alt text](./images/github-slack.png)
 - instance1에선 용량이 100MB 초과되는 파일은 push되지 않기때문에 오류 메세지가 왔네요! 해당파일을 ignore추가하여 해결하였습니다.
 - instance5에서도 push되지 않았기에 ⚠️이모지로 메세지가 왔지만 변경된 commit이 없는 경우라 해당 경우도 ✅가 뜨도록 옵션을 추가하면 됩니다.
 
@@ -59,12 +59,12 @@
    - 원격 저장소의 지정된 브랜치로 변경사항을 푸시하고, 푸시 성공 또는 실패에 대한 메시지를 Slack으로 전송합니다.
 
 5. **Crontab을 사용한 자동화 작업**:
-   이 스크립트는 `Crontab`을 사용하여 주기적으로 실행할 수 있습니다. 아래의 예시는 매일 12:30과 17:30에 `gitpush.sh` 스크립트를 실행하고, 로그 파일을 특정 경로에 저장하는 방식입니다.
+   이 스크립트는 `Crontab`을 사용하여 주기적으로 실행할 수 있습니다. 아래의 예시는 매일 12:30과 17:30에 `gitpush.sh` 스크립트를 실행하고, 로그 파일을 원하는 date 이름구조로 특정 경로에 저장하는 방식입니다.
 
    ```bash
    30 12 * * * /home/ubuntu/yeardream-miniproject/instance1/crontab/gitpush.sh >> /home/ubuntu/yeardream-miniproject/instance1/crontab/logs/gitpush/logfile_$(date +\%Y\%m\%d_\%H\%M\%S).log 2>&1
    30 17 * * * /home/ubuntu/yeardream-miniproject/instance1/crontab/gitpush.sh >> /home/ubuntu/yeardream-miniproject/instance1/crontab/logs/gitpush/logfile_$(date +\%Y\%m\%d_\%H\%M\%S).log 2>&1
-![alt text](/yeardream-miniproject/instance1/docs/images/crontab-log.png)
+![alt text](./images/crontab-log.png)
 ### 설정 방법
 
 ### 1. `.env` 파일

@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: es-storageclass
+provisioner: efs.csi.aws.com
+parameters:
+  provisioningMode: efs-ap  # EFS Access Point 사용
+  fileSystemId: fs-00fb81d888c7ed27c  # 사용 중인 EFS 파일 시스템 ID
+  directoryPerms: "775"  # 디렉터리 권한 설정
+  gidRangeStart: "1000"
+  gidRangeEnd: "2000"
+  basePath: "/elasticsearch"  # EFS에 마운트할 디렉터리 경로
