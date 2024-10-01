@@ -1,3 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-efs-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi  # 요청하는 스토리지 크기
+  storageClassName: grafana-storageclass  # 사용 중인 StorageClass 이름
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,6 +33,13 @@ spec:
           env:
             - name: GF_SECURITY_ADMIN_PASSWORD
               value: "admin"  # 비밀번호
+          volumeMounts:
+            - mountPath: /var/lib/grafana  # Grafana의 데이터 저장 경로
+              name: grafana-storage
+      volumes:
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: grafana-efs-claim  # PVC 이름
 
 ---
 apiVersion: v1

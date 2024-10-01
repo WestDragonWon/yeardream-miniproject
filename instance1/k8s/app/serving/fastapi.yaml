@@ -24,6 +24,18 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+        env:  # 환경 변수를 추가합니다.
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: workflow  # Secret 이름
+              key: AWS_ACCESS_KEY_ID  # Secret의 키
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: workflow
+              key: AWS_SECRET_ACCESS_KEY
+        
         livenessProbe:
           httpGet:
             path: /health
