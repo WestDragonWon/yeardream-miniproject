@@ -8,19 +8,25 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from version_control import generate_model_version
 from mlflow.tracking import MlflowClient
+import os
+
+host = os.getenv("POSTGRES_HOST")
+port = os.getenv("POSTGRES_PORT")
+database = os.getenv("POSTGRES_DB")
+user = os.getenv("POSTGRES_USER")
+table = os.getenv("POSTGRES_TABLE")
 
 # PostgreSQL 연결 및 데이터 불러오기
 def load_data_from_postgres():
     # PostgreSQL 연결 설정
     conn = psycopg2.connect(
-        host="your-postgres-host",
-        database="your-database",
-        user="your-username",
-        password="your-password"
+        host=host,
+        database=database,
+        user=user
     )
 
     # SQL 쿼리를 통해 데이터를 읽어옴
-    query = "SELECT * FROM your_table_name"  # 적절한 테이블 및 쿼리로 변경
+    query = f"SELECT * FROM {table};"  # 적절한 테이블 및 쿼리로 변경
     df = pd.read_sql(query, conn)
 
     conn.close()

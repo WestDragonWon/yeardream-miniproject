@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: model-deployment
+  name: iris-deployment
 spec:
   replicas: 1
   selector:
@@ -13,8 +13,8 @@ spec:
         app: model-app
     spec:
       containers:
-      - name: model-container
-        image: your_dockerhub_username/your_image_name:tag
+      - name: iris-container
+        image: westdragonwon/iris_deployment:latest
         ports:
         - containerPort: 5001
 ---
