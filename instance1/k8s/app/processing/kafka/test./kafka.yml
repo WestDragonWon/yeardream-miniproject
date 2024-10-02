@@ -81,7 +81,7 @@ spec:
       volumes:
         - name: kafka-storage
           persistentVolumeClaim:
-            claimName: kafka-pvc-1
+            claimName: kafka-1
 
 ---
 apiVersion: apps/v1
@@ -168,7 +168,7 @@ spec:
       volumes:
         - name: kafka-storage
           persistentVolumeClaim:
-            claimName: kafka-pvc-2
+            claimName: kafka-2
 
 ---
 apiVersion: apps/v1
@@ -254,7 +254,7 @@ spec:
       volumes:
         - name: kafka-storage
           persistentVolumeClaim:
-            claimName: kafka-pvc-3
+            claimName: kafka-3
 
 
 ---

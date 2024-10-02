@@ -9,3 +9,4 @@ reclaimPolicy: Retain
 parameters:
   type: gp3 # EBS 볼륨 유형
   fsType: ext4 # 파일 시스템 유형
+  tags: '[{"Key":"cost","Value":"알려드림DEProjectTeam06"}]'

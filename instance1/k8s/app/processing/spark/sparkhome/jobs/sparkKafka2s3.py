@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json, col, regexp_replace
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, IntegerType
+from datetime import datetime
 
 # 카프카 메시지 스키마 정의
 schema = StructType([
@@ -34,13 +35,19 @@ parsed_df = df.select(from_json(
 ).alias("parsed_value"))
 # S3에 생성될 파일이름
 output_df = parsed_df.select("parsed_value.*")
+
+current_year = datetime.now().strftime("%Y")
+current_month = datetime.now().strftime("%m")
+current_day = datetime.now().strftime("%d")
+current_hour = datetime.now().strftime("%H")
+
 # S3에 쓰기
 query = output_df \
     .writeStream \
-    .outputMode("append") \
     .format("parquet") \
-    .option("path", "s3a://team06-mlflow-feature/iris-csv-data/") \
+    .option("path", f"s3a://team06-rawdata/model-data/Year={current_year}/Month={current_month}/Day={current_day}/Hour={current_hour}/") \
     .option("checkpointLocation", "s3a://team06-mlflow-feature/iris-csv-checkpoint/") \
+    .trigger(processingTime="5 minutes") \
     .start()
 
 query.awaitTermination()

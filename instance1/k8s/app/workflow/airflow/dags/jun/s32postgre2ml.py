@@ -14,7 +14,7 @@ import io
 
 # S3 버킷 및 파일 정보
 bucket_name = 'team06-mlflow-feature'
-s3_object_name = 'iris.csv'
+s3_object_name = 'iris1.csv'
 
 # AWS 자격 증명 정보
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
@@ -47,7 +47,7 @@ def read_s3_and_store_to_postgres():
     engine = create_engine(f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}')
 
     # 데이터프레임을 PostgreSQL에 로드
-    data.to_sql('iris_data', engine, if_exists='replace', index=False)
+    data.to_sql('iris_data', engine, if_exists='replace', index=True)
     print("Data has been loaded into PostgreSQL.")
 
 # PostgreSQL에서 데이터를 읽어와 모델을 훈련시키는 함수
@@ -112,3 +112,5 @@ task_load_data_and_train_model = PythonOperator(
 )
 
 task_read_s3_and_store_to_postgres >> task_load_data_and_train_model
+
+#수정 테스트
