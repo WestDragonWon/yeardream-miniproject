@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: airflow-webserver
+  name: airflow-webserver-test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: airflow-webserver
+      app: airflow-webserver-test
   template:
     metadata:
       labels:
-        app: airflow-webserver
+        app: airflow-webserver-test
     spec:
       serviceAccountName: airflow
       nodeSelector:
         type: worker
       initContainers:
-        - name: initialize-airflow-db
+        - name: initialize-airflow-db-test
           image: apache/airflow:2.9.3-python3.8
           command: ["airflow", "db", "init"]
           env:
@@ -26,7 +26,7 @@ spec:
                   name: airflow-config
                   key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
       containers:
-        - name: airflow-webserver
+        - name: airflow-webserver-test
           image: apache/airflow:2.9.3-python3.8
           ports:
             - containerPort: 8080
@@ -73,16 +73,17 @@ spec:
             items:
               - key: AIRFLOW__KUBERNETES__POD_TEMPLATE_FILE
                 path: pod_template.yaml
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: airflow-webserver
+  name: airflow-webserver-test
 spec:
   type: NodePort
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 30091
+      nodePort: 30392
   selector:
-    app: airflow-webserver
+    app: airflow-webserver-test

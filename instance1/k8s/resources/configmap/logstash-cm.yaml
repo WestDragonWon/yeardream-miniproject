@@ -24,23 +24,3 @@ data:
         index => "kafka-logstash-%{+YYYY.MM.dd}"
       }
     }
-
-  #filebeat로 수집한 쿠버네티스 이벤트들을  Elastic Search에 보관하기 위한 Logstash conf파일
-  event-collect.conf: |
-    input {
-      beats{
-        port => 5044
-      }
-    }
-
-    output{
-      file{
-        path => "/usr/share/logstash/tmp/event-collect.log"
-      }
-      elasticsearch {
-        hosts => ["http://elasticsearch:9200"]
-        user => "elastic"
-        password => "elastic"
-        index => "k8s-events-%{YYYY.MM.dd}"
-      }
-    }

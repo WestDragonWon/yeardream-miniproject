@@ -37,7 +37,7 @@ spec:
         - name: KAFKA_LISTENERS
           value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
         - name: KAFKA_ADVERTISED_LISTENERS
-          value: "PLAINTEXT://kafka-0.kafka:9092"
+          value: "PLAINTEXT://kafka-0:9092"
         - name: KAFKA_LOG_DIRS
           value: "/var/lib/kafka/data"
         - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
@@ -111,7 +111,7 @@ spec:
         - name: KAFKA_LISTENERS
           value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
         - name: KAFKA_ADVERTISED_LISTENERS
-          value: "PLAINTEXT://kafka-1.kafka:9092"
+          value: "PLAINTEXT://kafka-1:9092"
         - name: KAFKA_LOG_DIRS
           value: "/var/lib/kafka/data"
         - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
@@ -185,7 +185,7 @@ spec:
         - name: KAFKA_LISTENERS
           value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
         - name: KAFKA_ADVERTISED_LISTENERS
-          value: "PLAINTEXT://kafka-2.kafka:9092"
+          value: "PLAINTEXT://kafka-2:9092"
         - name: KAFKA_LOG_DIRS
           value: "/var/lib/kafka/data"
         - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP

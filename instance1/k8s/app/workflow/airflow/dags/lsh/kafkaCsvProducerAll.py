@@ -8,7 +8,7 @@ import io
 import os
 
 # Kafka 설정
-KAFKA_TOPIC = 'large-csv-topic-all'
+KAFKA_TOPIC = 'iris-topic'
 KAFKA_BOOTSTRAP_SERVERS = 'kafka-1:9092,kafka-2:9092,kafka-3:9092'
 
 # CSV file경로

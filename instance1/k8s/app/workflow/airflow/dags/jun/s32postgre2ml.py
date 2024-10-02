@@ -41,7 +41,7 @@ def read_s3_and_store_to_postgres():
     body = csv_obj['Body'].read().decode('utf-8')
 
     # 파일 내용을 pandas DataFrame으로 변환
-    data = pd.read_csv(io.StringIO(body))
+    data = pd.read_csv(io.StringIO(body), sep=';')
 
     # SQLAlchemy를 사용하여 PostgreSQL 엔진 생성
     engine = create_engine(f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}')

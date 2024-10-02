@@ -55,7 +55,7 @@ current_day = datetime.now().strftime("%d")
 # S3에 데이터를 저장 (Parquet 형식으로 저장)
 query = hashed_df.writeStream \
     .format("parquet") \
-    .option("path", f"s3a://team06-rawdata/user-data/Year={current_year}/Month={current_month}/Day={current_day}/") \
+    .option("path", f"s3a://team06-rawdata/user-data/year={current_year}/month={current_month}/day={current_day}/") \
     .option("checkpointLocation", "s3a://team06-mlflow-feature/etc-data-checkpoint/") \
     .trigger(processingTime="5 minutes") \
     .start()
