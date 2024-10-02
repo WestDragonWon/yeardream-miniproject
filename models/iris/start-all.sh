@@ -31,7 +31,7 @@ git add /home/ubuntu/mlops/models/iris/.
 git commit -m "$COMMIT_MESSAGE - $(date '+%Y-%m-%d %H:%M:%S') - ${BUILD_VERSION}"
 git push origin "$BRANCH"
 
-DOCKER_IMAGE = "westdragonwon/iris_deploy:${BUILD_VERSION}"
+DOCKER_IMAGE="westdragonwon/iris_deploy:${BUILD_VERSION}"
 
 docker build -t ${DOCKER_IMAGE} -f /home/ubuntu/mlops/models/iris/docker_deploy/Dockerfile /home/ubuntu/mlops/models/iris/docker_deploy/
 docker push ${DOCKER_IMAGE}
