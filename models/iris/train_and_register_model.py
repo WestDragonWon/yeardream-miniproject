@@ -106,18 +106,9 @@ with mlflow.start_run(run_name=f"model_v{version}", nested=True) as run:
         except Exception as e:
             print(f"Failed to promote model to production: {e}")
         
-        previous_versions = client.get_latest_versions(name=model_name, stages=["production"]) 
-        print('@@@@@@@@@@@@@@@@@@', previous_versions, '@@@@@@@@@@@@@@@@@@@@')
-        for previous_version in previous_versions:
-            print(f"Previous version: {previous_version.version}, Registered version: {registered_model.version}")
-            if previous_version.version != registered_model.version:
-                print(previous_version, '#######################')
-                try:
-                    client.transition_model_version_stage(
-                        name=model_name,
-                        version=previous_version.version,
-                        stage="archived"
+        for i in range(registered_model.version):
+            client.transition_model_version_stage(
+                    name=model_name,
+                    version=i,
+                    stage="archived"
                     )
-                    print(f"Previous model version {previous_version.version} archived.")
-                except Exception as e:
-                    print(f"Failed to archive model version {previous_version.version}: {e}")
