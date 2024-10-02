@@ -109,6 +109,7 @@ with mlflow.start_run(run_name=f"model_v{version}", nested=True) as run:
         previous_versions = client.get_latest_versions(name=model_name, stages=["production"]) 
         print('@@@@@@@@@@@@@@@@@@', previous_versions, '@@@@@@@@@@@@@@@@@@@@')
         for previous_version in previous_versions:
+            print(previous_version, '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             if previous_version.version != registered_model.version:
                 print(previous_version, '#######################')
                 try:
