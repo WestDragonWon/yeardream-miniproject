@@ -17,6 +17,17 @@ spec:
         image: westdragonwon/iris_deployment:latest
         ports:
         - containerPort: 5001
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: workflow
+                key: AWS_ACCESS_KEY_ID
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: workflow
+                key: AWS_SECRET_ACCESS_KEY
 ---
 apiVersion: v1
 kind: Service
