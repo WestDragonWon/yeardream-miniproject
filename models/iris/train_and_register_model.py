@@ -106,7 +106,7 @@ with mlflow.start_run(run_name=f"model_v{version}", nested=True) as run:
         except Exception as e:
             print(f"Failed to promote model to production: {e}")
         
-        for i in range(int(registered_model.version)):
+        for i in range(1, int(registered_model.version)):
             client.transition_model_version_stage(
                     name=model_name,
                     version=i,
