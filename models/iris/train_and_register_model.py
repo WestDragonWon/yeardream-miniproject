@@ -95,11 +95,16 @@ with mlflow.start_run(run_name=f"model_v{version}", nested=True) as run:
         model_uri = f"runs:/{run_id}/model"
         registered_model = mlflow.register_model(model_uri=model_uri, name=model_name, tags = {'stage':'staging', 'accuracy':f"{accuracy:0.5f}"})
         client.update_registered_model(name=registered_model.name, description=f"{accuracy:0.5f}")
-        client.transition_model_version_stage(
-            name=model_name,
-            version=registered_model.version,
-            stage="production"
-        )
+
+        try:
+            client.transition_model_version_stage(
+                name=model_name,
+                version=registered_model.version,
+                stage="production"
+            )
+            print(f"Model {model_name} version {registered_model.version} promoted to production.")
+        except Exception as e:
+            print(f"Failed to promote model to production: {e}")
         
         previous_versions = client.get_latest_versions(name=model_name, stages=["production"])
         for previous_version in previous_versions:
