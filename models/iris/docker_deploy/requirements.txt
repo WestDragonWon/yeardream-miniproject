@@ -1,0 +1,4 @@
+flask
+mlflow
+pandas
+numpy

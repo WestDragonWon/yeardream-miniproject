@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-app
+  template:
+    metadata:
+      labels:
+        app: model-app
+    spec:
+      containers:
+      - name: model-container
+        image: your_dockerhub_username/your_image_name:tag
+        ports:
+        - containerPort: 5001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: model-service
+spec:
+  selector:
+    app: model-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5001
+  type: clusterIP
