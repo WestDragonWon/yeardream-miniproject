@@ -106,7 +106,8 @@ with mlflow.start_run(run_name=f"model_v{version}", nested=True) as run:
         except Exception as e:
             print(f"Failed to promote model to production: {e}")
         
-        previous_versions = client.get_latest_versions(name=model_name, stages=["production"])
+        previous_versions = client.get_latest_versions(name=model_name, stages=["production"]) 
+        print(previous_versions, '@@@@@@@@@@@@@@@@@@@@')
         for previous_version in previous_versions:
             if previous_version.version != registered_model.version:
                 try:
