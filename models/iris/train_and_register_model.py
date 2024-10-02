@@ -46,7 +46,7 @@ X_scaled = scaler.fit_transform(X)
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=123)
 
 # Set MLflow tracking URI
-mlflow.set_tracking_uri("http://mlflow:8080") # mlflow가 쿠버네티스 상에 떠있어야 함 (mlflow라는 이름으로)
+mlflow.set_tracking_uri("http://localhost:30003") #로컬에 설치된 쿠버네티스가 nodeport 형식으로 30003에 띄워져있어야 함
 mlflow.set_experiment("iris_classification_experiments")
 
 # Train the model and log it to MLflow
