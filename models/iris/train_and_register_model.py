@@ -110,6 +110,7 @@ with mlflow.start_run(run_name=f"model_v{version}", nested=True) as run:
         print('@@@@@@@@@@@@@@@@@@', previous_versions, '@@@@@@@@@@@@@@@@@@@@')
         for previous_version in previous_versions:
             if previous_version.version != registered_model.version:
+                print(previous_version, '#######################')
                 try:
                     client.transition_model_version_stage(
                         name=model_name,
