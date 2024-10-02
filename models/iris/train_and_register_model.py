@@ -93,7 +93,7 @@ with mlflow.start_run(run_name=f"model_v{version}", nested=True) as run:
     if past_accuracy <= accuracy:
         # Register the model to MLflow Model Registry
         model_uri = f"runs:/{run_id}/model"
-        registered_model = mlflow.register_model(model_uri=model_uri, name=model_name, tags = {'stage':'staging', 'accuracy':f"{accuracy:0.5f}"})
+        registered_model = mlflow.register_model(model_uri=model_uri, name=model_name, tags = {'accuracy':f"{accuracy:0.5f}"})
         client.update_registered_model(name=registered_model.name, description=f"{accuracy:0.5f}")
 
         try:
@@ -109,8 +109,12 @@ with mlflow.start_run(run_name=f"model_v{version}", nested=True) as run:
         previous_versions = client.get_latest_versions(name=model_name, stages=["production"])
         for previous_version in previous_versions:
             if previous_version.version != registered_model.version:
-                client.transition_model_version_stage(
-                    name=model_name,
-                    version=previous_version.version,
-                    stage="archived"
-                )
+                try:
+                    client.transition_model_version_stage(
+                        name=model_name,
+                        version=previous_version.version,
+                        stage="archived"
+                    )
+                    print(f"Previous model version {previous_version.version} archived.")
+                except Exception as e:
+                    print(f"Failed to archive model version {previous_version.version}: {e}")
