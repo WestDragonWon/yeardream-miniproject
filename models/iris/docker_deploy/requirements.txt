@@ -2,3 +2,4 @@ flask
 mlflow
 pandas
 numpy
+boto3
