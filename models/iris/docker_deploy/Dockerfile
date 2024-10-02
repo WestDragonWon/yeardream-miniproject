@@ -5,14 +5,13 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # 필요한 패키지 설치
-COPY requirements.txt .
+COPY . .
+
 RUN pip install -r requirements.txt
 
-# Flask 앱 복사
-COPY app.py .
 
 # 포트 노출
-EXPOSE 5000
+EXPOSE 5001
 
 # Flask 서버 실행
-CMD ["python", "app.py"]
+CMD ["python", "deploy_model.py"]
