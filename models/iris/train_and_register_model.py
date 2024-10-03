@@ -74,7 +74,7 @@ with mlflow.start_run(run_name=f"model_v{version}", nested=True) as run:
     model_name = 'iris_model'
 
     # Log the model to MLflow
-    mlflow.sklearn.log_model(model, model_name, artifact_path="iris_model") # 모델을 artifact 디렉토리에 저장
+    mlflow.sklearn.log_model(model, "model") # 모델을 artifact 디렉토리에 저장
 
     mlflow.log_param("iris_param", model.get_params())
     mlflow.log_metric("iris_accuracy", accuracy)
