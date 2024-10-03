@@ -10,8 +10,11 @@ mlflow.set_tracking_uri("http://mlflow:8080")
 model_name = "iris_model"
 model_version = "production"
 
+
+
 model = mlflow.pyfunc.load_model(f"models:/{model_name}/{model_version}")
 
+print(model)
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
