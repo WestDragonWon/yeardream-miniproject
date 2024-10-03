@@ -18,7 +18,7 @@ spec:
       initContainers:
       - name: init-permissions
         image: busybox
-        command: ["sh", "-c", "chown -R 1000:1000 /var/lib/kafka/data"]
+        command: ["sh", "-c", "if [ -d /var/lib/kafka/data/lost+found ]; then rm -rf /var/lib/kafka/data/lost+found; fi && chown -R 1000:1000 /var/lib/kafka/data"]
         volumeMounts:
         - name: kafka-storage
           mountPath: /var/lib/kafka/data
@@ -27,6 +27,7 @@ spec:
         image: apache/kafka:3.7.1
         ports:
         - containerPort: 9092
+        - containerPort: 9999
         env:
         - name: KAFKA_PROCESS_ROLES
           value: "broker,controller"
@@ -55,7 +56,9 @@ spec:
         - name: KAFKA_REPLICA_FETCH_MAX_BYTES
           value: "10485760"  
         - name: KAFKA_MAX_PARTITION_FETCH_MAX_BYTES
-          value: "10485760"     
+          value: "10485760"  
+        - name: KAFKA_JMX_PORT
+          value: "9999"   
         volumeMounts:
         - name: kafka-storage
           mountPath: /var/lib/kafka/data
@@ -92,7 +95,7 @@ spec:
       initContainers:
       - name: init-permissions
         image: busybox
-        command: ["sh", "-c", "chown -R 1000:1000 /var/lib/kafka/data"]
+        command: ["sh", "-c", "if [ -d /var/lib/kafka/data/lost+found ]; then rm -rf /var/lib/kafka/data/lost+found; fi && chown -R 1000:1000 /var/lib/kafka/data"]
         volumeMounts:
         - name: kafka-storage
           mountPath: /var/lib/kafka/data
@@ -101,6 +104,7 @@ spec:
         image: apache/kafka:3.7.1
         ports:
         - containerPort: 9092
+        - containerPort: 9999
         env:
         - name: KAFKA_PROCESS_ROLES
           value: "broker,controller"
@@ -129,7 +133,9 @@ spec:
         - name: KAFKA_REPLICA_FETCH_MAX_BYTES
           value: "10485760"  
         - name: KAFKA_MAX_PARTITION_FETCH_MAX_BYTES
-          value: "10485760"     
+          value: "10485760"  
+        - name: KAFKA_JMX_PORT
+          value: "9999"    
         volumeMounts:
         - name: kafka-storage
           mountPath: /var/lib/kafka/data
@@ -166,7 +172,7 @@ spec:
       initContainers:
       - name: init-permissions
         image: busybox
-        command: ["sh", "-c", "chown -R 1000:1000 /var/lib/kafka/data"]
+        command: ["sh", "-c", "if [ -d /var/lib/kafka/data/lost+found ]; then rm -rf /var/lib/kafka/data/lost+found; fi && chown -R 1000:1000 /var/lib/kafka/data"]
         volumeMounts:
         - name: kafka-storage
           mountPath: /var/lib/kafka/data
@@ -175,6 +181,7 @@ spec:
         image: apache/kafka:3.7.1
         ports:
         - containerPort: 9092
+        - containerPort: 9999
         env:
         - name: KAFKA_PROCESS_ROLES
           value: "broker,controller"
@@ -203,7 +210,9 @@ spec:
         - name: KAFKA_REPLICA_FETCH_MAX_BYTES
           value: "10485760"  
         - name: KAFKA_MAX_PARTITION_FETCH_MAX_BYTES
-          value: "10485760"     
+          value: "10485760" 
+        - name: KAFKA_JMX_PORT
+          value: "9999"       
         volumeMounts:
         - name: kafka-storage
           mountPath: /var/lib/kafka/data

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jmx-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jmx-exporter
+  template:
+    metadata:
+      labels:
+        app: jmx-exporter
+    spec:
+      containers:
+      - name: jmx-exporter
+        image: bitnami/jmx-exporter:latest
+        ports:
+        - containerPort: 7071
+        args:
+        - "--config.file=/etc/jmx-exporter/config.yaml"
+        - "--web.listen-address=0.0.0.0:7071"  # 모든 IP에서 수신
+        volumeMounts:
+        - name: jmx-config
+          mountPath: /etc/jmx-exporter/config.yaml
+          subPath: config.yaml
+      volumes:
+      - name: jmx-config
+        configMap:
+          name: jmx-exporter-config
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jmx-exporter
+spec:
+  type: NodePort  
+  ports:
+    - name: jmx-exporter-port
+      port: 7071
+      targetPort: 7071
+      nodePort: 30113
+  selector:
+    app: jmx-exporter

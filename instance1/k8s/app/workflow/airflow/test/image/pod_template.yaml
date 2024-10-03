@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: airflow-task
+spec:
+  containers:
+    - name: base
+      image: westdragonwon/airflow-rsync:test  # 필요한 이미지로 수정
+      resources:
+        requests:
+          memory: "512Mi"
+          cpu: "500m"
+        limits:
+          memory: "1Gi"
+          cpu: "1"

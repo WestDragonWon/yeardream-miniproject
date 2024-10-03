@@ -17,7 +17,7 @@ spec:
         type: worker  # worker 노드에만 배포
       initContainers:
         - name: initialize-airflow-db-test
-          image: apache/airflow:2.9.3-python3.8
+          image: westdragonwon/airflow-rsync:test
           command: ["airflow", "db", "init"]  # 데이터베이스 초기화
           env:
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
@@ -27,9 +27,20 @@ spec:
                   key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
       containers:
         - name: airflow-scheduler-test
-          image: apache/airflow:2.9.3-python3.8
+          image: westdragonwon/airflow-rsync:test
           command: ["airflow", "scheduler"]
           env:
+            # Kubernetes 관련 설정을 환경 변수로 추가
+            - name: AIRFLOW__KUBERNETES__POD_TEMPLATE_FILE
+              value: "/opt/airflow/pod_template.yaml"
+            - name: AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY
+              value: "westdragonwon/airflow-rsync"
+            - name: AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG
+              value: "test"
+            - name: AIRFLOW__KUBERNETES__DELETE_WORKER_PODS
+              value: "True"
+            - name: AIRFLOW__KUBERNETES__NAMESPACE
+              value: "default"
             - name: AIRFLOW__CORE__EXECUTOR
               value: "KubernetesExecutor"
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
@@ -43,7 +54,7 @@ spec:
             - name: airflow-dags
               mountPath: /opt/airflow/dags
             - name: airflow-config-vol
-              mountPath: /opt/airflow/pod_template.yaml
+              mountPath: /opt/airflow/pod_templates/
               subPath: pod_template.yaml
           readinessProbe:
             exec:
