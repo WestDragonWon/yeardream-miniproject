@@ -18,7 +18,8 @@ spec:
         args:
         - "--kafka.server=kafka-0:9092"  
         - "--kafka.server=kafka-1:9092"  
-        - "--kafka.server=kafka-2:9092"  
+        - "--kafka.server=kafka-2:9092"
+        - "--kafka.version=3.7.1"  
         ports:
         - containerPort: 9308  # Kafka Exporter 기본 포트
 ---

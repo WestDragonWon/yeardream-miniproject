@@ -31,12 +31,10 @@ spec:
           command: ["airflow", "scheduler"]
           env:
             # Kubernetes 관련 설정을 환경 변수로 추가
-            - name: AIRFLOW__KUBERNETES__POD_TEMPLATE_FILE
-              value: "/opt/airflow/pod_template.yaml"
             - name: AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY
-              value: "westdragonwon/airflow-rsync"
+              value: "westdragonwon/airflow-excutor"
             - name: AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG
-              value: "test"
+              value: "latest"
             - name: AIRFLOW__KUBERNETES__DELETE_WORKER_PODS
               value: "True"
             - name: AIRFLOW__KUBERNETES__NAMESPACE
@@ -61,12 +59,12 @@ spec:
               command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
             initialDelaySeconds: 60
             periodSeconds: 20
-            timeoutSeconds: 10
+            timeoutSeconds: 30
           livenessProbe:
             exec:
               command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
             initialDelaySeconds: 60
-            periodSeconds: 20
+            periodSeconds: 30
             timeoutSeconds: 10
       volumes:
         - name: airflow-logs

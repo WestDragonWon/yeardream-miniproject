@@ -33,12 +33,10 @@ spec:
           command: ["/bin/bash", "-c", "airflow webserver"]
           env:
             # Kubernetes 관련 설정을 환경 변수로 추가
-            - name: AIRFLOW__KUBERNETES__POD_TEMPLATE_FILE
-              value: "/opt/airflow/pod_template.yaml"
             - name: AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY
-              value: "westdragonwon/airflow-rsync"
+              value: "westdragonwon/airflow-excutor"
             - name: AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG
-              value: "test"
+              value: "latest"
             - name: AIRFLOW__KUBERNETES__DELETE_WORKER_PODS
               value: "True"
             - name: AIRFLOW__KUBERNETES__NAMESPACE

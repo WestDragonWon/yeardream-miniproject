@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: airflow-task
+spec:
+  containers:
+    - name: base
+      image: westdragonwon/airflow-excutor  # 요청하신 이미지 이름으로 수정
+      resources:
+        requests:
+          memory: "512Mi"
+          cpu: "500m"
+        limits:
+          memory: "1Gi"
+          cpu: "1"
+      env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: airflow  # Secret 이름
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: airflow  # Secret 이름
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: airflow  # Secret 이름
+              key: POSTGRES_HOST
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: airflow  # Secret 이름
+              key: POSTGRES_DB
+    volumeMounts:
+      - name: airflow-logs
+        mountPath: /opt/airflow/logs
+      - name: airflow-dags
+        mountPath: /opt/airflow/dags
+  volumes:
+    - name: airflow-logs
+      persistentVolumeClaim:
+        claimName: airflow-logs-pvc
+    - name: airflow-dags
+      persistentVolumeClaim:
+        claimName: airflow-dags-pvc

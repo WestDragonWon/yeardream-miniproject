@@ -29,7 +29,6 @@ spec:
         configMap:
           name: jmx-exporter-config
 
-
 ---
 apiVersion: v1
 kind: Service
