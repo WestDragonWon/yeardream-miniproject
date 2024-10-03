@@ -32,14 +32,16 @@ git add /home/ubuntu/mlops/models/iris/.
 git commit -m "$COMMIT_MESSAGE - $(date '+%Y-%m-%d %H:%M:%S') - ${BUILD_VERSION}"
 git push origin "$BRANCH"
 
+
+DOCKER_IMAGE="westdragonwon/iris_deployment:latest"
+docker build -t ${DOCKER_IMAGE} -f /home/ubuntu/mlops/models/iris/docker_deploy/Dockerfile /home/ubuntu/mlops/models/iris/docker_deploy/
+docker push ${DOCKER_IMAGE}
+
 DOCKER_IMAGE="westdragonwon/iris_deployment:${BUILD_VERSION}"
 
 docker build -t ${DOCKER_IMAGE} -f /home/ubuntu/mlops/models/iris/docker_deploy/Dockerfile /home/ubuntu/mlops/models/iris/docker_deploy/
 docker push ${DOCKER_IMAGE}
 
-DOCKER_IMAGE="westdragonwon/iris_deployment:latest"
-docker build -t ${DOCKER_IMAGE} -f /home/ubuntu/mlops/models/iris/docker_deploy/Dockerfile /home/ubuntu/mlops/models/iris/docker_deploy/
-docker push ${DOCKER_IMAGE}
 
 #실행 전 반드시 iris-deployment, iris-container가 필요함
 kubectl set image deployment/iris-deployment iris-container=${DOCKER_IMAGE}
