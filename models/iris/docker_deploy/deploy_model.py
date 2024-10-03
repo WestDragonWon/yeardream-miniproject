@@ -12,7 +12,7 @@ model_version = "production"
 
 
 
-model = mlflow.pyfunc.load_model(f"models:/{model_name}/{model_version}")
+model = mlflow.pyfunc.load_model(f"models:/{model_name}/{model_version}/iris_model")
 
 print(model)
 @app.route('/predict', methods=['POST'])
