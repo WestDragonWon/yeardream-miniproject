@@ -94,6 +94,7 @@ with mlflow.start_run(run_name=f"model_v{version}", nested=True) as run:
         # Register the model to MLflow Model Registry
         model_uri = f"runs:/{run_id}/model"
         registered_model = mlflow.register_model(model_uri=model_uri, name=model_name, tags = {'accuracy':f"{accuracy:0.5f}"})
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@', model_uri, '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
         client.update_registered_model(name=registered_model.name, description=f"{accuracy:0.5f}")
 
         try:

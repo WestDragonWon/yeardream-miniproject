@@ -28,6 +28,11 @@ spec:
               secretKeyRef:
                 name: workflow
                 key: AWS_SECRET_ACCESS_KEY
+          - name: MLFLOW_S3_ARTIFACT_ROOT
+            valueFrom:
+              secretKeyRef:
+                name: workflow
+                key: MLFLOW_S3_ARTIFACT_ROOT
 ---
 apiVersion: v1
 kind: Service
