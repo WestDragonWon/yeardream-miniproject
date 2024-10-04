@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order</title>
+</head>
+<body>
+    <h1>Order</h1>
+
+    <!-- 플래시 메시지 표시 -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/">
+        <label for="name">이름:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="user_id">ID:</label>
+        <input type="text" id="user_id" name="user_id" required><br><br>
+
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <label for="product">주문할 품목:</label>
+        <select id="product" name="product" required>
+            <option value="" disabled selected>품목을 선택하세요</option>
+            <option value="iu_ticket">아이유 콘서트 티켓</option>
+            <option value="cp_ticket">콜드플레이 콘서트 티켓</option>
+            <option value="ee_ticket">전기뱀장어 콘서트 티켓</option>
+        </select><br><br>
+
+        <button type="submit">주문</button>
+    </form>
+</body>
+</html>
+

@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-efs-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi  # 요청하는 스토리지 크기
+  storageClassName: grafana-storageclass  # 사용 중인 StorageClass 이름
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: "admin"  # 비밀번호
+          volumeMounts:
+            - mountPath: /var/lib/grafana  # Grafana의 데이터 저장 경로
+              name: grafana-storage
+      volumes:
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: grafana-efs-claim  # PVC 이름
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  type: NodePort  # ClusterIP에서 NodePort로 변경
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30098  # 원하는 포트 설정
+  selector:
+    app: grafana

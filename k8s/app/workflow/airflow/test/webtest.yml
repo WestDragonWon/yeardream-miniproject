@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-webserver-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow-webserver-test
+  template:
+    metadata:
+      labels:
+        app: airflow-webserver-test
+    spec:
+      serviceAccountName: airflow
+      nodeSelector:
+        type: worker
+      initContainers:
+        - name: initialize-airflow-db-test
+          image: westdragonwon/airflow-rsync:test
+          command: ["airflow", "db", "init"]
+          env:
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+      containers:
+        - name: airflow-webserver-test
+          image: westdragonwon/airflow-rsync:test
+          ports:
+            - containerPort: 8080
+          command: ["/bin/bash", "-c", "airflow webserver"]
+          env:
+            # Kubernetes 관련 설정을 환경 변수로 추가
+            - name: AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY
+              value: "westdragonwon/airflow-excutor"
+            - name: AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG
+              value: "latest"
+            - name: AIRFLOW__KUBERNETES__DELETE_WORKER_PODS
+              value: "True"
+            - name: AIRFLOW__KUBERNETES__NAMESPACE
+              value: "default"
+            - name: AIRFLOW__CORE__EXECUTOR
+              value: "KubernetesExecutor"
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+          volumeMounts:
+            - name: airflow-logs
+              mountPath: /opt/airflow/logs
+            - name: airflow-dags
+              mountPath: /opt/airflow/dags
+            - name: airflow-config-vol
+              mountPath: /opt/airflow/pod_templates/
+              subPath: pod_template.yaml
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 5
+      volumes:
+        - name: airflow-logs
+          persistentVolumeClaim:
+            claimName: airflow-logs-pvc
+        - name: airflow-dags
+          persistentVolumeClaim:
+            claimName: airflow-dags-pvc
+        - name: airflow-config-vol
+          configMap:
+            name: airflow-config
+            items:
+              - key: AIRFLOW__KUBERNETES__POD_TEMPLATE_FILE
+                path: pod_template.yaml
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow-webserver-test
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30392
+  selector:
+    app: airflow-webserver-test

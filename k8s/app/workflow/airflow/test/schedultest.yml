@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-scheduler-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow-scheduler-test
+  template:
+    metadata:
+      labels:
+        app: airflow-scheduler-test
+    spec:
+      serviceAccountName: airflow
+      nodeSelector:
+        type: worker  # worker 노드에만 배포
+      initContainers:
+        - name: initialize-airflow-db-test
+          image: westdragonwon/airflow-rsync:test
+          command: ["airflow", "db", "init"]  # 데이터베이스 초기화
+          env:
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+      containers:
+        - name: airflow-scheduler-test
+          image: westdragonwon/airflow-rsync:test
+          command: ["airflow", "scheduler"]
+          env:
+            # Kubernetes 관련 설정을 환경 변수로 추가
+            - name: AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY
+              value: "westdragonwon/airflow-excutor"
+            - name: AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG
+              value: "latest"
+            - name: AIRFLOW__KUBERNETES__DELETE_WORKER_PODS
+              value: "True"
+            - name: AIRFLOW__KUBERNETES__NAMESPACE
+              value: "default"
+            - name: AIRFLOW__CORE__EXECUTOR
+              value: "KubernetesExecutor"
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+          volumeMounts:
+            - name: airflow-logs
+              mountPath: /opt/airflow/logs
+            - name: airflow-dags
+              mountPath: /opt/airflow/dags
+            - name: airflow-config-vol
+              mountPath: /opt/airflow/pod_templates/
+              subPath: pod_template.yaml
+          readinessProbe:
+            exec:
+              command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 30
+          livenessProbe:
+            exec:
+              command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+      volumes:
+        - name: airflow-logs
+          persistentVolumeClaim:
+            claimName: airflow-logs-pvc
+        - name: airflow-dags
+          persistentVolumeClaim:
+            claimName: airflow-dags-pvc
+        - name: airflow-config-vol
+          configMap:
+            name: airflow-config
+            items:
+              - key: AIRFLOW__KUBERNETES__POD_TEMPLATE_FILE
+                path: pod_template.yaml

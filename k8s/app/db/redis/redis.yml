@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-cluster
+spec:
+  serviceName: redis-cluster
+  replicas: 3  # 마스터 노드를 3개로 구성하여 Redis 클러스터를 구성
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      nodeSelector:
+        type: worker
+      containers:
+        - name: redis
+          image: redis:7.0.5
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - mountPath: /data
+              name: redis-storage
+          command:
+            - "redis-server"
+          args:
+            - "--cluster-enabled"
+            - "yes"
+            - "--cluster-config-file"
+            - "/data/nodes.conf"
+            - "--cluster-node-timeout"
+            - "5000"
+            - "--appendonly"
+            - "yes"
+            - "--appendfsync"
+            - "everysec"
+            - "--save"
+            - "900 1"
+            - "--save"
+            - "300 10"
+            - "--save"
+            - "60 10000"
+            - "--dir"
+            - "/data"
+          readinessProbe:
+            exec:
+              command: ["redis-cli", "ping"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+  volumeClaimTemplates:   
+    - metadata:
+        name: redis-storage  # 파드에서 사용할 볼륨 클레임 템플릿 정의
+      spec:
+        accessModes: ["ReadWriteOnce"]  # 한 파드에서만 쓰기 가능한 모드
+        resources:
+          requests:
+            storage: 5Gi  # 각 파드에 할당할 5GB의 스토리지 요청
+        storageClassName: ebs-gp3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-cluster
+  labels:
+    app: redis
+spec:
+  ports:
+    - port: 6379  # Redis 기본 포트
+      name: redis
+    - port: 16379  # Redis 클러스터 포트 추가
+      name: redis-cluster-port
+  clusterIP: None  # Headless 서비스로 설정하여 StatefulSet 파드들에 개별 IP 할당
+  selector:
+    app: redis

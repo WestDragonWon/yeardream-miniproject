@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: airflow-task
+  name: airflow-executor-task  # pod 이름을 명시적으로 지정
+spec:
+  containers:
+    - name: base
+      image: westdragonwon/airflow-executor:latest  # 올바른 이미지 사용
+      resources:
+        requests:
+          memory: "512Mi"
+          cpu: "500m"
+        limits:
+          memory: "1Gi"
+          cpu: "1"
+      env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: airflow  # Secret 이름
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: airflow  # Secret 이름
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: airflow  # Secret 이름
+              key: POSTGRES_HOST
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: airflow  # Secret 이름
+              key: POSTGRES_DB
+  restartPolicy: Never  # Task Pod에 적합한 재시작 정책 (원하는 경우 Always로 변경 가능)

@@ -77,50 +77,46 @@ see the [LICENSE](./LICENSE) file for details.
 
 ## 목차
 ### 디렉토리와 `README.md` 파일에 대한 링크를 제공합니다.
-1. [aws]
-    - [athena](./instance1/aws/athena/README.md)
-    - [awscli](./instance1/aws/awscli/README.md)
-    - [glue](./instance1/aws/glue/README.md)
-2. [crontab](./instance1/crontab/README.md)
-3. [docs]
-4. [k8s](./instance1/k8s/app/README.md)
-   - [app]
-     - [datacollection]
-     - [db]
-       - [elasticsearch]
-       - [mongodb](./instance1/k8s/app/db/mongodb/README.md)
-       - [postgresql](./instance1/k8s/app/db/postgresql/README.md)
-       - [redis](./instance1/k8s/app/db/redis/README.md)
-     - [monitoring]
-       - [alertmanager](./instance1/k8s/app/monitoring/alertmanager/README.md)
-       - [exporter]
-       - [grafana]
-       - [prometheus]
-     - [processing]
-       - [kafka](./instance1/k8s/app/processing/kafka/README.md)
-       - [spark](./instance1/k8s/app/processing/spark/README.md)
-     - [serving]
-       - [FastAPI](./instance1/k8s/app/serving/README.md)
-     - [systeam]
-       - [aws-ebs-efs](./instance1/k8s/app/system/aws-ebs-efs/README.md)
-       - [dashboard](./instance1/k8s/app/system/dashboard/README.md)
-       - [helm]
-       - [metallb]
-       - [nginx-ingress-controller]
-     - [workflow]
-       - [airflow](#workflow)
-       - [mlflow](#workflow)
-   - [resources]
-     - [configmap]
-     - [ingress]
-     - [namespace]
-     - [pv]
-     - [role&serviceaccount](./instance1/k8s/resources/role&serviceaccount/README.md)
-     - [secret](./instance1/k8s/resources/secret/README.md)
-     - [service]
-     - [storageclass](./instance1/k8s/resources/storageclass/README.md)
-
-
+1. [.github/workflows]
+2. [aws]
+    - [athena](./aws/athena/README.md)
+    - [awscli](./aws/awscli/README.md)
+    - [glue](./aws/glue/README.md)
+3. [crontab](./crontab/README.md)
+4. [docs]
+5. [k8s](./k8s/app/README.md)
+6. [app]
+    - [datacollection]
+    - [db]
+      - [elasticsearch]
+      - [mongodb](./k8s/app/db/mongodb/README.md)
+      - [postgresql](./k8s/app/db/postgresql/README.md)
+      - [redis](./k8s/app/db/redis/README.md)
+    - [monitoring]
+      - [alertmanager](./k8s/app/monitoring/alertmanager/README.md)
+      - [exporter]
+      - [grafana]
+      - [prometheus]
+    - [processing]
+      - [kafka](./k8s/app/processing/kafka/README.md)
+      - [spark](./k8s/app/processing/spark/README.md)
+    - [serving]
+      - [FastAPI](./k8s/app/serving/README.md)
+    - [systeam]
+      - [aws-ebs-efs](./k8s/app/system/aws-ebs-efs/README.md)
+      - [dashboard](./k8s/app/system/dashboard/README.md)
+    - [workflow]
+      - [airflow](./k8s/app/workflow/airflow/README.md)
+      - [mlflow](./k8s/app/workflow/mlflow/README.md)
+7. [resources](./k8s/resources/README.md)
+    - [configmap](./k8s/resources/configmap/README.md)
+    - [pv](./k8s/resources/pv/README.md)
+    - [role&serviceaccount](./k8s/resources/role&serviceaccount/README.md)
+    - [secret](./k8s/resources/secret/README.md)
+    - [service](./k8s/resources/service/README.md)
+    - [storageclass](./k8s/resources/storageclass/README.md)
+8. [images]
+9. [mlops]
 ---
 
 ## License
