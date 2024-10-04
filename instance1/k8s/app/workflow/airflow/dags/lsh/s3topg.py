@@ -58,7 +58,7 @@ def read_s3_and_store_to_postgres(**kwargs):
             data = pq.read_table(io.BytesIO(body)).to_pandas()
             
             # Store the DataFrame to PostgreSQL, append to table
-            data.to_sql('iris_data', engine, if_exists='append', index=False)
+            data.to_sql('iris_data_json', engine, if_exists='append', index=False)
             print(f"Data from {s3_key} has been appended to PostgreSQL.")
 
 default_args = {
@@ -80,6 +80,6 @@ dag = DAG(
 task_read_s3_and_store_to_postgres = PythonOperator(
     task_id='read_s3_and_store_to_postgres',
     python_callable=read_s3_and_store_to_postgres,
-    op_kwargs={'execution_date': '{{ execution_date }}'},
+    provide_context=True,
     dag=dag,
-)s
+)

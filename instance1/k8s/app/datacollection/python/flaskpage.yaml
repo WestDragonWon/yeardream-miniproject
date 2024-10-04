@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: flask-kafka-container
-        image: westdragonwon/signup:1.0  # Docker Hub에 푸시한 이미지
+        image: westdragonwon/order:1.6 # Docker Hub에 푸시한 이미지
         ports:
         - containerPort: 5000  # Flask 기본 포트
         env:

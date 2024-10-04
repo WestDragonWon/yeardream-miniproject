@@ -25,12 +25,20 @@ S3_REGION = 'ap-northeast-2'  # S3 버킷이 위치한 지역
 redis_host = 'redis-cluster'  # Redis 호스트
 redis_port = '6379'            # Redis 포트
 
+# Redis 클라이언트 연결을 전역 변수로 설정
+redis_client = None
+
+def get_redis_client():
+    global redis_client
+    if redis_client is None:
+        startup_nodes = [{"host": redis_host, "port": redis_port}]
+        redis_client = RedisCluster(startup_nodes=startup_nodes, decode_responses=True)
+    return redis_client
+
 # S3에서 CSV 파일 읽기 및 Redis에 저장
 def read_s3_and_store_to_redis():
     try:
-        # Redis 클러스터 접속 정보
-        startup_nodes = [{"host": redis_host, "port": redis_port}]
-        redis_client = RedisCluster(startup_nodes=startup_nodes, decode_responses=True)
+        redis_client = get_redis_client()
 
         # AWS 자격 증명으로 S3 클라이언트 생성
         s3 = boto3.client('s3', 
@@ -43,18 +51,20 @@ def read_s3_and_store_to_redis():
         body = csv_obj['Body'].read().decode('utf-8')
         data = pd.read_csv(StringIO(body))
 
+        # Redis에 데이터를 배치로 저장
+        pipeline = redis_client.pipeline()
         for index, row in data.iterrows():
-            redis_client.set(f"row:{index}", json.dumps(row.to_dict()))
+            pipeline.set(f"row:{index}", json.dumps(row.to_dict()))
+        pipeline.execute()  # 모든 명령을 한 번에 실행
 
         print("Data has been imported to Redis.")
     except Exception as e:
         print(f"Error reading from S3 or storing to Redis: {e}")
+        raise  # 예외 발생 시 작업 실패로 처리
 
 # Redis에서 데이터 불러오기 및 MLflow에 모델 저장
 def load_from_redis_and_train_model():
-    # Redis 클러스터 접속 정보
-    startup_nodes = [{"host": redis_host, "port": redis_port}]
-    redis_client = RedisCluster(startup_nodes=startup_nodes, decode_responses=True)
+    redis_client = get_redis_client()
 
     data = []
     index = 0
@@ -101,6 +111,7 @@ def load_from_redis_and_train_model():
         print("Model has been trained and logged to MLflow.")
     except Exception as e:
         print(f"Error loading data from Redis or training model: {e}")
+        raise  # 예외 발생 시 작업 실패로 처리
 
 # DAG 정의
 default_args = {

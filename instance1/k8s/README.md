@@ -72,24 +72,17 @@ instance1
 type: "master"
 
 instance2
-type: "active"sudo iptables -F
-sudo iptables -t nat -F
-sudo iptables -t mangle -F
-sudo iptables -X
-sudo ipvsadm --clear
-rm -rf $HOME/.kube
+type: "worker"
 
 instance3
-type: "active"
+type: "worker"
 
 instance4 
 type: "mlops"
 
 instance5
-type: "active"
+type: "worker"
 
-instance6 
-type: "standby"
 
 - 쉽고 간단한 설정 
 - 단순한 매칭 조건

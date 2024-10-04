@@ -144,4 +144,5 @@ task_reset_table = PythonOperator(
 )
 
 # Task dependencies
-task_reset_table >> task_read_s3_and_store_to_postgres 
+task_reset_table 
+#>> task_read_s3_and_store_to_postgres 

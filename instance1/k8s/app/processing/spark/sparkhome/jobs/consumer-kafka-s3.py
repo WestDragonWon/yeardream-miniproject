@@ -57,7 +57,7 @@ query = hashed_df.writeStream \
     .format("parquet") \
     .option("path", f"s3a://team06-rawdata/user-data/year={current_year}/month={current_month}/day={current_day}/") \
     .option("checkpointLocation", "s3a://team06-mlflow-feature/etc-data-checkpoint/") \
-    .trigger(processingTime="5 minutes") \
+    .trigger(processingTime="1 minutes") \
     .start()
 
 query.awaitTermination()
