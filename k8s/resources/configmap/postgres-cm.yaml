@@ -4,4 +4,4 @@ metadata:
   name: postgres-config
 data:
   pg_hba.append.conf: |
-    host    all             all      0.0.0.0/0      trust   #모든 IP로부터의 접속을 허용
+    host    all             all      0.0.0.0/0      md5   #모든 IP로부터의 접속을 허용

@@ -20,20 +20,15 @@
      - [systeam]
        - [aws-ebs-efs](./app/system/aws-ebs-efs/README.md)
        - [dashboard](./app/system/dashboard/README.md)
-       - [helm]
-       - [metallb]
-       - [nginx-ingress-controller]
      - [workflow]
        - [airflow](./app/workflow/airflow/README.md)
        - [mlflow](./app/workflow/mlflow/README.md)
-   - [resources]
-     - [configmap]
-     - [ingress]
-     - [namespace]
-     - [pv]
+   - [resources](./resources/README.md)
+     - [configmap](./resources/configmap/README.md)
+     - [pv](./resources/pv/README.md)
      - [role&serviceaccount](./resources/role&serviceaccount/README.md)
      - [secret](./resources/secret/README.md)
-     - [service]
+     - [service](./resources/service/README.md)
      - [storageclass](./resources/storageclass/README.md)
 
 
