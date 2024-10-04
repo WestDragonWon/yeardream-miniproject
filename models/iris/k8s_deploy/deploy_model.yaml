@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iris-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-app
+  template:
+    metadata:
+      labels:
+        app: model-app
+    spec:
+      containers:
+      - name: iris-container
+        image: westdragonwon/iris_deployment:latest
+        ports:
+        - containerPort: 5001
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: workflow
+                key: AWS_ACCESS_KEY_ID
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: workflow
+                key: AWS_SECRET_ACCESS_KEY
+          - name: MLFLOW_S3_ARTIFACT_ROOT
+            valueFrom:
+              secretKeyRef:
+                name: workflow
+                key: MLFLOW_S3_ARTIFACT_ROOT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: model-service
+spec:
+  selector:
+    app: model-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5001
+  type: ClusterIP
