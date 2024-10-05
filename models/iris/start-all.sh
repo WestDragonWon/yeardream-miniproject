@@ -24,7 +24,13 @@ else
     nohup kubectl port-forward svc/postgres 5432:5432 --address 0.0.0.0 > /home/ubuntu/mlops/logs/port_forward.log 2>&1 &
 fi
 
-
+source /home/ubuntu/.bashrc
+export POSTGRES_HOST=${POSTGRES_HOST}
+export POSTGRES_PORT=${POSTGRES_PORT}
+export POSTGRES_DB=${POSTGRES_DB}
+export POSTGRES_USER=${POSTGRES_USER}
+export POSTGRES_TABLE=${POSTGRES_TABLE}
+export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 python /home/ubuntu/mlops/models/iris/train_and_register_model.py
 
 echo "pyenv deactivating ... "
@@ -40,7 +46,9 @@ BRANCH="mlops"
 #ORIGIN_BRANCH="instance4"
 COMMIT_MESSAGE="model created or edited"
 
-git add /home/ubuntu/mlops/models/iris/.
+TARGET_DIR="/home/ubuntu/mlops/models/iris/"
+cd $TARGET_DIR || exit 1
+git add .
 git commit -m "$COMMIT_MESSAGE - $(date '+%Y-%m-%d %H:%M:%S') - ${BUILD_VERSION}"
 git push origin "$BRANCH"
 
