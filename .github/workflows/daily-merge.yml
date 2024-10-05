@@ -34,11 +34,11 @@ jobs:
 
     - name: Merge mlops into main
       id: merge_mlops
-      run: git merge origin/instance5 || echo "Merge conflict in mlops" >> $GITHUB_STEP_SUMMARY
+      run: git merge origin/mlops || echo "Merge conflict in mlops" >> $GITHUB_STEP_SUMMARY
       
-    - name: Push to daily branch
+    - name: Push to main branch
       if: success()
-      run: git push origin daily
+      run: git push origin main
       
     - name: Send success message to Slack
       if: success()
