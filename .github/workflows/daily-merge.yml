@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0 
-        ref: daily
+        ref: main
         
     - name: Set Git user
       run: |
@@ -25,19 +25,15 @@ jobs:
     - name: Fetch instances
       run: |
         git fetch origin instance1
-        git fetch origin instance4
         git fetch origin mlops
 
-    - name: Merge instance1 into daily
+    - name: Merge instance1 into main
       id: merge_instance1  # 각 단계에 고유 ID를 추가하여 결과 참조 가능
       run: git merge origin/instance1 || echo "Merge conflict in instance1" >> $GITHUB_STEP_SUMMARY
                   # || 연산자를 사용하여 실패할 경우 오류메세지를 기록하도록
-    - name: Merge instance4 into daily
-      id: merge_instance4
-      run: git merge origin/instance4 || echo "Merge conflict in instance4" >> $GITHUB_STEP_SUMMARY
 
-    - name: Merge mlops into daily
-      id: merge_instance5
+    - name: Merge mlops into main
+      id: merge_mlops
       run: git merge origin/instance5 || echo "Merge conflict in mlops" >> $GITHUB_STEP_SUMMARY
       
     - name: Push to daily branch
