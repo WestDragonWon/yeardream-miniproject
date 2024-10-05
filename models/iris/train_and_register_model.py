@@ -23,7 +23,7 @@ def load_data_from_postgres():
     conn = psycopg2.connect(
         host=host,
         database=database,
-        user=user
+        user=user,
         password=pw
 
     )
