@@ -15,15 +15,21 @@ port = os.getenv("POSTGRES_PORT")
 database = os.getenv("POSTGRES_DB")
 user = os.getenv("POSTGRES_USER")
 table = os.getenv("POSTGRES_TABLE")
+pw = os.getenv("POSTGRES_PASSWORD")
 
 # PostgreSQL 연결 및 데이터 불러오기
 def load_data_from_postgres():
     # PostgreSQL 연결 설정
-    conn = psycopg2.connect(
-        host=host,
-        database=database,
-        user=user
-    )
+    try:
+        conn = psycopg2.connect(
+            host=host,
+            database=database,
+            user=user,
+            password=pw
+        )
+        print("connected")
+    except Exception as e:
+        print("connection fail")
 
     # SQL 쿼리를 통해 데이터를 읽어옴
     query = f"SELECT * FROM {table};"  # 적절한 테이블 및 쿼리로 변경

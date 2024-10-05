@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $HOME/.bashrc
+source /home/ubuntu/.bashrc
 
 echo "run models ... "
 DIRECTORY="/home/ubuntu/mlops/models/iris"
@@ -15,8 +15,23 @@ eval "$(pyenv virtualenv-init -)"
 
 VIRTUAL_ENV_NAME="mlenv"
 pyenv activate "$VIRTUAL_ENV_NAME"
-nohup kubectl port-forward svc/postgres 5432:5432 --address 0.0.0.0 > port_forward.log 2>&1 &
-python train_and_register_model.py
+
+local port=5432
+if lsof -i TCP:$port >/dev/null; then
+    echo "port forward skip"
+else
+    echo "port forwarding..."
+    nohup kubectl port-forward svc/postgres 5432:5432 --address 0.0.0.0 > /home/ubuntu/mlops/logs/port_forward.log 2>&1 &
+fi
+
+source /home/ubuntu/.bashrc
+export POSTGRES_HOST=localhost
+export POSTGRES_PORT=5432
+export POSTGRES_DB=s32db
+export POSTGRES_USER=postgres
+export POSTGRES_TABLE=iris_data
+export POSTGRES_PASSWORD=1234
+python /home/ubuntu/mlops/models/iris/train_and_register_model.py
 
 echo "pyenv deactivating ... "
 pyenv deactivate
@@ -31,7 +46,9 @@ BRANCH="mlops"
 #ORIGIN_BRANCH="instance4"
 COMMIT_MESSAGE="model created or edited"
 
-git add /home/ubuntu/mlops/models/iris/.
+TARGET_DIR="/home/ubuntu/mlops/models/iris/"
+cd $TARGET_DIR || exit 1
+git add .
 git commit -m "$COMMIT_MESSAGE - $(date '+%Y-%m-%d %H:%M:%S') - ${BUILD_VERSION}"
 git push origin "$BRANCH"
 
