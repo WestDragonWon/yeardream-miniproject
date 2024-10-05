@@ -25,12 +25,12 @@ else
 fi
 
 source /home/ubuntu/.bashrc
-export POSTGRES_HOST=${POSTGRES_HOST}
-export POSTGRES_PORT=${POSTGRES_PORT}
-export POSTGRES_DB=${POSTGRES_DB}
-export POSTGRES_USER=${POSTGRES_USER}
-export POSTGRES_TABLE=${POSTGRES_TABLE}
-export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+export POSTGRES_HOST=localhost
+export POSTGRES_PORT=5432
+export POSTGRES_DB=s32db
+export POSTGRES_USER=postgres
+export POSTGRES_TABLE=iris_data
+export POSTGRES_PASSWORD=1234
 python /home/ubuntu/mlops/models/iris/train_and_register_model.py
 
 echo "pyenv deactivating ... "
