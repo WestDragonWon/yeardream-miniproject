@@ -37,9 +37,8 @@ def load_data_from_postgres():
     # SQL 쿼리를 통해 데이터를 읽어옴
     #query = f"SELECT * FROM {table};"  # 적절한 테이블 및 쿼리로 변경
     df = pd.read_sql_table(table, engine)
-
+    df = df.dropna()
     #conn.close()
-
     return df
 
 # Load dataset from PostgreSQL
