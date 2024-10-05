@@ -15,8 +15,16 @@ eval "$(pyenv virtualenv-init -)"
 
 VIRTUAL_ENV_NAME="mlenv"
 pyenv activate "$VIRTUAL_ENV_NAME"
-nohup kubectl port-forward svc/postgres 5432:5432 --address 0.0.0.0 > port_forward.log 2>&1 &
-python train_and_register_model.py
+
+local port=5432
+if lsof -i TCP:$port >/dev/null; then
+    echo "port forward skip"
+else
+    echo "port forwarding..."
+    nohup kubectl port-forward svc/postgres 5432:5432 --address 0.0.0.0 > port_forward.log 2>&1 &
+fi
+
+python /home/ubuntu/mlops/models/iris/train_and_register_model.py
 
 echo "pyenv deactivating ... "
 pyenv deactivate

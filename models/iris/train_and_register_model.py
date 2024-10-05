@@ -15,6 +15,7 @@ port = os.getenv("POSTGRES_PORT")
 database = os.getenv("POSTGRES_DB")
 user = os.getenv("POSTGRES_USER")
 table = os.getenv("POSTGRES_TABLE")
+pw = os.getenv("POSTGRES_PASSWORD")
 
 # PostgreSQL 연결 및 데이터 불러오기
 def load_data_from_postgres():
@@ -23,6 +24,8 @@ def load_data_from_postgres():
         host=host,
         database=database,
         user=user
+        password=pw
+
     )
 
     # SQL 쿼리를 통해 데이터를 읽어옴
@@ -30,6 +33,7 @@ def load_data_from_postgres():
     df = pd.read_sql(query, conn)
 
     conn.close()
+    print("connected@@")
 
     return df
 
