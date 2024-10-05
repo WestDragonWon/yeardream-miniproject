@@ -16,7 +16,7 @@ eval "$(pyenv virtualenv-init -)"
 VIRTUAL_ENV_NAME="mlenv"
 pyenv activate "$VIRTUAL_ENV_NAME"
 
-local port=5432
+port=5432
 if lsof -i TCP:$port >/dev/null; then
     echo "port forward skip"
 else
