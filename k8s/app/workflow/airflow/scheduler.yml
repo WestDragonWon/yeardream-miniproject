@@ -69,14 +69,14 @@ spec:
             exec:
               command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
             initialDelaySeconds: 60
-            periodSeconds: 15
+            periodSeconds: 20
             timeoutSeconds: 30
           livenessProbe:
             exec:
               command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
             initialDelaySeconds: 60
-            periodSeconds: 20
-            timeoutSeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
       volumes:
         - name: airflow-logs
           persistentVolumeClaim:

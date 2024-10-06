@@ -13,7 +13,7 @@ spec:
         app: prometheus
     spec:
       nodeSelector:
-        type: worker  # worker 노드에만 배포
+        type: master  # "master" 노드에만 배포
       containers:
       - name: prometheus
         image: prom/prometheus:latest
@@ -27,6 +27,13 @@ spec:
           mountPath: /prometheus  # 기본 메트릭 저장 경로
         - name: prometheus-config  # ConfigMap을 마운트
           mountPath: /etc/prometheus
+        resources:
+          requests:
+            memory: "256Mi"    # 요청 메모리
+            cpu: "200m"        # 요청 CPU
+          limits:
+            memory: "512Mi"    # 제한 메모리
+            cpu: "500m"        # 제한 CPU
       volumes:
       - name: prometheus-storage
         persistentVolumeClaim:

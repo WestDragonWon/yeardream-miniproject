@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: fastapi-container
-        image: loafingcat/fastapi-app:1.0
+        image: westdragonwon/fast-api:1.0
         ports:
         - containerPort: 8000
         resources:
@@ -36,18 +36,6 @@ spec:
               name: workflow
               key: AWS_SECRET_ACCESS_KEY
         
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 5
 
 ---
 apiVersion: v1

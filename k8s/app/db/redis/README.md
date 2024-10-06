@@ -81,6 +81,8 @@ redis-cli -h redis-cluster-2.redis-cluster.default.svc.cluster.local -p 6379 CLU
 redis-cli --cluster create redis-cluster-0.redis-cluster.default.svc.cluster.local:6379 \
                              redis-cluster-1.redis-cluster.default.svc.cluster.local:6379 \
                              redis-cluster-2.redis-cluster.default.svc.cluster.local:6379 --cluster-replicas 0
+
+마지막 명령어 이후 yes 입력할거냐고 묻는데 yes 입력해주면 된다.
 ```
 ---
 

@@ -1,0 +1,51 @@
+name: Daily Merge
+
+on:
+  schedule:
+    - cron: '50 3 * * *'  # 한국 시간 오전 1시 실행
+    - cron: '50 8 * * *'   # 한국 시간 오후 6시 실행
+  workflow_dispatch:  # 수동 실행을 위한 트리거 추가
+
+jobs:
+  merge-instances:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 
+        ref: main
+        
+    - name: Set Git user
+      run: |
+        git config --global user.name "westdragonwon"
+        git config --global user.email "westdragonwon@gmail.com"
+
+    - name: Fetch instances
+      run: |
+        git fetch origin data-architecture
+        git fetch origin mlops
+
+    - name: Merge data-architecture into main
+      id: merge_data-architecture  # 각 단계에 고유 ID를 추가하여 결과 참조 가능
+      run: git merge origin/data-architecture || echo "Merge conflict in data-architecture" >> $GITHUB_STEP_SUMMARY
+                  # || 연산자를 사용하여 실패할 경우 오류메세지를 기록하도록
+
+    - name: Merge mlops into main
+      id: merge_mlops
+      run: git merge origin/mlops || echo "Merge conflict in mlops" >> $GITHUB_STEP_SUMMARY
+      
+    - name: Push to main branch
+      if: success()
+      run: git push origin main
+      
+    - name: Send success message to Slack
+      if: success()
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"✅ GitHub Actions: Daily merge completed successfully."}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Send alert on merge conflict to Slack
+      if: failure()
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"⚠️ GitHub Actions: Merge conflict detected during daily merge process. Conflicts occurred at: \n'"$(cat $GITHUB_STEP_SUMMARY)"'}' ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -4,8 +4,8 @@
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 export HOME=/home/ubuntu
 
-BRANCH_NAME="instance1"
-ENV_PATH="/home/ubuntu/yeardream-miniproject/$BRANCH_NAME/crontab/.env"
+BRANCH_NAME="data-architecture"
+ENV_PATH="/home/ubuntu/yeardream-miniproject/crontab/.env"
 
 # .env 파일 로드 / 검증코드를 포함하여 로드 실패시 에러 메시지 출력
 if [ -f "$ENV_PATH" ]; then

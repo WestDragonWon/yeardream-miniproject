@@ -12,6 +12,8 @@ spec:
       labels:
         app: postgres-exporter
     spec:
+      nodeSelector:
+        type: master  # "master" 노드에서 실행
       containers:
         - name: postgres-exporter
           image: wrouesnel/postgres_exporter:latest
@@ -35,6 +37,13 @@ spec:
             - |
               echo "User: $(POSTGRES_USER), Password: $(POSTGRES_PASSWORD)"; \
               /postgres_exporter --web.listen-address=:9187 --web.telemetry-path=/metrics
+          resources:
+            requests:
+              memory: "256Mi"    # 요청 메모리
+              cpu: "200m"        # 요청 CPU
+            limits:
+              memory: "512Mi"    # 제한 메모리
+              cpu: "500m"        # 제한 CPU
 ---
 apiVersion: v1
 kind: Service

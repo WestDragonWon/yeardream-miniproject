@@ -22,6 +22,8 @@ spec:
           env:             #postgres에 저장될 데이터들이 위치할 장소를 설정
             - name: PGDATA
               value: /var/lib/postgresql/data/mlops   #EFS 볼륨을 /var/lib/postgresql/data에 위치시키고, postgresql에 저장될 데이터는 EFS 볼륨에 하위 디렉토리(/mlops)를 만들어 저장하도록 하였다.
+            - name: TZ
+              value: "Asia/Seoul"
           volumeMounts:    #EFS 볼륨이 마운트 될 장소를 설정
             - name: postgres-storage 
               mountPath: /var/lib/postgresql/data
