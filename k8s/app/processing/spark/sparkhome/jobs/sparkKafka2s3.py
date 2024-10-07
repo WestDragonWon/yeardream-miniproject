@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_json, col, regexp_replace, current_timestamp
+from pyspark.sql.functions import from_json, col, regexp_replace, current_timestamp, date_format
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType
-from datetime import datetime, timedelta
+
 # 카프카 메시지 스키마 정의
 schema = StructType([
     StructField("sepal_length", DoubleType(), True),
@@ -42,19 +42,20 @@ filtered_df = parsed_df.filter(
 )
 
 output_df = filtered_df.select("parsed_value.*")
-current_time = datetime.now()
 
-# Extract the new year, month, day, and hour after adding 9 hours
-current_year = current_time.strftime("%Y")
-current_month = current_time.strftime("%m")
-current_day = current_time.strftime("%d")
-current_hour = current_time.strftime("%H")
+# actual processing time
+timestamp_df = output_df.withColumn("year", date_format(current_timestamp(), "yyyy")) \
+                        .withColumn("month", date_format(current_timestamp(), "MM")) \
+                        .withColumn("day", date_format(current_timestamp(), "dd")) \
+                        .withColumn("hour", date_format(current_timestamp(), "HH"))
+
 # S3에 쓰기
-query = output_df \
+query = timestamp_df \
     .writeStream \
     .format("parquet") \
-    .option("path", f"s3a://team06-rawdata/iris-data/year={current_year}/month={current_month}/day={current_day}/hour={current_hour}/") \
+    .option("path", "s3a://team06-rawdata/iris-data/") \
     .option("checkpointLocation", "s3a://team06-mlflow-feature/iris-csv-checkpoint/") \
+    .partitionBy("year", "month", "day", "hour") \
     .trigger(processingTime="5 minutes") \
     .start()
 query.awaitTermination()

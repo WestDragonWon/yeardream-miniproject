@@ -25,7 +25,7 @@ spec:
           cpu: "300m"
         limits:
           memory: "1Gi"
-          cpu: "500m"
+          cpu: "1"
       volumeMounts:
         - name: history-volume
           mountPath: /mnt/spark-history-logs
