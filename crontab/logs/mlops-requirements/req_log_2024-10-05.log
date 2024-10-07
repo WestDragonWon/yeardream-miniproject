@@ -1,0 +1,9 @@
+/usr/bin/python3: can't open file '/home/ubuntu/mlops/crontab/update_requirements.py': [Errno 2] No such file or directory
+  File "/home/ubuntu/mlops/crontab/update_req.sh", line 7
+    export PATH="$HOME/.pyenv/bin:$PATH"
+           ^^^^
+SyntaxError: invalid syntax
+  File "/home/ubuntu/mlops/crontab/update_req.sh", line 7
+    export PATH="$HOME/.pyenv/bin:$PATH"
+           ^^^^
+SyntaxError: invalid syntax

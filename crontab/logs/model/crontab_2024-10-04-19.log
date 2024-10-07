@@ -1,0 +1,118 @@
+run models ... 
+pyenv activating ... 
+/home/ubuntu/.pyenv/versions/mlenv/bin/python: can't open file '/home/ubuntu/train_and_register_model.py': [Errno 2] No such file or directory
+pyenv deactivating ... 
+git push ... 
+fatal: not a git repository (or any of the parent directories): .git
+fatal: not a git repository (or any of the parent directories): .git
+fatal: not a git repository (or any of the parent directories): .git
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 308B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.9-slim
+#2 ...
+
+#3 [auth] library/python:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.9-slim
+#2 DONE 1.3s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/python:3.9-slim@sha256:49f94609e5a997dc16086a66ac9664591854031d48e375945a9dbf4d1d53abbc
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 102B done
+#6 DONE 0.0s
+
+#7 [2/4] WORKDIR /app
+#7 CACHED
+
+#8 [3/4] COPY . .
+#8 CACHED
+
+#9 [4/4] RUN pip install -r requirements.txt
+#9 CACHED
+
+#10 exporting to image
+#10 exporting layers done
+#10 writing image sha256:63daf53491e30a9a2688dfaa0770b68cd198ac4b18bee7b40483e2e4d1070278 done
+#10 naming to docker.io/westdragonwon/iris_deployment:latest done
+#10 DONE 0.0s
+The push refers to repository [docker.io/westdragonwon/iris_deployment]
+1d34a6fc66ea: Preparing
+670dd4975d61: Preparing
+1abb2137a7b5: Preparing
+9e599118e168: Preparing
+e228adf1886f: Preparing
+fb5ccd0db472: Preparing
+8d853c8add5d: Preparing
+fb5ccd0db472: Waiting
+8d853c8add5d: Waiting
+e228adf1886f: Layer already exists
+1abb2137a7b5: Layer already exists
+1d34a6fc66ea: Layer already exists
+670dd4975d61: Layer already exists
+9e599118e168: Layer already exists
+8d853c8add5d: Layer already exists
+fb5ccd0db472: Layer already exists
+latest: digest: sha256:998269942486b07801bb371df67d75f4e6d61edebb86ae46aef137c92edd0057 size: 1786
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 308B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.9-slim
+#2 DONE 0.2s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/4] FROM docker.io/library/python:3.9-slim@sha256:49f94609e5a997dc16086a66ac9664591854031d48e375945a9dbf4d1d53abbc
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 102B done
+#5 DONE 0.0s
+
+#6 [2/4] WORKDIR /app
+#6 CACHED
+
+#7 [3/4] COPY . .
+#7 CACHED
+
+#8 [4/4] RUN pip install -r requirements.txt
+#8 CACHED
+
+#9 exporting to image
+#9 exporting layers done
+#9 writing image sha256:63daf53491e30a9a2688dfaa0770b68cd198ac4b18bee7b40483e2e4d1070278 done
+#9 naming to docker.io/westdragonwon/iris_deployment:1.2439.b29 done
+#9 DONE 0.0s
+The push refers to repository [docker.io/westdragonwon/iris_deployment]
+1d34a6fc66ea: Preparing
+670dd4975d61: Preparing
+1abb2137a7b5: Preparing
+9e599118e168: Preparing
+e228adf1886f: Preparing
+fb5ccd0db472: Preparing
+8d853c8add5d: Preparing
+fb5ccd0db472: Waiting
+8d853c8add5d: Waiting
+9e599118e168: Layer already exists
+e228adf1886f: Layer already exists
+670dd4975d61: Layer already exists
+1abb2137a7b5: Layer already exists
+1d34a6fc66ea: Layer already exists
+fb5ccd0db472: Layer already exists
+8d853c8add5d: Layer already exists
+1.2439.b29: digest: sha256:998269942486b07801bb371df67d75f4e6d61edebb86ae46aef137c92edd0057 size: 1786

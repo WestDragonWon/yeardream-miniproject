@@ -1,0 +1,7 @@
+[31;1m
+Failed to activate virtualenv.
+
+Perhaps pyenv-virtualenv has not been loaded into your shell properly.
+Please restart current shell and try again.
+
+[0m오류 발생: Command 'pyenv activate mlenv && pip freeze > /home/ubuntu/yeardream-miniproject/instance4/ml/requirements.txt' returned non-zero exit status 1.
