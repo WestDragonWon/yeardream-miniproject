@@ -60,6 +60,26 @@ spec:
                 secretKeyRef:
                   name: workflow
                   key: POSTGRES_PASSWORD
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: POSTGRES_PORT
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: POSTGRES_DB
+            - name: POSTGRES_TABLE
+              valueFrom:
+                secretKeyRef:
+                  name: workflow
+                  key: POSTGRES_TABLE
           volumeMounts:
             - name: airflow-logs
               mountPath: /opt/airflow/logs
