@@ -15,8 +15,8 @@ S3_REGION = 'ap-northeast-2'
 bucket_name = 'team06-rawdata'
 db_user = os.getenv("POSTGRES_USER")
 db_password = os.getenv("POSTGRES_PASSWORD")
-db_host = 'postgres'
-db_port = '5432'
+db_host = os.getenv("POSTGRES_HOST")
+db_port = os.getenv("POSTGRES_PORT")
 db_name = 's32db'
 
 def read_s3_and_store_to_postgres(**kwargs):

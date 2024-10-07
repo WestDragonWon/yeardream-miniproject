@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: fastapi-container
-        image: westdragonwon/fast-api:2.0
+        image: westdragonwon/fast-api:4.0
         ports:
         - containerPort: 8000
         resources:

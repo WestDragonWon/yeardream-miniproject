@@ -17,16 +17,15 @@ mlflow.set_experiment("iris_classification_experiments")  # 실험 이름으로 
 
 class InputData(BaseModel):
     input_model_name: str  # 모델 이름 추가
-    version: int           # 모델 버전 추가
     features: list[float]  # features를 float 타입의 리스트로 설정
 
-def get_model_by_version(name: str, version: int):
+def get_production_model(name: str):
     client = mlflow.tracking.MlflowClient()
     model_version = client.get_registered_model(name)
     
-    # 지정된 버전의 모델을 반환
+    # 'Production' 태그가 있는 모델을 반환
     for v in model_version.latest_versions:
-        if v.version == str(version):  # 버전은 문자열로 비교
+        if v.current_stage == "Production":  # 스테이지가 'Production'인지 확인
             return v
     return None
 
@@ -42,13 +41,13 @@ def predict(data: InputData):
         if len(data.features) != 4:  # Iris 데이터셋의 경우
             raise ValueError("features는 정확히 4개의 요소를 가져야 합니다.")
 
-        model_version = get_model_by_version(data.input_model_name, data.version)
+        model_version = get_production_model(data.input_model_name)
         
         if model_version is None:
-            logger.error(f"Model '{data.input_model_name}' version '{data.version}' not found.")
-            raise HTTPException(status_code=404, detail=f"Model '{data.input_model_name}' version '{data.version}' not found.")
+            logger.error(f"Model '{data.input_model_name}' in production not found.")
+            raise HTTPException(status_code=404, detail=f"Model '{data.input_model_name}' in production not found.")
         
-        model_uri = f"models:/{data.input_model_name}/{data.version}"  # 입력된 버전으로 모델 로드
+        model_uri = f"models:/{data.input_model_name}/{model_version.version}"  # 'Production' 모델 로드
         model = mlflow.pyfunc.load_model(model_uri)
         
         features = np.array(data.features).reshape(1, -1)
