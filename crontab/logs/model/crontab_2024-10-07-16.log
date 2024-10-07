@@ -1,0 +1,141 @@
+run models ... 
+pyenv activating ... 
+port forwarding...
+connection fail
+Traceback (most recent call last):
+  File "/home/ubuntu/mlops/models/iris/train_and_register_model.py", line 45, in <module>
+    df = load_data_from_postgres()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/mlops/models/iris/train_and_register_model.py", line 39, in load_data_from_postgres
+    df = pd.read_sql_table(table, engine)
+                                  ^^^^^^
+UnboundLocalError: cannot access local variable 'engine' where it is not associated with a value
+pyenv deactivating ... 
+git push ... 
+On branch mlops
+Your branch is up to date with 'origin/mlops'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   ../../crontab/logs/mlops-gitpush/logfile_20241007_123401.log
+	modified:   ../../crontab/logs/port_forward/port_forward.log
+	modified:   ../../requirements.txt
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	../../crontab/logs/mlops-requirements/req_log_2024-10-07_13-09.log
+	../../crontab/logs/model/crontab_2024-10-07-16.log
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Everything up-to-date
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 308B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.9-slim
+#2 ...
+
+#3 [auth] library/python:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.9-slim
+#2 DONE 1.4s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/python:3.9-slim@sha256:49f94609e5a997dc16086a66ac9664591854031d48e375945a9dbf4d1d53abbc
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 102B done
+#6 DONE 0.0s
+
+#7 [2/4] WORKDIR /app
+#7 CACHED
+
+#8 [3/4] COPY . .
+#8 CACHED
+
+#9 [4/4] RUN pip install -r requirements.txt
+#9 CACHED
+
+#10 exporting to image
+#10 exporting layers done
+#10 writing image sha256:63daf53491e30a9a2688dfaa0770b68cd198ac4b18bee7b40483e2e4d1070278 done
+#10 naming to docker.io/westdragonwon/iris_deployment:latest done
+#10 DONE 0.0s
+The push refers to repository [docker.io/westdragonwon/iris_deployment]
+1d34a6fc66ea: Preparing
+670dd4975d61: Preparing
+1abb2137a7b5: Preparing
+9e599118e168: Preparing
+e228adf1886f: Preparing
+fb5ccd0db472: Preparing
+8d853c8add5d: Preparing
+fb5ccd0db472: Waiting
+8d853c8add5d: Waiting
+e228adf1886f: Layer already exists
+1abb2137a7b5: Layer already exists
+9e599118e168: Layer already exists
+1d34a6fc66ea: Layer already exists
+670dd4975d61: Layer already exists
+fb5ccd0db472: Layer already exists
+8d853c8add5d: Layer already exists
+latest: digest: sha256:998269942486b07801bb371df67d75f4e6d61edebb86ae46aef137c92edd0057 size: 1786
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 308B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.9-slim
+#2 DONE 0.2s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/4] FROM docker.io/library/python:3.9-slim@sha256:49f94609e5a997dc16086a66ac9664591854031d48e375945a9dbf4d1d53abbc
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 102B done
+#5 DONE 0.0s
+
+#6 [2/4] WORKDIR /app
+#6 CACHED
+
+#7 [3/4] COPY . .
+#7 CACHED
+
+#8 [4/4] RUN pip install -r requirements.txt
+#8 CACHED
+
+#9 exporting to image
+#9 exporting layers done
+#9 writing image sha256:63daf53491e30a9a2688dfaa0770b68cd198ac4b18bee7b40483e2e4d1070278 done
+#9 naming to docker.io/westdragonwon/iris_deployment:1.2440.b38 done
+#9 DONE 0.0s
+The push refers to repository [docker.io/westdragonwon/iris_deployment]
+1d34a6fc66ea: Preparing
+670dd4975d61: Preparing
+1abb2137a7b5: Preparing
+9e599118e168: Preparing
+e228adf1886f: Preparing
+fb5ccd0db472: Preparing
+8d853c8add5d: Preparing
+fb5ccd0db472: Waiting
+8d853c8add5d: Waiting
+9e599118e168: Layer already exists
+1d34a6fc66ea: Layer already exists
+e228adf1886f: Layer already exists
+670dd4975d61: Layer already exists
+1abb2137a7b5: Layer already exists
+8d853c8add5d: Layer already exists
+fb5ccd0db472: Layer already exists
+1.2440.b38: digest: sha256:998269942486b07801bb371df67d75f4e6d61edebb86ae46aef137c92edd0057 size: 1786
