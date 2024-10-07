@@ -181,3 +181,8 @@ iris_dataset200.csv
 instance1/k8s/app/monitoring/kube-eventer/kube-eventer
 
 # test
+# model
+mlartifacts/
+mlruns/
+data/
+

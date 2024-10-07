@@ -16,21 +16,34 @@ eval "$(pyenv virtualenv-init -)"
 VIRTUAL_ENV_NAME="mlenv"
 pyenv activate "$VIRTUAL_ENV_NAME"
 
-local port=5432
+port=5432
 if lsof -i TCP:$port >/dev/null; then
     echo "port forward skip"
 else
     echo "port forwarding..."
-    nohup kubectl port-forward svc/postgres 5432:5432 --address 0.0.0.0 > /home/ubuntu/mlops/logs/port_forward.log 2>&1 &
+    nohup kubectl port-forward svc/postgres 5432:5432 --address 0.0.0.0 > /home/ubuntu/mlops/crontab/logs/port_forward/port_forward.log 2>&1 &
 fi
 
-source /home/ubuntu/.bashrc
-export POSTGRES_HOST=localhost
-export POSTGRES_PORT=5432
-export POSTGRES_DB=s32db
-export POSTGRES_USER=postgres
-export POSTGRES_TABLE=iris_data
-export POSTGRES_PASSWORD=1234
+ENV_PATH="/home/ubuntu/mlops/models/iris/.env"
+
+# .env 파일 로드 / 검증코드를 포함하여 로드 실패시 에러 메시지 출력
+if [ -f "$ENV_PATH" ]; then
+  set -a  # 자동으로 export 되도록 설정
+  source "$ENV_PATH" || { echo "Failed to load .env file"; exit 1; }
+  set +a  # 자동 export 설정 해제
+else
+  echo ".env file not found at $ENV_PATH"
+  exit 1
+fi
+
+
+POSTGRES_HOST="${POSTGRES_HOST}"
+POSTGRES_PORT="${POSTGRES_PORT}"
+POSTGRES_DB="${POSTGRES_DB}"
+POSTGRES_USER="${POSTGRES_USER}"
+POSTGRES_TABLE="${POSTGRES_TABLE}"
+POSTGRES_PASSWORD="${POSTGRES_PASSWORD}"
+
 python /home/ubuntu/mlops/models/iris/train_and_register_model.py
 
 echo "pyenv deactivating ... "

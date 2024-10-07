@@ -10,7 +10,7 @@ def generate_model_version():
     yearweek = current_date.strftime("%y%U")
 
     # Step 3: Build Version
-    build_file = ".build_version.txt"
+    build_file = "/home/ubuntu/mlops/models/iris/.build_version.txt"
     if os.path.exists(build_file):
         with open(build_file, "r") as f:
             last_version = f.read().strip()

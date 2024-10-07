@@ -9,6 +9,7 @@ from sklearn.metrics import accuracy_score
 from version_control import generate_model_version
 from mlflow.tracking import MlflowClient
 import os
+from sqlalchemy import create_engine
 
 host = os.getenv("POSTGRES_HOST")
 port = os.getenv("POSTGRES_PORT")
@@ -21,22 +22,23 @@ pw = os.getenv("POSTGRES_PASSWORD")
 def load_data_from_postgres():
     # PostgreSQL 연결 설정
     try:
-        conn = psycopg2.connect(
-            host=host,
-            database=database,
-            user=user,
-            password=pw
-        )
+        #SQLAlchemy로 데이터베이스와 연결
+        engine = create_engine(f'postgresql+psycopg2://{user}:{pw}@{host}:{port}/{database}')
+        #conn = psycopg2.connect(
+        #    host=host,
+        #    database=database,
+        #    user=user,
+        #    password=pw
+        #)
         print("connected")
     except Exception as e:
         print("connection fail")
 
     # SQL 쿼리를 통해 데이터를 읽어옴
-    query = f"SELECT * FROM {table};"  # 적절한 테이블 및 쿼리로 변경
-    df = pd.read_sql(query, conn)
-
-    conn.close()
-
+    #query = f"SELECT * FROM {table};"  # 적절한 테이블 및 쿼리로 변경
+    df = pd.read_sql_table(table, engine)
+    df = df.dropna()
+    #conn.close()
     return df
 
 # Load dataset from PostgreSQL
