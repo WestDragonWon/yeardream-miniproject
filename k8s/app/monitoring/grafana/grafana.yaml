@@ -1,16 +1,3 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: grafana-efs-claim
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi  # 요청하는 스토리지 크기
-  storageClassName: grafana-storageclass  # 사용 중인 StorageClass 이름
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,6 +25,9 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/grafana  # Grafana의 데이터 저장 경로
               name: grafana-storage
+            - mountPath: /etc/grafana/grafana.ini  # ConfigMap을 통해 설정 파일을 마운트
+              name: grafana-config
+              subPath: grafana.ini  # ConfigMap의 특정 파일만 마운트
           resources:
             requests:
               memory: "256Mi"    # 요청 메모리
@@ -49,6 +39,9 @@ spec:
         - name: grafana-storage
           persistentVolumeClaim:
             claimName: grafana-efs-claim  # PVC 이름
+        - name: grafana-config
+          configMap:
+            name: grafana-config  # ConfigMap 이름
 
 ---
 apiVersion: v1

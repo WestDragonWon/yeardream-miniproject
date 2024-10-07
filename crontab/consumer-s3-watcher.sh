@@ -1,5 +1,5 @@
 #!/bin/bash
-
+export SPARK_HOME=/home/ubuntu/yeardream-miniproject/k8s/app/processing/spark/sparkhome
 cleanup_pods() {
     local APP_NAME=$1
     local POD_STATUS=$2

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export SPARK_HOME=/home/ubuntu/yeardream-miniproject/k8s/app/processing/spark/sparkhome
 cleanup_pods() {
     local APP_NAME=$1
     local POD_STATUS=$2
@@ -49,6 +50,7 @@ while true; do
     elif [ "$POD_STATUS_2" == "Failed" ] || [ "$POD_STATUS_2" == "Unknown" ] || [ -z "$POD_STATUS_2" ]; then
         cleanup_pods "iris-s3" "$POD_STATUS_2"
         submit_spark_job "iris-s3" "sparkKafka2s3.py"
+        echo "Pod is Creating"
     fi
 
     sleep 60

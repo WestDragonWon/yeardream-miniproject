@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+data:
+  grafana.ini: |
+    [smtp]
+    enabled = true
+    host = smtp.gmail.com:587          
+    user = bjunho0130@gmail.com        
+    password = zcnt byzw ujad pbjs        
+    skip_verify = false                 
+    from_address = bjunho0130@gmail.com  
+    from_name = Grafana                  

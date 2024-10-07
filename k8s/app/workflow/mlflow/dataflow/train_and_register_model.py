@@ -43,8 +43,8 @@ def load_data_from_postgres():
 
 # Load dataset from PostgreSQL
 df = load_data_from_postgres()
-X = df.drop("Species", axis=1).values  # target_column을 예측 대상 열로 변경
-y = df["Species"].values
+X = df.drop("species", axis=1).drop("idx", axis=1).drop("created_at", axis=1).values  # target_column을 예측 대상 열로 변경
+y = df["species"].values
 
 # Preprocess the data
 scaler = StandardScaler()

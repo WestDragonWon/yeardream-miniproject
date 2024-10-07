@@ -10,7 +10,7 @@ KAFKA_TOPIC = 'iris-topic1'
 KAFKA_BOOTSTRAP_SERVERS = 'kafka-1:9092,kafka-2:9092,kafka-3:9092'
 
 # JSON file
-JSON_FILE_PATH = '/opt/airflow/dags/data/fault2_iris_dataset20.json'
+JSON_FILE_PATH = '/opt/airflow/dags/data/iris_data.json'
 CHUNK_SIZE = 100  # json 청크사이즈, message사이즈 조절시 필요
 
 def send_chunk_to_kafka(chunk_number, **kwargs):
