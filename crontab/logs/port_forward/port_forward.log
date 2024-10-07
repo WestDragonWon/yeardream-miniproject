@@ -1,0 +1,3 @@
+Forwarding from 0.0.0.0:5432 -> 5432
+Handling connection for 5432
+error: lost connection to pod

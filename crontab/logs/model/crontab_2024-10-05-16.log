@@ -1,0 +1,148 @@
+run models ... 
+pyenv activating ... 
+port forward skip
+connected
+Traceback (most recent call last):
+  File "/home/ubuntu/mlops/models/iris/train_and_register_model.py", line 68, in <module>
+    model.fit(X_train, y_train)
+  File "/home/ubuntu/.pyenv/versions/mlenv/lib/python3.11/site-packages/sklearn/base.py", line 1473, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.pyenv/versions/mlenv/lib/python3.11/site-packages/sklearn/linear_model/_logistic.py", line 1223, in fit
+    X, y = self._validate_data(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.pyenv/versions/mlenv/lib/python3.11/site-packages/sklearn/base.py", line 650, in _validate_data
+    X, y = check_X_y(X, y, **check_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.pyenv/versions/mlenv/lib/python3.11/site-packages/sklearn/utils/validation.py", line 1301, in check_X_y
+    X = check_array(
+        ^^^^^^^^^^^^
+  File "/home/ubuntu/.pyenv/versions/mlenv/lib/python3.11/site-packages/sklearn/utils/validation.py", line 1064, in check_array
+    _assert_all_finite(
+  File "/home/ubuntu/.pyenv/versions/mlenv/lib/python3.11/site-packages/sklearn/utils/validation.py", line 123, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/ubuntu/.pyenv/versions/mlenv/lib/python3.11/site-packages/sklearn/utils/validation.py", line 172, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input X contains NaN.
+LogisticRegression does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
+pyenv deactivating ... 
+git push ... 
+[mlops 581845e] model created or edited - 2024-10-05 16:19:05 - 1.2439.b37
+ 2 files changed, 20 insertions(+), 8 deletions(-)
+ delete mode 100644 models/iris/build_version.txt
+remote: 
+remote: GitHub found 1 vulnerability on WestDragonWon/yeardream-miniproject's default branch (1 moderate). To find out more, visit:        
+remote:      https://github.com/WestDragonWon/yeardream-miniproject/security/dependabot/26        
+remote: 
+To github.com:WestDragonWon/yeardream-miniproject.git
+   6a7cf43..581845e  mlops -> mlops
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 308B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.9-slim
+#2 ...
+
+#3 [auth] library/python:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.9-slim
+#2 DONE 1.4s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/python:3.9-slim@sha256:49f94609e5a997dc16086a66ac9664591854031d48e375945a9dbf4d1d53abbc
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 102B done
+#6 DONE 0.0s
+
+#7 [2/4] WORKDIR /app
+#7 CACHED
+
+#8 [3/4] COPY . .
+#8 CACHED
+
+#9 [4/4] RUN pip install -r requirements.txt
+#9 CACHED
+
+#10 exporting to image
+#10 exporting layers done
+#10 writing image sha256:63daf53491e30a9a2688dfaa0770b68cd198ac4b18bee7b40483e2e4d1070278 done
+#10 naming to docker.io/westdragonwon/iris_deployment:latest done
+#10 DONE 0.0s
+The push refers to repository [docker.io/westdragonwon/iris_deployment]
+1d34a6fc66ea: Preparing
+670dd4975d61: Preparing
+1abb2137a7b5: Preparing
+9e599118e168: Preparing
+e228adf1886f: Preparing
+fb5ccd0db472: Preparing
+8d853c8add5d: Preparing
+fb5ccd0db472: Waiting
+8d853c8add5d: Waiting
+e228adf1886f: Layer already exists
+1d34a6fc66ea: Layer already exists
+670dd4975d61: Layer already exists
+1abb2137a7b5: Layer already exists
+9e599118e168: Layer already exists
+fb5ccd0db472: Layer already exists
+8d853c8add5d: Layer already exists
+latest: digest: sha256:998269942486b07801bb371df67d75f4e6d61edebb86ae46aef137c92edd0057 size: 1786
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 308B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.9-slim
+#2 DONE 0.2s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/4] FROM docker.io/library/python:3.9-slim@sha256:49f94609e5a997dc16086a66ac9664591854031d48e375945a9dbf4d1d53abbc
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 102B done
+#5 DONE 0.0s
+
+#6 [2/4] WORKDIR /app
+#6 CACHED
+
+#7 [3/4] COPY . .
+#7 CACHED
+
+#8 [4/4] RUN pip install -r requirements.txt
+#8 CACHED
+
+#9 exporting to image
+#9 exporting layers done
+#9 writing image sha256:63daf53491e30a9a2688dfaa0770b68cd198ac4b18bee7b40483e2e4d1070278 done
+#9 naming to docker.io/westdragonwon/iris_deployment:1.2439.b37 done
+#9 DONE 0.0s
+The push refers to repository [docker.io/westdragonwon/iris_deployment]
+1d34a6fc66ea: Preparing
+670dd4975d61: Preparing
+1abb2137a7b5: Preparing
+9e599118e168: Preparing
+e228adf1886f: Preparing
+fb5ccd0db472: Preparing
+8d853c8add5d: Preparing
+fb5ccd0db472: Waiting
+8d853c8add5d: Waiting
+9e599118e168: Layer already exists
+670dd4975d61: Layer already exists
+e228adf1886f: Layer already exists
+1abb2137a7b5: Layer already exists
+1d34a6fc66ea: Layer already exists
+8d853c8add5d: Layer already exists
+fb5ccd0db472: Layer already exists
+1.2439.b37: digest: sha256:998269942486b07801bb371df67d75f4e6d61edebb86ae46aef137c92edd0057 size: 1786

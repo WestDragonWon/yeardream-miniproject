@@ -1,0 +1,2 @@
+/usr/bin/python3: can't open file '/home/ubuntu/yeardream-miniproject/instance4/update_requirements.py': [Errno 2] No such file or directory
+/home/ubuntu/yeardream-miniproject/instance4/crontab/requirements.txt가 성공적으로 업데이트되었습니다.
