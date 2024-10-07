@@ -83,3 +83,16 @@ spec:
         - name: airflow-dags
           persistentVolumeClaim:
             claimName: airflow-dags-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow-webserver
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30091
+  selector:
+    app: airflow-webserver

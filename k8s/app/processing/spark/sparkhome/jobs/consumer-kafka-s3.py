@@ -22,7 +22,8 @@ spark = SparkSession.builder \
 signup_schema = StructType() \
     .add("name", StringType()) \
     .add("user_id", StringType()) \
-    .add("password", StringType())
+    .add("password", StringType()) \
+    .add("product", StringType())
 
 # 비밀번호 해시 처리 함수
 def hash_password(password):
@@ -34,9 +35,9 @@ hash_password_udf = udf(hash_password, StringType())
 # Kafka에서 스트리밍 데이터 읽기
 df = spark.readStream \
     .format("kafka") \
-    .option("kafka.bootstrap.servers", "kafka-1:9092,kafka-2:9092,kafka-3:9092") \
+    .option("kafka.bootstrap.servers", "kafka-1:9092,kafka-2:9092,kafka-0:9092") \
     .option("subscribe", "user-topic") \
-    .option("startingOffsets", "latest") \
+    .option("startingOffsets", "earliest") \
     .load()
 
 # Kafka 메시지의 value를 JSON 형식으로 변환하여 파싱
@@ -56,7 +57,7 @@ current_day = datetime.now().strftime("%d")
 query = hashed_df.writeStream \
     .format("parquet") \
     .option("path", f"s3a://team06-rawdata/user-data/year={current_year}/month={current_month}/day={current_day}/") \
-    .option("checkpointLocation", "s3a://team06-mlflow-feature/etc-data-checkpoint/") \
+    .option("checkpointLocation", "s3a://team06-mlflow-feature/etc-data-checkpoint-1/") \
     .trigger(processingTime="1 minutes") \
     .start()
 

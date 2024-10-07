@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: spark-consumer-s3-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: spark-consumer-s3
+        image: westdragonwon/sparkstreaming:1.10
+        command:
+          [
+            "/opt/spark/bin/spark-submit",
+            "--master", "k8s://https://master:6443/",
+            "--deploy-mode", "cluster",
+            "--name", "consumer-s3",
+            "--conf", "spark.executor.instances=3",
+            "--conf", "spark.kubernetes.container.image=westdragonwon/sparkstreaming:1.10",
+            "--conf", "spark.kubernetes.authenticate.driver.serviceAccountName=spark",
+            "--packages", "org.apache.hadoop:hadoop-aws:3.3.1,com.amazonaws:aws-java-sdk-bundle:1.11.901",
+            "--conf", "spark.hadoop.fs.s3a.aws.credentials.provider=com.amazonaws.auth.EnvironmentVariableCredentialsProvider",
+            "--conf", "spark.driver.extraJavaOptions=-Divy.cache.dir=/tmp -Divy.home=/tmp",
+            "--conf", "spark.hadoop.fs.s3a.access.key=$(kubectl get secret workflow -o jsonpath={.data.AWS_ACCESS_KEY_ID} | base64 --decode)",
+            "--conf", "spark.hadoop.fs.s3a.secret.key=$(kubectl get secret workflow -o jsonpath={.data.AWS_SECRET_ACCESS_KEY} | base64 --decode)",
+            "--conf", "spark.kubernetes.executor.deleteOnTermination=true",
+            "--conf", "spark.eventLog.enabled=true",
+            "--conf", "spark.eventLog.dir=file:/mnt/spark-history-logs",
+            "--conf", "spark.kubernetes.driver.podTemplateFile=/opt/spark/podtemplate/driver-pod-template.yaml",
+            "--conf", "spark.kubernetes.executor.podTemplateFile=/opt/spark/podtemplate/executor-pod-template.yaml",
+            "local:///opt/spark/jobs/consumer-kafka-s3.py"
+          ]
+        volumeMounts:
+        - name: spark-history-logs
+          mountPath: /mnt/spark-history-logs
+        - name: pod-template
+          mountPath: /opt/spark/podtemplate
+      restartPolicy: OnFailure
+      volumes:
+      - name: spark-history-logs
+        hostPath:
+          path: /path/to/your/spark-history-logs
+      - name: pod-template
+        hostPath:
+          path: /path/to/your/pod-template
+  backoffLimit: 4

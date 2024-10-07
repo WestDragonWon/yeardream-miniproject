@@ -13,7 +13,7 @@ spec:
         app: mongodb-exporter
     spec:
       nodeSelector:
-        type: worker  # worker 노드에 배포
+        type: master  # "master" 노드에 배포
       containers:
       - name: mongodb-exporter
         image: bitnami/mongodb-exporter:latest
@@ -22,6 +22,13 @@ spec:
         env:
         - name: MONGODB_URI
           value: "mongodb://mongodb:27017/mongo?replicaSet=MainRepSet"  # MongoDB 연결 URI
+        resources:
+          requests:
+            memory: "256Mi"    # 요청 메모리
+            cpu: "200m"        # 요청 CPU
+          limits:
+            memory: "512Mi"    # 제한 메모리
+            cpu: "500m"        # 제한 CPU
 ---
 apiVersion: v1
 kind: Service

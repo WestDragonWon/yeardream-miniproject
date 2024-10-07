@@ -54,18 +54,6 @@ spec:
             - name: airflow-config-vol
               mountPath: /opt/airflow/pod_templates/
               subPath: pod_template.yaml
-          readinessProbe:
-            exec:
-              command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
-            initialDelaySeconds: 60
-            periodSeconds: 20
-            timeoutSeconds: 30
-          livenessProbe:
-            exec:
-              command: ["airflow", "jobs", "check", "--job-type", "SchedulerJob"]
-            initialDelaySeconds: 60
-            periodSeconds: 30
-            timeoutSeconds: 10
       volumes:
         - name: airflow-logs
           persistentVolumeClaim:

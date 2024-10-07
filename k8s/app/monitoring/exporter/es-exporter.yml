@@ -14,6 +14,8 @@ spec:
       labels:
         app: elasticsearch-exporter
     spec:
+      nodeSelector:
+        type: master  # "master" 노드에서 실행
       containers:
       - name: elasticsearch-exporter
         image: prometheuscommunity/elasticsearch-exporter:latest
@@ -32,7 +34,13 @@ spec:
             secretKeyRef:
               name: db
               key: ELASTICSEARCH_PASSWORD
-
+        resources:
+          requests:
+            memory: "512Mi"    # 요청 메모리
+            cpu: "200m"        # 요청 CPU
+          limits:
+            memory: "1Gi"      # 제한 메모리
+            cpu: "500m"        # 제한 CPU
 ---
 apiVersion: v1
 kind: Service

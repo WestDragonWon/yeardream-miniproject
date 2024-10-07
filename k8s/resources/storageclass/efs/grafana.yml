@@ -9,4 +9,6 @@ parameters:
   directoryPerms: "775"  # 디렉터리 권한 설정
   gidRangeStart: "1000"
   gidRangeEnd: "2000"
+  accessPointId: fsap-04f981b9fd4e7a99c  # EFS Access Point ID 추가
   basePath: "/grafana"  # EFS에 마운트할 디렉터리 경로
+
