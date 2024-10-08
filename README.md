@@ -20,13 +20,22 @@ see the [LICENSE](./LICENSE) file for details.
 ## 프로젝트 개요
 이 프로젝트는 **MLOps**와 **데이터 파이프라인**을 통합한 견고한 시스템을 구축하는 것을 목표로 합니다. **AWS**와 **Kubernetes**를 기반으로 머신러닝 워크플로우 및 데이터 처리 파이프라인을 자동화하여, 머신러닝 모델의 확장과 대규모 데이터 처리를 위한 프로덕션 수준의 솔루션을 제공합니다.
 
-## 프로젝트 목표
-
 1. 머신러닝 모델을 프로덕션에 배포하는 자동화된 **MLOps** 시스템 구축.
 2. 대량의 데이터를 처리할 수 있는 안정적이고 확장 가능한 **데이터 파이프라인** 구축.
 3. 워크플로우 전반에 걸쳐 보안과 데이터 영속성을 보장.
-4. Kubernetes와 클라우드 네이티브 도구를 적용하여 고가용성과 장애 허용성 달성.
-### 5. 단순히 도구를 이용해보는 실습이 아닌 / 서비스를 배포하기 위한 도구들의 작동 방식과 각각의 주요 옵션들에 대한 이해를 기반으로 이후 원하는 서비스를 제약없이 구축 할 수 있는 능력을 기르기.
+4. Kubernetes와 AWS 클라우드 네이티브 도구를 적용하여 고가용성과 장애 허용성 달성.
+
+## 프로젝트 목표
+
+지난 프로젝트로 Container System 기반의 데이터 파이프라인을 구축하고 이해하는 시간을 가졌고, 이를 기반으로
+
+이번 프로젝트에선 오케스트레이션 활용해 자동화와 고가용성을 확보.
+
+1. Kubernetes 시스템의 이해
+
+2. AWS 서비스의 이해
+
+-  단순히 도구를 이용해보는 실습이 아닌 / 서비스를 배포하기 위한 도구들의 작동 방식과 각각의 주요 옵션들에 대한 이해를 기반으로 이후 원하는 서비스를 제약없이 구축 할 수 있는 능력을 기르기.
 
 
 ## 주요 기능
@@ -77,36 +86,38 @@ see the [LICENSE](./LICENSE) file for details.
 
 ## 목차
 ### 디렉토리와 `README.md` 파일에 대한 링크를 제공합니다.
-1. [.github/workflows]
-2. [aws]
+1. [.github/workflows](.github/workflows/README.md)
+2. [aws](./aws/README.md)
     - [athena](./aws/athena/README.md)
     - [awscli](./aws/awscli/README.md)
     - [glue](./aws/glue/README.md)
 3. [crontab](./crontab/README.md)
-4. [docs]
+4. [docs](./docs/app/README.md)
 5. [k8s](./k8s/app/README.md)
-    - [app]
-      - [datacollection]
-      - [db]
-        - [elasticsearch]
+    - [app](./k8s/app/README.md)
+      - [datacollection](./k8s/app/datacollection/python/README.md)
+      > [db](./k8s/app/db/README.md)
+        - elasticsearch
         - [mongodb](./k8s/app/db/mongodb/README.md)
         - [postgresql](./k8s/app/db/postgresql/README.md)
         - [redis](./k8s/app/db/redis/README.md)
-      - [monitoring]
-        - [alertmanager](./k8s/app/monitoring/alertmanager/README.md)
-        - [exporter]
-        - [grafana]
-        - [prometheus]
-      - [processing]
+      > [monitoring](./k8s/app/monitoring/README.md)
+        - [exporter](./k8s/app/monitoring/exporter/README.md)
+        - [grafana](./k8s/app/monitoring/grafana/README.md)
+        - [prometheus](./k8s/app/monitoring/prometheus/README.md)
+      > [processing]
         - [kafka](./k8s/app/processing/kafka/README.md)
-        - [spark](./k8s/app/processing/spark/README.md)
-      - [serving]
+        - > [spark](./k8s/app/processing/spark/README.md)
+          - [sparkjob](./k8s/app/processing/spark/sparkhome/README.md)
+      > [serving](./k8s/app/serving/README.md)
         - [FastAPI](./k8s/app/serving/README.md)
-      - [systeam]
+      > [systeam](./k8s/app/system/README.md)
         - [aws-ebs-efs](./k8s/app/system/aws-ebs-efs/README.md)
         - [dashboard](./k8s/app/system/dashboard/README.md)
-      - [workflow]
+      > [workflow](./k8s/app/workflow/README.md)
         - [airflow](./k8s/app/workflow/airflow/README.md)
+          - [dags1](./k8s/app/workflow/airflow/dags/lsh/README.md)
+          - [dage2](./k8s/app/workflow/airflow/dags/jun/README.md)
         - [mlflow](./k8s/app/workflow/mlflow/README.md)
     - [resources](./k8s/resources/README.md)
       - [configmap](./k8s/resources/configmap/README.md)
@@ -115,8 +126,8 @@ see the [LICENSE](./LICENSE) file for details.
       - [secret](./k8s/resources/secret/README.md)
       - [service](./k8s/resources/service/README.md)
       - [storageclass](./k8s/resources/storageclass/README.md)
-6. [models]
-7. [test]
+6. [models](./models/README.md)
+  - []
 ---
 
 ## License

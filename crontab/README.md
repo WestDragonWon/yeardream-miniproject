@@ -18,7 +18,7 @@
    - [파이썬 파일 코드](#파이썬-파일-코드)
    - [crontab을 이용한 업데이트 자동화](#crontab을-이용한-업데이트-자동화)
 
-
+4. [Spark Job](#Spark-job)
 
 ## Git Repository 자동화 및 알람
 ### gitpush.sh 개요
@@ -161,3 +161,19 @@ importlib.metadata: 이 모듈은 Python 패키지의 메타데이터에 접근�
 하루에 한 번만 오후 5시 30분에 실행되고 파이썬 파일로 작성했기 때문에 실행하기 위해 파이썬 인터프리터 경로를 지정해줍니다. 
 
 지정한 경로에 그날 날짜를 이름으로 한 log 파일이 생성되는 설정을 추가했습니다.
+
+## Spark job
+
+### 개요
+deploy mode가 Kubernetes인 Spark job은 예상치 못한 상황으로 중단된 경우 deployment 등으로 관리되는 pod처럼 자동으로 재시작되지 않기 때문에 종료를 감지하고, 다시 시작해야합니다.
+
+스파크 잡에 라벨을 붙여 파드가 Running상태로 동작중인지를 파악하고, 아니라면 다시 작동시키는 역할을 하는 코드를 5분 간격으로 실행합니다.
+
+[Spark job 1](iris-spark.sh)  
+[Spark job 2](consumer-s3-watcher.sh)
+
+[Spark 설명](../k8s/app/processing/spark/README.md)  
+[Spark job 설명](../k8s/app/processing/spark/sparkhome/README.md)
+
+1. `kubectl get pod -l app=iris-s3 -o jsonpath='{.items[0].status.phase}' 2>/dev/null ` 명령으로 특정 라벨의 파드 상태를 확인합니다.  
+2. Running 상태가 아니라면 기존의 파드를 삭제하고, 스파크 잡을 다시 제출합니다.

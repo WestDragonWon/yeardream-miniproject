@@ -52,5 +52,9 @@
 - 1시간 스케쥴로 이전시간 s3경로에서 데이터를 가져오도록 설정
 ### storeAndTrainRegister.py
 - (임시경로)에 version관련 파일을 쓰고 읽어서 버전기록
-- s3topg.py를 통해 s3데이터를 
+- s3topg.py를 통해 s3데이터를 postgres로 전달
+- SQLAlchemy를 통해 postgres데이터 불러오기 (null값 처리)
+- postgres에서 불러온 데이터 컬럼별 학습에 필요한 데이터 X, 추론(정답) 데이터 Y
+- 최고 정확도를 description에 기록 갱신, description과 비교하여 더 높으면 production, 아니면 archived stage
+
 

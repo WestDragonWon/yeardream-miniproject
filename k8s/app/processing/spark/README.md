@@ -7,7 +7,7 @@
 4. [실행 방법](#실행-방법)
 5. [트러블 슈팅](#트러블-슈팅)
 6. [시행 착오](#시행-착오)
-
+7. [sparkjob](./sparkhome/README.md)
 
 ## 개요
 
@@ -92,7 +92,7 @@
     ```
 
 
-Pod template을 이용하여 Job에서 필요한 환경변수, 마운트 해야하는 볼륨, 필요한 자원 을 커스텀할 수 있습니다. ($SPARK_HOME/podtemplate 위치에 예시 pod template을 넣어놓았습니다.)
+Pod template을 이용하여 Job에서 필요한 환경변수, 마운트 해야하는 볼륨, 필요한 자원 을 관리할 수 있습니다. ($SPARK_HOME/podtemplate 위치에 예시 pod template을 넣어놓았습니다.)
 
 예시로, workflow 시크릿에 저장된 AWS ACCESS KEY와 AWS SECRET KEY를 환경 변수로 받을 수 있도록 하였고, 리소스를 명시적으로 지정하였으며, 로그를 기록하기 위해 EFS pv를 연결해놓았습니다.
   
