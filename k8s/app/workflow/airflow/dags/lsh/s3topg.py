@@ -17,7 +17,7 @@ db_user = os.getenv("POSTGRES_USER")
 db_password = os.getenv("POSTGRES_PASSWORD")
 db_host = os.getenv("POSTGRES_HOST")
 db_port = os.getenv("POSTGRES_PORT")
-db_name = 's32db'
+db_name = os.getenv("POSTGRES_DB")
 
 def read_s3_and_store_to_postgres(**kwargs):
     # airflow가 스케줄로 4시에 돌면 logical_date는 3시

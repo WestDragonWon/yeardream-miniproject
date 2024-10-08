@@ -11,7 +11,7 @@ KAFKA_BOOTSTRAP_SERVERS = 'kafka-1:9092,kafka-2:9092,kafka-3:9092'
 
 # JSON file
 JSON_FILE_PATH = '/opt/airflow/dags/data/iris_data.json'
-CHUNK_SIZE = 100  # json 청크사이즈, message사이즈 조절시 필요
+CHUNK_SIZE = 5000  # json 청크사이즈 (5개 컬럼기준 1mb)
 
 def send_chunk_to_kafka(chunk_number, **kwargs):
     producer = Producer({'bootstrap.servers': KAFKA_BOOTSTRAP_SERVERS})
@@ -22,7 +22,7 @@ def send_chunk_to_kafka(chunk_number, **kwargs):
     try:
         with open(JSON_FILE_PATH, 'r') as file:
             #json을 한번에 읽으므로 큰 json파일은 안됨, streaming 또는 api 호출을 통한 메모리 사이즈 이하의 json데이터
-            #특정
+
             data = json.load(file)
             chunk = data[start_row:end_row]
 

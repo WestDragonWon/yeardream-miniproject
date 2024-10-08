@@ -1,32 +1,100 @@
-# Prometheus configmap으로 알람 규칙 설정 -> alertmanager로 알람 보내기가능
+# grafana
+
+## 목차
+
+1. 개요
+2. 코드설정
+3. 사용법
+
+		apiVersion: v1
+		kind: PersistentVolumeClaim
+		metadata:
+		name: grafana-efs-claim
+		spec:
+		accessModes:
+			- ReadWriteMany
+		resources:
+			requests:
+			storage: 1Gi  # 요청하는 스토리지 크기
+		storageClassName: grafana-storageclass  # 사용 중인 StorageClass 이름
+
+		---
+		apiVersion: apps/v1
+		kind: Deployment
+		metadata:
+		name: grafana
+		spec:
+		replicas: 1
+		selector:
+			matchLabels:
+			app: grafana
+		template:
+			metadata:
+			labels:
+				app: grafana
+			spec:
+			containers:
+				- name: grafana
+				image: grafana/grafana:latest
+				ports:
+					- containerPort: 3000
+				env:
+					- name: GF_SECURITY_ADMIN_PASSWORD
+					value: "admin"  # 비밀번호
+				volumeMounts:
+					- mountPath: /var/lib/grafana  # Grafana의 데이터 저장 경로
+					name: grafana-storage
+			volumes:
+				- name: grafana-storage
+				persistentVolumeClaim:
+					claimName: grafana-efs-claim  # PVC 이름
+
+		---
+		apiVersion: v1
+		kind: Service
+		metadata:
+		name: grafana
+		spec:
+		type: NodePort  # ClusterIP에서 NodePort로 변경
+		ports:
+			- port: 3000
+			targetPort: 3000
+			nodePort: 30098  # 원하는 포트 설정
+		selector:
+			app: grafana
+
+- 생성한 대쉬보드나 연결 설정 등 저장이 필요하기 때문에 efs 1기가 붙여줌
 
 
 
+### 사용법
 
-kafka_up
+1. grafana에 prometheus 연동
 
-![alt text](image-2.png)
+![alt text](<이미지 27.png>)
 
-pg_up
+2. prometheus의 서비스 이름과 지정한 포트를 입력해준다.
 
-![alt text](image.png)
+![alt text](<이미지 29.png>)
 
-redis_up
+3. 연결이 잘 됐는지 확인
 
-![alt text](image-1.png)
+![alt text](<이미지 30.png>)
 
-es
+4. dashboard로 가서 새로운 폴더나 대쉬보드 생성
 
-![alt text](image-3.png)
+![alt text](<이미지 31.png>)
 
+5. 새로운 대쉬보드나 기존의 것을 edit 가능
 
+![alt text](<이미지 39.png>)
 
-exporter 에러핸들링
+![alt text](<이미지 38.png>)
 
-exporter 부분에서 가장 많은 실패를 겪음. 각 회사별로 인자 설정이 다르다 보니 같은 설정이라고 생각했던 것들을 반복만 하면 되겠구나 하는 얕은 생각으로 덤볐다가 
+6. 매트릭을 검색하거나 직접 쿼리문 작성
 
-큰코 다치게 되었음. 게다가 이미지를 만든 사람의 가이드를 따라서 해도 안되는 경우도 있다(?) 그래도 우여곡절 끝에 redis, mongo, postgres, es들의 exporter 연결을
+![alt text](<이미지 40.png>)
 
-성공했지만 ls에서 벽에 막힘. 얘는 이미지도 죄다 서비스 종료된 것들 뿐이고 그나마 요새 활발한 이미지는 인자값이 없다??? 그리고 자꾸 .env 파일을 요구하여서 설정 해주고
+![alt text](<이미지 36.png>)
 
-configmap도 설정해줬지만 해결되지 않았음. 결론은 logstash는 다들 철수를 한 거 같으니 exporter를 연결할 필요가 없어보임.
+이렇게 해서 원하는 정보를 시각화 하여 볼 수 있다.

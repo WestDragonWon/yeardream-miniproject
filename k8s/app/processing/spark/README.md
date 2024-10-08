@@ -11,15 +11,15 @@
 
 ## 개요
 
-로컬 서버에 Spark submit 할 수 있는 환경을 만들고, 쿠버네티스 API 서버에 Job을 제출하여 driver, executor 파드를 동적으로 만드는 방법을 사용하는 방식으로 스파크를 사용합니다. 
+로컬 서버에 Spark submit 할 수 있는 환경을 만들고, 쿠버네티스 API 서버에 Job을 제출하여 driver, executor 파드를 동적으로 만드는 방법을 사용하였습니다.
 
- ![alt text](img/image.png)
+![image](img/image.png)
 
 
 ## 필요 환경
 
 - Kubernetes 클러스터
-- Spark 엔진 (K8s에 Job 제출 용도)
+- Spark 엔진 (K8s에 Job 제출 용도) - 버전 : 3.5.1
 - Docker 이미지를 빌드하고, Docker Hub에 배포할 수 있는 환경
 - Java 17
 
@@ -28,6 +28,7 @@
 
 - Spark Job Submit을 위한 파일들 (sparkhome 디렉토리)
 - 실행을 원하는 파일들을 묶어 이미지로 만들기 위한 Dockerfile (sparkhome/docker 디렉토리)
+- driver, executor 생성시 볼륨, 환경 변수를 사용할 수 있게 해주는 pod-template
 - 구현하려고 했으나 실패하여 흔적으로 남은 파일들 (backup 디렉토리)
 
 
@@ -42,14 +43,12 @@
 2. 디렉토리를 SPARK_HOME 환경변수로 등록해줍니다.
     ```
     vim ~/.bashrc
-    
     마지막 줄에
-    SPARK_HOME=<커밋한 디렉토리>/instance1/k8s/app/processing/spark
+    export SPARK_HOME="<커밋한 디렉토리>/instance1/k8s/app/processing/spark"
     export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
-    추가
     ```
 
-3. 실행시키고 싶은 파일들과, 실행하기 위해 필요한 파일 등을 sparkhome 디렉토리 속 원하는 위치에 넣습니다. (실행 파일은 jobs 디렉토리에, jar 파일의 경우 sparkhome디렉토리에 jars 디렉토리를 만들어 넣으면 됩니다. 실행시 사용한 jar파일들은 용량제한 문제로 포함하지 않았습니다.)
+3. 실행시키고 싶은 파일들과, 실행하기 위해 필요한 파일 등을 sparkhome 디렉토리 속 원하는 위치에 넣습니다. (실행 파일은 jobs 디렉토리에, jar 파일의 경우 sparkhome디렉토리에 jars 디렉토리를 만들어 넣으면 됩니다.)
 
 4. 도커 파일을 커스텀합니다. sparkhome/dockerfile/Dockerfile에 위치하고있으며, 기본적으로 spark:3.5.2, Java17을 사용할 수 있는 환경에 jars 디렉토리와 jobs 디렉토리를 컨테이너 안에 복사하도록 구성되어있습니다.
     ```
@@ -74,9 +73,8 @@
     -f $SPARK_HOME/docker/Dockerfile \ 
     $SPARK_HOME
     ```
-    ```
-    docker push <DockerHub ID>/<이미지 이름>:<태그>
-    ```
+
+    `docker push <DockerHub ID>/<이미지 이름>:<태그>`
 
 6. K8s API서버에 잡을 제출합니다.
     ```
@@ -84,35 +82,81 @@
       --master k8s://https://master:6443 \ 
       --deploy-mode cluster \ 
       --name <파드 이름> \ 
+      --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \ 
       --conf spark.executor.instances=2 \ 
       --conf spark.executor.cores=1 \ 
       --conf spark.executor.memory=2g \ 
       --conf spark.kubernetes.container.image=westdragonwon/<이미지 이름>:<태그> \ 
-      --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \ 
       --conf spark.kubernetes.namespace=spark \ 
       local:///opt/spark/jobs/<파일 이름>
     ```
 
-보안상의 이유로 하드코딩 하거나, 명령어에 직접 작성하기 어려운 값들도 SECRET에 key:value 형식으로 등록하여 환경변수로 사용할 수 있습니다.
-  ```
-  --conf spark.driverEnv.<Pod 내에서 사용될 환경변수 이름>=$(kubectl get secret <secret 이름> -o jsonpath="{.data.<Secret에 저장된 키>}" | base64 --decode)
-  ```
 
+Pod template을 이용하여 Job에서 필요한 환경변수, 마운트 해야하는 볼륨, 필요한 자원 을 커스텀할 수 있습니다. ($SPARK_HOME/podtemplate 위치에 예시 pod template을 넣어놓았습니다.)
 
-다음은 workflow 시크릿에 저장된 AWS_ACCESS_KEY_ID와 AWS_SECRET_ACCESS_KEY를 driver, executor에 전달하는 방법입니다.
-  ```
-  --conf spark.driverEnv.AWS_ACCESS_KEY_ID=$(kubectl get secret workflow -o jsonpath="{.data.AWS_ACCESS_KEY_ID}" | base64 --decode) \ 
-  --conf spark.driverEnv.AWS_SECRET_ACCESS_KEY=$(kubectl get secret workflow -o jsonpath="{.data.AWS_SECRET_ACCESS_KEY}" | base64 --decode) \  
-  --conf spark.executorEnv.AWS_ACCESS_KEY_ID=$(kubectl get secret workflow -o jsonpath="{.data.AWS_ACCESS_KEY_ID}" | base64 --decode) \ 
-  --conf spark.executorEnv.AWS_SECRET_ACCESS_KEY=$(kubectl get secret workflow -o jsonpath="{.data.AWS_SECRET_ACCESS_KEY}" | base64 --decode) \ 
-  ```
+예시로, workflow 시크릿에 저장된 AWS ACCESS KEY와 AWS SECRET KEY를 환경 변수로 받을 수 있도록 하였고, 리소스를 명시적으로 지정하였으며, 로그를 기록하기 위해 EFS pv를 연결해놓았습니다.
+  
+pod template 사용법 : 
+```
+  --conf spark.kubernetes.driver.podTemplateFile=$SPARK_HOME/podtemplate/driver-pod-template.yaml \
+  --conf spark.kubernetes.executor.podTemplateFile=$SPARK_HOME/podtemplate/executor-pod-template.yaml \
+```
+  
+예를 들어, 
+```
+$SPARK_HOME/bin/spark-submit \
+  --master k8s://https://master:6443/ \
+  --deploy-mode cluster \
+  --name <테스트 이름> \
+  --conf spark.executor.instances=2 \
+  --conf spark.executor.cores=1 \
+  --conf spark.executor.memory=2g \
+  --conf spark.kubernetes.container.image=<계정명>/<이미지 이름>:<태그> \
+  --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
+  --conf spark.kubernetes.executor.deleteOnTermination=true \
+  --conf "spark.eventLog.enabled=true" \
+  --conf "spark.eventLog.dir=file:/mnt/spark-history-logs" \
+  --conf "spark.kubernetes.driver.volumes.persistentVolumeClaim.sparkhistoryserver-pvc.options.claimName=sparkhistoryserver-pvc" \
+  --conf "spark.kubernetes.driver.volumes.persistentVolumeClaim.sparkhistoryserver-pvc.mount.path=/mnt/spark-history-logs" \
+  --conf "spark.kubernetes.executor.volumes.persistentVolumeClaim.sparkhistoryserver-pvc.options.claimName=sparkhistoryserver-pvc" \
+  --conf "spark.kubernetes.executor.volumes.persistentVolumeClaim.sparkhistoryserver-pvc.mount.path=/mnt/spark-history-logs" \
+  --conf spark.driverEnv.AWS_ACCESS_KEY_ID=$(kubectl get secret workflow -o jsonpath="{.data.AWS_ACCESS_KEY_ID}" | base64 --decode) \
+  --conf spark.driverEnv.AWS_SECRET_ACCESS_KEY=$(kubectl get secret workflow -o jsonpath="{.data.AWS_SECRET_ACCESS_KEY}" | base64 --decode) \
+  --conf spark.executorEnv.AWS_ACCESS_KEY_ID=$(kubectl get secret workflow -o jsonpath="{.data.AWS_ACCESS_KEY_ID}" | base64 --decode) \
+  --conf spark.executorEnv.AWS_SECRET_ACCESS_KEY=$(kubectl get secret workflow -o jsonpath="{.data.AWS_SECRET_ACCESS_KEY}" | base64 --decode) \
+  local:///opt/spark/jobs/<파일 이름>
+```
+의 복잡한 명령어를
+
+```
+$SPARK_HOME/bin/spark-submit \
+  --master k8s://https://master:6443/ \
+  --deploy-mode cluster \
+  --name <테스트 이름> \
+  --conf spark.executor.instances=2 \
+  --conf spark.kubernetes.container.image=<계정명>/<이미지 이름><태그> \
+  --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
+  --conf spark.kubernetes.executor.deleteOnTermination=true \
+  --conf "spark.eventLog.enabled=true" \
+  --conf "spark.eventLog.dir=file:/mnt/spark-history-logs" \
+  --conf spark.kubernetes.driver.podTemplateFile=$SPARK_HOME/podtemplate/driver-pod-template.yaml \
+  --conf spark.kubernetes.executor.podTemplateFile=$SPARK_HOME/podtemplate/executor-pod-template.yaml \
+  local:///opt/spark/jobs/<파일 이름>
+```
+로 줄일 수 있습니다.  
+
 
 
 ## 트러블 슈팅
-현상 : 잡 제출시 포트가 int 형식 7077이 아닌 string 형식"spark://spark-master:7077"로 입력되는 현상 발생
+현상 : 잡 제출시 포트가 int 형식 7077이 아닌 string 형식"spark://spark-master:7077"로 입력되는 현상 발생  
 원인 : spark 에서는 SPARK_MASTER_PORT 환경변수를 7077로 지정하는 방식으로 포트를 찾는다. service name을 spark-master로 작성시 이 환경변수가 덮어씌워지므로 반드시 서비스의 이름을 spark-master와 다르게 만들어야 한다.
 
-History Server관련 내용 추가해야 함!
+현상 : 스파크 설치시 서버에 연동된 깃에 푸시가 안되는 현상 발생  
+원인 : 깃허브에 올릴 수 있는 파일에는 용량 제한이 있다. 스파크 설치시 많은 파일들이 생기는데, 그 중 용량이 큰 파일때문에 매일 실행되도록 설정한 자동푸시가 되지 않았다.
+gitignore에 .jar 을 등록하여 용량이 큰 jar 파일들을 푸시되지 않게 하였다.
+
+현상 : job 제출이 제대로 안 되는 현상 발생  
+원인 : spark-submit에서, 역슬래시( \\ ) 사용하여 줄 구분시 역슬래시 뒤에 공백이 포함되면 안 된다.
 
 
 ## 시행착오
@@ -400,3 +444,6 @@ spec:
       storage: 1Gi
 ```
 
+![[Pasted image 20241008001800.png]]
+
+추가로, job submit시 
