@@ -1,51 +1,54 @@
-name: Daily Merge
+name: Daily Merge  # 워크플로우 이름 설정
 
 on:
   schedule:
-    - cron: '50 3 * * *'  # 한국 시간 오전 1시 실행
-    - cron: '50 8 * * *'   # 한국 시간 오후 6시 실행
-  workflow_dispatch:  # 수동 실행을 위한 트리거 추가
+    - cron: '50 3 * * *'  # 한국 시간 오전 1시 (UTC 기준으로 3:50)에 자동 실행
+    - cron: '50 8 * * *'  # 한국 시간 오후 6시 (UTC 기준으로 8:50)에 자동 실행
+  workflow_dispatch:  # 수동으로 워크플로우를 실행할 수 있도록 트리거 추가
 
 jobs:
-  merge-instances:
-    runs-on: ubuntu-latest
+  merge-instances:  # 'merge-instances' 작업 정의
+    runs-on: ubuntu-latest  # Ubuntu 환경에서 실행
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    steps: # 작업 단계 정의
+    - name: Checkout repository  # 리포지토리의 코드를 체크아웃하는 단계
+      uses: actions/checkout@v4  # GitHub 제공 checkout 액션 사용
       with:
-        fetch-depth: 0 
-        ref: main
+        fetch-depth: 0  # 전체 Git 기록을 가져와서 병합에 필요한 모든 브랜치 포함
+        ref: main  # main 브랜치 기준으로 작업 수행
         
-    - name: Set Git user
-      run: |
+    - name: Set Git user  # Git 사용자를 설정하는 단계
+      run: | # 여러 줄의 명령어 실행
         git config --global user.name "westdragonwon"
         git config --global user.email "westdragonwon@gmail.com"
 
-    - name: Fetch instances
+    - name: Fetch instances  # 병합에 필요한 브랜치들을 fetch하는 단계
       run: |
-        git fetch origin data-architecture
-        git fetch origin mlops
+        git fetch origin data-architecture  # 원격 브랜치 data-architecture 가져오기
+        git fetch origin mlops  # 원격 브랜치 mlops 가져오기
 
-    - name: Merge data-architecture into main
-      id: merge_data-architecture  # 각 단계에 고유 ID를 추가하여 결과 참조 가능
+    - name: Merge data-architecture into main  # data-architecture 브랜치를 main에 병합
+      id: merge_data-architecture  # 단계의 결과를 참조할 수 있는 ID 설정
       run: git merge origin/data-architecture || echo "Merge conflict in data-architecture" >> $GITHUB_STEP_SUMMARY
-                  # || 연산자를 사용하여 실패할 경우 오류메세지를 기록하도록
-
-    - name: Merge mlops into main
-      id: merge_mlops
+                  # 병합 실패 시, 오류 메시지를 $GITHUB_STEP_SUMMARY에 기록
+    
+    - name: Merge mlops into main  # mlops 브랜치를 main에 병합
+      id: merge_mlops  # 단계의 결과를 참조할 수 있는 ID 설정
       run: git merge origin/mlops || echo "Merge conflict in mlops" >> $GITHUB_STEP_SUMMARY
+                  # 병합 실패 시, 오류 메시지를 $GITHUB_STEP_SUMMARY에 기록
       
-    - name: Push to main branch
-      if: success()
+    - name: Push to main branch  # 병합에 성공한 경우 main 브랜치에 푸시
+    # 이전 단계들이 성공했을 때만 실행
+      if: success()  
       run: git push origin main
       
-    - name: Send success message to Slack
+    - name: Send success message to Slack  # 병합 성공 시 Slack으로 알림 전송
       if: success()
       run: |
         curl -X POST -H 'Content-type: application/json' --data '{"text":"✅ GitHub Actions: Daily merge completed successfully."}' ${{ secrets.SLACK_WEBHOOK_URL }}
 
-    - name: Send alert on merge conflict to Slack
-      if: failure()
+    - name: Send alert on merge conflict to Slack  # 병합 충돌 발생 시 Slack으로 알림 전송
+    # 이전 단계 중 하나라도 실패한 경우에만 실행
+      if: failure()  
       run: |
         curl -X POST -H 'Content-type: application/json' --data '{"text":"⚠️ GitHub Actions: Merge conflict detected during daily merge process. Conflicts occurred at: \n'"$(cat $GITHUB_STEP_SUMMARY)"'}' ${{ secrets.SLACK_WEBHOOK_URL }}

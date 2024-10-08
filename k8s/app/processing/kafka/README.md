@@ -233,12 +233,8 @@ my-topic에서 모든 메시지를 처음부터 읽어옴.
 			- name: KAFKA_PROCESS_ROLES
 			value: "broker,controller"
 		
-		주키퍼와는 달리 kraft 모드에선 브로커 컨트롤러가 동일한 인스턴스에서 실행될 수 있게 함.
-
-			- name: KAFKA_ADVERTISED_LISTENERS
-          	value: "PLAINTEXT://kafka-1:9092"
-
-		주키퍼에선 value에 controller도 들어가지만 kraft에선 controller 내용이 들어가면 오류가 생김.
+		Kraft 모드가 Zookeeper 없이 메타데이터를 관리하기 때문에, 각 브로커가 컨트롤러 역할도 수행해야하기 때문에 broker와 controller를 꼭 
+		다 역할 지정을 해줘야한다.
 
 2. DNS?
 

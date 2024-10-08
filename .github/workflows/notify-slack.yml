@@ -1,21 +1,27 @@
-name: Notify Slack on Branch Commits
+name: Notify Slack on Branch Commits  # 브랜치에 커밋이 발생할 때 Slack에 알림 전송하는 워크플로우
 
 on:
-  push:
-    branches:
+  push:  # 브랜치에 푸시가 발생했을 때 트리거
+    branches:  # 대상 브랜치 설정
       - data-architecture
       - mlops
       - main
 
 jobs:
-  notify:
-    runs-on: ubuntu-latest
+  notify:  # 'notify' 작업 정의
+    runs-on: ubuntu-latest  # Ubuntu 환경에서 실행
     steps:
-      - name: Extract branch name
-        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+      - name: Extract branch name  # 브랜치 이름 추출 단계
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV  # 브랜치 이름을 환경 변수로 저장
 
-      - name: Send Slack notification
-        uses: rtCamp/action-slack-notify@v2
+      - name: Send Slack notification  # Slack 알림 전송 단계
+        uses: rtCamp/action-slack-notify@v2  # rtCamp의 Slack 알림 액션 사용
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}  # Slack Webhook URL 참조
           SLACK_MESSAGE: "New commit pushed to ${{ env.BRANCH_NAME }} by ${{ github.actor }}: ${{ github.event.head_commit.message }}"
+                  # 새로운 커밋이 발생한 브랜치, 커밋 작성자, 커밋 메시지를 포함한 알림 메시지 전송
+
+
+
+
+

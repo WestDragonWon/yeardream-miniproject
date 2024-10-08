@@ -1,18 +1,11 @@
-from datetime import datetime, timedelta
+import io
+import os
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-import pandas as pd
-import boto3
 from sqlalchemy import create_engine
-import os
-import io
 import pyarrow.parquet as pq
-from datetime import datetime
-import os
 import pandas as pd
 import boto3
-from sqlalchemy import create_engine
-from io import StringIO
 import mlflow
 import mlflow.sklearn
 from sklearn.model_selection import train_test_split
@@ -20,8 +13,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from mlflow.tracking import MlflowClient
-from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
+from datetime import datetime, timedelta
+
 
 
 # Model versioning function
@@ -105,6 +98,7 @@ def read_s3_and_store_to_postgres(**kwargs):
 def load_data_from_postgres():
     engine = create_engine(f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}')
     df = pd.read_sql_table(table, engine)
+    #빈값 처리
     df = df.dropna()
     return df
 

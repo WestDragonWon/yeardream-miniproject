@@ -16,15 +16,11 @@ from airflow.operators.python_operator import PythonOperator
 
 # Model versioning function
 def generate_model_version():
-    # Step 1: Head Version
     head_version = 1  # 수동으로 수정 가능
-
-    # Step 2: Year and Week Number (ISO)
     current_date = datetime.now()
     yearweek = current_date.strftime("%y%U")
-
-    # Step 3: Build Version
     build_file = "/tmp/.build_version.txt"
+    
     if os.path.exists(build_file):
         with open(build_file, "r") as f:
             last_version = f.read().strip()
@@ -35,7 +31,6 @@ def generate_model_version():
 
     version = f"{head_version}.{yearweek}.b{build_version}"
 
-    # Save the build version
     with open(build_file, "w") as f:
         f.write(str(version))
 
@@ -54,7 +49,7 @@ db_name = os.getenv("POSTGRES_DB")
 table = os.getenv("POSTGRES_TABLE")
 
 # S3에서 CSV 파일 읽기
-def load_data_from_s3(**kwargs):
+def load_data_from_s3(**kwargs): 1
     s3 = boto3.client('s3')
     csv_obj = s3.get_object(Bucket=bucket_name, Key=s3_object_name)
     body = csv_obj['Body'].read().decode('utf-8')
@@ -62,11 +57,9 @@ def load_data_from_s3(**kwargs):
     
     # XCom에 데이터프레임을 저장
     kwargs['ti'].xcom_push(key='iris_data', value=df.to_dict())  # DataFrame을 dict 형태로 변환하여 저장
-    return df
 
 # PostgreSQL에 데이터 로드
 def load_data_to_postgres(**kwargs):
-    # XCom에서 데이터프레임을 가져오기
     ti = kwargs['ti']
     df_dict = ti.xcom_pull(task_ids='load_data_from_s3', key='iris_data')
     df = pd.DataFrame.from_dict(df_dict)  # dict를 DataFrame으로 변환
@@ -84,8 +77,8 @@ def load_data_from_postgres():
 # MLflow 모델 학습 및 로깅
 def train_and_log_model():
     df = load_data_from_postgres()
-    X = df.drop("Species", axis=1).values
-    y = df["Species"].values
+    X = df.drop("species", axis=1).drop("idx", axis=1).drop("created_at", axis=1).values  # target_column을 예측 대상 열로 변경
+    y = df["species"].values  # Species를 레이블로 설정
 
     # 데이터 전처리
     scaler = StandardScaler()
@@ -101,6 +94,8 @@ def train_and_log_model():
     # 모델 학습
     model = LogisticRegression(max_iter=200, C=0.5, solver='lbfgs', random_state=123)
     model.fit(X_train, y_train)
+    
+    # 예측 및 정확도 평가
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
 

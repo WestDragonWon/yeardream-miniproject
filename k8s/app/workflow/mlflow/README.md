@@ -1,12 +1,14 @@
+# MLflow
 
-# 목차
+
+## 목차
 
 1. [개요](개요)
 2. [필요 환경](#필요-환경)
 3. [구성 요소](#구성-요소)
 4. [설치](#설치)
 
-## 개요
+### 개요
 
 Kubernetes 환경에서 MLflow를 사용하기 위한 구성을 제공합니다.
 
@@ -22,7 +24,7 @@ Kubernetes 환경에서 MLflow를 사용하기 위한 구성을 제공합니다.
 ![alt text](img/image.png)
 
 
-## 필요 환경
+### 필요 환경
 
 - Kubernetes 클러스터
 - S3 Access ID, Secret Access Key
@@ -30,12 +32,12 @@ Kubernetes 환경에서 MLflow를 사용하기 위한 구성을 제공합니다.
 - Postgres에서 사용할 db, table, user, p.w
 
 
-## 구성 요소
+### 구성 요소
 
 - MLflow 환경을 만들기 위한 Deployment, Service
 
 
-## 설치
+### 설치
 
 
 1. 저장소를 클론합니다. 파일은 instance1/k8s/app/workflow/mlflow에 위치합니다.
@@ -61,7 +63,7 @@ Kubernetes 환경에서 MLflow를 사용하기 위한 구성을 제공합니다.
     `kubectl apply -f <mlflow.yaml의 경로>`
 
 
-## 기타
+### 기타
 
 metadata를 Postgres에 저장하기 :
 ```
@@ -84,7 +86,7 @@ metadata를 Postgres에 저장하기 :
 
 - mlflow.log_artifact(): 훈련된 모델 파일, 그래프, 데이터 시각화등을 이 함수로 저장 가능함. 
 
-### 모델 레지스트리
+#### 모델 레지스트리
 
         # 모델 레지스트리에 등록
         model_uri = f"runs:/{mlflow.active_run().info.run_id}/{model_path}"
