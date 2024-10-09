@@ -12,6 +12,8 @@ spec:
       labels:
         app: model-app
     spec:
+      nodeSelector:
+        type: mlops
       containers:
       - name: iris-container
         image: westdragonwon/iris_deployment:latest
