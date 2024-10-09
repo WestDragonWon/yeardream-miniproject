@@ -41,7 +41,7 @@ Ack : 프로듀서가 카프카에 메시지를 보낸 뒤 잘 받았는지 확�
 총 3 종류의 Ack 설정이 존재합니다.  
 
 1. Ack = 0  
-![alt text](image/image-1.png)
+![alt text](image/image-6.png)  
 프로듀서가 각 파티션 리더에게 데이터를 보내고, 추가적인 처리를 하지 않습니다.  
 데이터가 브로커로 전달되는 중 손실이 일어나는 경우 프로듀서가 이를 알아차릴 수 없고, 해당 데이터는 카프카에 전달되지 못합니다.  
 데이터가 최대 1 번 저장됩니다. (At most once 방식)
@@ -80,7 +80,7 @@ kafka-0:/opt/kafka/bin$ ./kafka-producer-perf-test.sh \
 </details>
 
 2. Ack = 1  
-![alt text](image/image-2.png)  
+![alt text](image/image-5.png)  
 프로듀서가 각 파티션 리더에게 데이터를 보내면 파티션 리더는 데이터를 저장 후 저장을 성공했다는 응답을 프로듀서에게 보냅니다.  
 프로듀서는 응답을 받지 못한 오프셋의 메시지를 재전송하며, 파티션 리더가 팔로워에게 보내는 중 손실이 일어난 메시지의 경우 팔로워의 데이터 손실이 발생합니다.  
 리더에는 최소한 한 번 데이터가 저장됩니다. (At least once 방식)
@@ -120,7 +120,7 @@ kafka-0:/opt/kafka/bin$ ./kafka-producer-perf-test.sh \
 </details>
 
 3. Ack = -1 or Ack = all
-![alt text](image/image-3.png)
+![alt text](image/image-4.png)  
 팔로워들도 메시지를 받은  뒤 리더에게 응답합니다.  
 리더는 모든 팔로워들에게 메시지가 전달됐다는 걸 확인 후 프로듀서에게 Ack 응답하여 모든 파티션 레플리카셋에 같은 데이터를 저장합니다.  
 <details>
