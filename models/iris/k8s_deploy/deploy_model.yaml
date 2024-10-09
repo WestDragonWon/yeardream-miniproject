@@ -45,4 +45,5 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 5001
-  type: ClusterIP
+      nodePort: 32121
+  type: NodePort
