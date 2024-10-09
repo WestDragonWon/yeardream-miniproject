@@ -4,7 +4,7 @@ cleanup_pods() {
     local APP_NAME=$1
     local POD_STATUS=$2
     
-    if [ "$POD_STATUS" == "Failed" ] || [ "$POD_STATUS" == "Unknown" ]; then
+    if [ "$POD_STATUS" == "Failed" ] || [ "$POD_STATUS" == "Unknown" ] || [ "$POD_STATUS" == "Terminating" ]; then
         echo "Cleaning up $APP_NAME pods in $POD_STATUS state..."
         # Delete pods with the specific app label in Failed or Unknown state
         kubectl delete pod -l app=$APP_NAME 
@@ -46,7 +46,7 @@ while true; do
     if [ "$POD_STATUS_1" == "Running" ]; then
         echo "Pod is running, exiting loop"
         break
-    elif [ "$POD_STATUS_1" == "Failed" ] || [ "$POD_STATUS_1" == "Unknown" ] || [ -z "$POD_STATUS_1" ]; then
+    elif [ "$POD_STATUS_1" == "Failed" ] || [ "$POD_STATUS_1" == "Unknown" ] || [ "$POD_STATUS_1" == "Terminating" ] || [ -z "$POD_STATUS_1" ]; then
         cleanup_pods "consumer-s3" "$POD_STATUS_1"
         submit_spark_job "consumer-s3" "consumer-kafka-s3.py"
     fi

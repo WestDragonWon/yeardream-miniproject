@@ -24,6 +24,15 @@ spec:
                 configMapKeyRef:
                   name: airflow-config
                   key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+      tolerations:                
+        - key: "node.kubernetes.io/not-ready"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 30
+        - key: "node.kubernetes.io/unreachable"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 30
       containers:
         - name: airflow-webserver
           image: westdragonwon/airflow-rsync:latest  # 커스텀 이미지를 사용

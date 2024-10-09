@@ -13,7 +13,7 @@
 
 로컬 서버에 Spark submit 할 수 있는 환경을 만들고, 쿠버네티스 API 서버에 Job을 제출하여 driver, executor 파드를 동적으로 만드는 방법을 사용하였습니다.
 
-![image](img/image.png)
+![alt text](img/image-1.png)
 
 
 ## 필요 환경

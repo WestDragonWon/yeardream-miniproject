@@ -2,13 +2,13 @@
 1. [BashOperator vs PythonOperator](#bashoperator-vs-pythonoperator)
 2. [BashOperator](#bashoperator)
 3. [PythonOperator](#pythonoperator)
-4. [kafkaCsvProducerAll.py](#kafkacsvproducerallpy)
-5. [kafkaCsvProducerBychunk.py](#kafkaCsvProducerBychunkpy)
-6. [kafkaJsonProducer.py](#kafkaJsonProducerpy)
+4. [batchCsv2S3.py](#batchcsv2s3py)
+5. [kafkaCsvProducerAll.py](#kafkacsvproducerallpy)
+6. [kafkaCsvProducerBychunk.py](#kafkaCsvProducerBychunkpy)
 7. [kafkaJsonProducer.py](#kafkaJsonProducerpy)
-8. [kafkaJsonProducer.py](#kafkaJsonProducerpy)
-9. [kafkaJsonProducer.py](#kafkaJsonProducerpy)
-10. [kafkaJsonProducer.py](#kafkaJsonProducerpy)
+8. [fakeData.py](#fakeDatapy)
+9. [s3topg.py](#s3topgpy)
+10. [storeAndTrainRegister.py](#storeAndTrainRegisterpy)
 
 ## BashOperator vs PythonOperator
 ![Alt text](image.png)
@@ -30,6 +30,10 @@
 - 단점
 1. 테스트 환경설정을 위해 이미지를 변경하고 파드를 내렸다 올려야함
 2. 에어플로우와 파이썬 파일간의 의존성 충돌
+---
+### batchCsv2S3.py
+- 큰 데이터는 카프카를 거치지 않고 배치형태로 바로 S3에 저장하는 것이 적합
+- 아마존에서 제공하는 upload_fileobj 메서드로 메모리 부족을 대비한 데이터사이즈, 청크사이즈 고려없이 바로 S3에 저장가능
 
 ### kafkaCsvProducerAll.py
 - csv 파일을 한번에 kafka로 produce

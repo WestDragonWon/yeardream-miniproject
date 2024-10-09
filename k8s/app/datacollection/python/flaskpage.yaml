@@ -14,6 +14,8 @@ spec:
       labels:
         app: flask-kafka-app
     spec:
+      nodeSelector:
+        type: worker
       containers:
       - name: flask-kafka-container
         image: westdragonwon/order:1.6 # Docker Hub에 푸시한 이미지

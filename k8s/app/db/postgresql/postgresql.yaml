@@ -13,9 +13,20 @@ spec:
       labels:
         app: postgres
     spec:
+      nodeSelector:
+        type: master
       securityContext:      #postgres 이미지는 루트권한으로 파일을 생성하거나 수정하는 것을 금지하고있다. postgres 계정으로 명령을 수행하기 위한 설정
         runAsUser: 999
         fsGroup: 999
+      tolerations:                # 여기 tolerations 추가
+        - key: "node.kubernetes.io/not-ready"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 30
+        - key: "node.kubernetes.io/unreachable"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 30
       containers:
         - name: postgres
           image: postgres:13
