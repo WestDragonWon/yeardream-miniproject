@@ -14,7 +14,7 @@
 
 하루동안 갱신된 데이터를 사용하여 모델을 훈련하고, 등록한 뒤 플라스크 페이지로 접근 가능한 도커 이미지를 만들어 배포, 쿠버네티스로 서빙까지의 과정을 자동화한다. (주기 : 하루에 한 번, 방법 : crontab)  
 
-![alt text](image.png)
+![alt text](./image/image.png)
 
 
 ## 필요 환경
@@ -74,18 +74,18 @@
 build 버전은 파일에 기록되게 하여 하나씩 늘려가는 방식으로 구현했습니다.  
 
 ## 실행 이미지
-![alt text](image-1.png)
+![alt text](./image/image-1.png)
 1. 쉘 실행  
 
-![alt text](image-2.png)
+![alt text](./image/image-2.png)
 2. 모델 훈련 및 등록  
 
-![alt text](image-3.png)
+![alt text](./image/image-3.png)
 3. 도커허브에 이미지 등록    
 
-![alt text](image-4.png)
+![alt text](./image/image-4.png)
 4. 쿠버네티스 버전 갱신  
 
-![alt text](image-6.png)  
-![alt text](image-5.png)  
+![alt text](./image/image-6.png)  
+![alt text](./image/image-5.png)  
 5. 예측 요청, 반환  
