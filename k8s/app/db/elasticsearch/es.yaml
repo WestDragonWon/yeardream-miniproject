@@ -28,6 +28,17 @@ spec:
       labels:
         app: elasticsearch
     spec:
+      nodeSelector:
+        type: worker
+      tolerations:                
+        - key: "node.kubernetes.io/not-ready"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 30
+        - key: "node.kubernetes.io/unreachable"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 30
       containers:
       - name: elasticsearch
         image: elastic/elasticsearch:7.17.24

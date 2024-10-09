@@ -26,14 +26,16 @@ see the [LICENSE](./LICENSE) file for details.
 
 2. AWS 서비스의 이해
 
-3. 단순히 도구를 이용해보는 실습이 아닌 / 서비스를 배포하기 위한 도구들의 작동 방식과 각각의 주요 옵션들에 대한 이해를 기반으로 이후 원하는 서비스를 제약없이 구축 할 수 있는 능력을 기르기
+3. 단순히 도구를 이용해보는 실습이 아닌 도구들의 작동 방식과 사용 이유 각각의 주요 옵션들에 대한 이해를 기반으로 최대한 다양한 방식과 환경을 고려한 실습으로 이후 원하는 서비스를 제약없이 구축 할 수 있는 능력을 기르기
 
 
 ## 주요 기능
 
 1. 대량의 데이터를 처리할 수 있는 안정적이고 확장 가능한 **데이터 파이프라인**
 
-2. AWS 서비스와 Kubernetes를 활용한 높은 가용성(Availability)과 확장성(Scalability) 제공.
+2. AWS 서비스와 Kubernetes를 활용한 높은 가용성(Availability)과 확장성(Scalability) 장애 허용성 제공.
+
+- 멀티 AZ로 구성된 가용성과 더 나아가 다중 리전간의 가용성을 제공합니다.
 
 3. Sha256 & k8s Secret & 각 도구들의 보안솔루션 등을 활용한 민감정보 보안(Security) 확보
 
@@ -43,18 +45,9 @@ see the [LICENSE](./LICENSE) file for details.
 
 6. 다양한 기능과 가용성을 확보하면서도 비용(Cost) 최적화를 통하여 저렴하게 구축
 
+7. 머신러닝 모델을 프로덕션에 배포하는 자동화된 **MLOps** 시스템
 
-
-. 머신러닝 모델을 프로덕션에 배포하는 자동화된 **MLOps** 시스템
-2. 
-3. 워크플로우 전반에 걸쳐 보안과 데이터 영속성을 보장.
-4. Kubernetes와 AWS 클라우드 네이티브 도구를 적용하여 고가용성과 장애 허용성 달성.
-5. 더불어 멀티 AZ로 구성된 가용성과 더 나아가 다중 리전간의 가용성을 제공합니다.
-
-GitHub 각 디렉토리에서 관리되는 리소스나 도구는 이 프로젝트의 중요한 부분이며, 모든 폴더마다 `README.md` 파일을 통해 각각의 역할과 사용법을 확인할 수 있습니다.
-
-
-
+8. 워크플로우 전반에 걸쳐 보안과 데이터 영속성(Durability)과 정합성(Consistency)을 보장.
 
 
 ## 기술 스택
@@ -102,11 +95,30 @@ GitHub 각 디렉토리에서 관리되는 리소스나 도구는 이 프로젝�
 
 ## 칸반 보드
 
+- 각각의 작업이 어떤 상태인지(진행 중, 완료, 보류 등)를 파악하는 것이 쉽기 때문에, 개발 과정에서 일어나는 문제를 빠르게 파악하여 대처할 수 있습니다.
+
+- 스프린트 주기에서 백로그의 모든 기능을 완료하고 그렇지 못한 경우는 다음 스프린트로 이월
+
 ## 피드백 루프
----
+
+3. 5가지 빠른 피드백 루프를 적용했습니다.
+
+- Pair Programming	두 명의 프로그래머가 함께 작업하여 코드를 작성하는 방법입니다. 한 명이 코드를 작성하고, 다른 한 명이 코드를 검토하고 지속적인 피드백을 제공하며 협업합니다.
+
+해당 부분은 지속적으로 이루어지진 않았지만, 화면공유로 테스트환경에서 코드를 작성할때의 문제점이나 오타등을 팀원이 지적해주는 과정이 있었습니다.
+
+- Unit Test + TDD	소프트웨어의 작은 부분인 유닛에 대한 테스트를 수행합니다. 유닛 테스트는 개별 함수 또는 모듈이 예상대로 작동하는지 확인하는 데 사용됩니다.
+
+- Pair Negotiation	두 명의 사람이 함께 협상하여 문제를 해결하고, 결정을 내리는 과정입니다. 각각의 의견을 고려하며 협업하여 최선의 결론을 도출합니다.
+
+- Stand-up Meeting	팀 구성원들이 매일 짧은 시간 동안 서로의 진행 상황과 장애물을 공유하는 미팅입니다. 팀의 커뮤니케이션과 협업을 도울 수 있는 기회가 제공됩니다.
+
+- Acceptance Test	소프트웨어가 요구사항을 만족하는지 확인하는 테스트입니다. 사용자의 관점에서 시스템을 검증하며 사용자 승인을 받을 수 있는지 확인합니다.
 
 
 ## 목차
+GitHub 각 디렉토리에서 관리되는 리소스나 도구는 이 프로젝트의 중요한 부분이며, 모든 폴더마다 `README.md` 파일을 통해 각각의 역할과 사용법을 확인할 수 있습니다.
+
 ### 디렉토리와 `README.md` 파일에 대한 링크를 제공합니다.
 1. [.github/workflows](.github/workflows/README.md)
 2. [aws](./aws/README.md)
@@ -116,40 +128,41 @@ GitHub 각 디렉토리에서 관리되는 리소스나 도구는 이 프로젝�
 3. [crontab](./crontab/README.md)
 4. [docs](./docs/app/README.md)
 5. [k8s](./k8s/app/README.md)
-    - [app](./k8s/app/README.md)
-      - [datacollection](./k8s/app/datacollection/python/README.md)
-      > [db](./k8s/app/db/README.md)
+    >  [app](./k8s/app/README.md)
+      - > [datacollection](./k8s/app/datacollection/python/README.md)
+      - > [db](./k8s/app/db/README.md)
         - elasticsearch
         - [mongodb](./k8s/app/db/mongodb/README.md)
         - [postgresql](./k8s/app/db/postgresql/README.md)
         - [redis](./k8s/app/db/redis/README.md)
-      > [monitoring](./k8s/app/monitoring/README.md)
+      - > [monitoring](./k8s/app/monitoring/README.md)
         - [exporter](./k8s/app/monitoring/exporter/README.md)
         - [grafana](./k8s/app/monitoring/grafana/README.md)
         - [prometheus](./k8s/app/monitoring/prometheus/README.md)
-      > [processing]
+      - > [processing](./k8s/app/processing/README.md)
         - [kafka](./k8s/app/processing/kafka/README.md)
         - > [spark](./k8s/app/processing/spark/README.md)
           - [sparkjob](./k8s/app/processing/spark/sparkhome/README.md)
-      > [serving](./k8s/app/serving/README.md)
+      - > [serving](./k8s/app/serving/README.md)
         - [FastAPI](./k8s/app/serving/README.md)
-      > [systeam](./k8s/app/system/README.md)
+      - > [systeam](./k8s/app/system/README.md)
         - [aws-ebs-efs](./k8s/app/system/aws-ebs-efs/README.md)
         - [dashboard](./k8s/app/system/dashboard/README.md)
-      > [workflow](./k8s/app/workflow/README.md)
+      - > [workflow](./k8s/app/workflow/README.md)
         - [airflow](./k8s/app/workflow/airflow/README.md)
           - [dags1](./k8s/app/workflow/airflow/dags/lsh/README.md)
           - [dage2](./k8s/app/workflow/airflow/dags/jun/README.md)
         - [mlflow](./k8s/app/workflow/mlflow/README.md)
-    - [resources](./k8s/resources/README.md)
+      > [resources](./k8s/resources/README.md)
       - [configmap](./k8s/resources/configmap/README.md)
       - [pv](./k8s/resources/pv/README.md)
       - [role&serviceaccount](./k8s/resources/role&serviceaccount/README.md)
       - [secret](./k8s/resources/secret/README.md)
       - [service](./k8s/resources/service/README.md)
       - [storageclass](./k8s/resources/storageclass/README.md)
-6. [models](./models/README.md)
-  - []
+6. > [mlops](./mlops/iris/README.md)
+7. > [mlops-test](./mlops-test/README.md)
+
 ---
 
 ## License

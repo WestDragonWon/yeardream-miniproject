@@ -14,6 +14,17 @@ spec:
     spec:
       securityContext:              # Pod 레벨의 securityContext에서 fsGroup 정의
         fsGroup: 50000              # 파일 시스템 그룹을 50000으로 설정
+      nodeSelector:
+        type: worker
+      tolerations:                
+        - key: "node.kubernetes.io/not-ready"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 30
+        - key: "node.kubernetes.io/unreachable"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 30
       containers:
         - name: jupyter-container
           image: jupyter/base-notebook:latest

@@ -22,3 +22,5 @@ Amazon Athena는 표준 SQL을 사용하여 Amazon S3(Amazon Simple Storage Serv
 2. Athena 콘솔에 접속하여 쿼리할 데이터 소스를 지정합니다.
 3. 표준 SQL을 사용해 데이터를 분석하며, 쿼리 결과는 바로 확인할 수 있습니다.
 4. BI 도구나 다른 분석 플랫폼과 연동하여 인사이트를 도출할 수 있습니다.
+
+![Alt text](athena.png)
