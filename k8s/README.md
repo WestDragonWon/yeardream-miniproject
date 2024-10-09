@@ -1,36 +1,37 @@
 # `K8s` 디렉토리에는 Kubernetes 와 관련된 모든 리소스가 포함됩니다.
-## 
-   - [app]
-     - [datacollection]
-     - [db]
-       - [elasticsearch]
-       - [mongodb](./app/db/mongodb/README.md)
-       - [postgresql](./app/db/postgresql/README.md)
-       - [redis](./app/db/redis/README.md)
-     - [monitoring]
-       - [alertmanager](./app/monitoring/alertmanager/README.md)
-       - [exporter]
-       - [grafana]
-       - [prometheus]
-     - [processing]
-       - [kafka](./app/processing/kafka/README.md)
-       - [spark](./app/processing/spark/README.md)
-     - [serving]
-       - [FastAPI](./app/serving/README.md)
-     - [systeam]
-       - [aws-ebs-efs](./app/system/aws-ebs-efs/README.md)
-       - [dashboard](./app/system/dashboard/README.md)
-     - [workflow]
-       - [airflow](./app/workflow/airflow/README.md)
-       - [mlflow](./app/workflow/mlflow/README.md)
-   - [resources](./resources/README.md)
-     - [configmap](./resources/configmap/README.md)
-     - [pv](./resources/pv/README.md)
-     - [role&serviceaccount](./resources/role&serviceaccount/README.md)
-     - [secret](./resources/secret/README.md)
-     - [service](./resources/service/README.md)
-     - [storageclass](./resources/storageclass/README.md)
 
+>  [app](./app/README.md)
+  - > [datacollection](./app/datacollection/python/README.md)
+  - > [db](./app/db/README.md)
+    - elasticsearch
+    - [mongodb](./app/db/mongodb/README.md)
+    - [postgresql](./app/db/postgresql/README.md)
+    - [redis](./app/db/redis/README.md)
+  - > [monitoring](./app/monitoring/README.md)
+    - [exporter](./app/monitoring/exporter/README.md)
+    - [grafana](./app/monitoring/grafana/README.md)
+    - [prometheus](./app/monitoring/prometheus/README.md)
+  - > [processing](./app/processing/README.md)
+    - [kafka](./app/processing/kafka/README.md)
+    - > [spark](./app/processing/spark/README.md)
+      - [sparkjob](./app/processing/spark/sparkhome/README.md)
+  - > [serving](./app/serving/README.md)
+    - [FastAPI](./app/serving/README.md)
+  - > [systeam](./app/system/README.md)
+    - [aws-ebs-efs](./app/system/aws-ebs-efs/README.md)
+    - [dashboard](./app/system/dashboard/README.md)
+  - > [workflow](./app/workflow/README.md)
+    - [airflow](./app/workflow/airflow/README.md)
+      - [dags1](./app/workflow/airflow/dags/lsh/README.md)
+      - [dage2](./app/workflow/airflow/dags/jun/README.md)
+    - [mlflow](./app/workflow/mlflow/README.md)
+  > [resources](./resources/README.md)
+  - [configmap](./resources/configmap/README.md)
+  - [pv](./resources/pv/README.md)
+  - [role&serviceaccount](./resources/role&serviceaccount/README.md)
+  - [secret](./resources/secret/README.md)
+  - [service](./resources/service/README.md)
+  - [storageclass](./resources/storageclass/README.md)
 
 # Pod가 특정 노드에 배치될 수 있도록 제어하는 방법
 ## NodeSelector를 이용한 라벨 기반 스케줄링
