@@ -1,6 +1,6 @@
 import requests
 
-url = 'http://localhost:5001/predict'
+url = 'http://localhost:32121/predict'
 data = {
     "Sepal.Length": [5.1, 4.9],
     "Sepal.Width": [3.5, 3.0],
