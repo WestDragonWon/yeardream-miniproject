@@ -2,8 +2,8 @@
 
 ## 개요
 
-스파크 잡을 쿠버네티스에서 관리되도록 제출할 수 있습니다. (잡을 제출하는 자세한 방법은 [이전 디렉토리 README.md](../README.md)의 실행 방법에 작성해놓았습니다.)
-![alt text](image/image.png)
+스파크 잡을 쿠버네티스에서 관리되도록 제출할 수 있습니다. (잡을 제출하는 자세한 방법은 [이전 디렉토리 README.md](../README.md)의 실행 방법에 작성해놓았습니다.)  
+![alt text](image/image.png)  
 [다양한 수집부](../../../../app/datacollection/python/README.md)에 의해 Kafka 에 들어오는 데이터를 S3에 저장하는 Streaming job을 만들었습니다. (kafka consumer)
 
 
@@ -29,12 +29,19 @@ writeStream 형식으로 S3에 데이터를 저장합니다.
 
 ## 잡 제출
 로컬의 spark-submit 파일로 잡을 제출합니다.  
+
 master를 k8s로 지정하여 쿠버네티스 파드로 driver, executor를 관리할 수 있습니다.  
+
 deploy-mode로는 cluster, client 모드가 있으며, cluster mode의 경우 드라이버가 클러스터 내(마스터 혹은 워커)에서 실행되어 네트워크 독립적이라는 특징이 있고, client mode의 경우 드라이버가 클라이언트 머신에서 실행되어 클러스터와 클라이언트 간 네트워크가 필요하다는 특징이 있습니다.  
+
 executor의 리소스를 정할 수 있습니다. 명령어로 매번 작성하기 번거로운 경우 pod template(후술)에 작성하여 일관성을 유지할 수 있습니다.  
+
 executor의 개수를 정해줘야 합니다.  
+
 driver, executor에서 사용할 이미지를 지정해줍니다. 잡을 처리하기 위해 각 executor마다 spark 파일(.py 등)과 그에 해당하는 종속성 파일 (.jar 등), data 파일(.csv 등)이 필요합니다. 따라서, spark 이미지에 job, jar, data 등을 추가하여 도커 이미지로 만들고, 레지스트리에 푸시하는 작업이 선행되어야 합니다.  
+
 이미지 내에 잡이 저장된 디렉토리에서 파일을 실행하도록 명령합니다.  
+
   
 예)
 ```

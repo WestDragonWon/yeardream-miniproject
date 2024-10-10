@@ -444,6 +444,5 @@ spec:
       storage: 1Gi
 ```
 
-![[Pasted image 20241008001800.png]]
-
-추가로, job submit시 
+![alt text](<img/Pasted image 20241008001800.png>)
+클러스터 구성까지 완료했는데, 워커에서 Executor가 생성되지 않았다.

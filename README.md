@@ -62,8 +62,7 @@ see the [LICENSE](./LICENSE) file for details.
 - **Workflow Management**: Apache Airflow, Crontab
 - **Data Message Que**: Apache Kafka
 - **Data Processing**: Apache Spark, Apache Flink, S3 Glue, ELK
-- **Data DB & Storage**: Redis, MongoDB, AWS-EBS-gp3, AWS-EFS, AWS-S3
-- **Monitoring**: K8s-Dashboard, Prometheus, Grafana
+- **Data DB & Storage**: Redis, MongoDB, AWS-EBS-gp3, AWS-EFS, AWS-S3, Amazon S3 Glacier
 
 ### Monitoring & Alerts
 - **Monitoring**: K8s-Dashboard, Prometheus, Grafana
@@ -76,10 +75,11 @@ see the [LICENSE](./LICENSE) file for details.
 - **CI/CD**: GitHub Actions, Crontab
 
 ## 협업 도구
-**Code Version Control**: github
-**Online whiteboard platform**: miro
-**Workplace messaging platform**: slack
-**Real-time communication**: discord
+
+- **Code Version Control**: github
+- **Online whiteboard platform**: miro
+- **Workplace messaging platform**: slack
+- **Real-time communication**: discord
 
 ## 프로젝트 진행 방식
 
@@ -103,6 +103,9 @@ see the [LICENSE](./LICENSE) file for details.
 
 3. 5가지 빠른 피드백 루프를 적용했습니다.
 
+빠른 피드백 루프: 피드백을 가능한 빨리 얻어 개선하는 것이 중요한데, 긴 주기의 릴리스 계획부터 짧은 주기의 단위 테스트, 코드 작성까지 다양한 단계에서 피드백이 이루어지는 과정을 나타냅니다.
+계속적인 개선: 코드 작성부터 릴리스 계획까지의 각 단계에서 피드백을 받아 지속적으로 소프트웨어를 개선해 나갑니다.
+
 - Pair Programming	두 명의 프로그래머가 함께 작업하여 코드를 작성하는 방법입니다. 한 명이 코드를 작성하고, 다른 한 명이 코드를 검토하고 지속적인 피드백을 제공하며 협업합니다.
 
 해당 부분은 지속적으로 이루어지진 않았지만, 화면공유로 테스트환경에서 코드를 작성할때의 문제점이나 오타등을 팀원이 지적해주는 과정이 있었습니다.
@@ -114,7 +117,6 @@ see the [LICENSE](./LICENSE) file for details.
 - Stand-up Meeting	팀 구성원들이 매일 짧은 시간 동안 서로의 진행 상황과 장애물을 공유하는 미팅입니다. 팀의 커뮤니케이션과 협업을 도울 수 있는 기회가 제공됩니다.
 
 - Acceptance Test	소프트웨어가 요구사항을 만족하는지 확인하는 테스트입니다. 사용자의 관점에서 시스템을 검증하며 사용자 승인을 받을 수 있는지 확인합니다.
-
 
 ## 목차
 GitHub 각 디렉토리에서 관리되는 리소스나 도구는 이 프로젝트의 중요한 부분이며, 모든 폴더마다 `README.md` 파일을 통해 각각의 역할과 사용법을 확인할 수 있습니다.
