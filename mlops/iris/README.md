@@ -14,13 +14,14 @@
 
 하루동안 갱신된 데이터를 사용하여 모델을 훈련하고, 등록한 뒤 플라스크 페이지로 접근 가능한 도커 이미지를 만들어 배포, 쿠버네티스로 서빙까지의 과정을 자동화한다. (주기 : 하루에 한 번, 방법 : crontab)  
 
-![alt text](./image/image.png)
+![alt text](image.png)
 
 
 ## 필요 환경
 
 - Kubernetes 클러스터  
 - 도커 허브에 등록할 수 있는 환경  
+- Git hub에 push할 수 있는 환경
 - [mlflow](../../k8s/app/workflow/mlflow/README.md) - 연동되어있습니다.
 
 
