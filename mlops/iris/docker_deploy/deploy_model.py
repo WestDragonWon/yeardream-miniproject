@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 mlflow.set_tracking_uri("http://mlflow:8080")
 
-model_name = "iris_model"
+model_name = "iris_model_final"
 model_version = "production"
 
 

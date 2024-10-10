@@ -58,7 +58,7 @@ X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, 
 
 # Set MLflow tracking URI
 mlflow.set_tracking_uri("http://localhost:30003") #로컬에 설치된 쿠버네티스가 nodeport 형식으로 30003에 띄워져있어야 함
-mlflow.set_experiment("iris_classification_experiments")
+mlflow.set_experiment("iris_classification_experiments_final")
 
 # Train the model and log it to MLflow
 model = LogisticRegression(
@@ -82,7 +82,7 @@ with mlflow.start_run(run_name=f"model_v{version}", nested=True) as run:
 
     run_id = run.info.run_id # 현재의 run ID
     experiment_id = run.info.experiment_id # 현재의 experiment ID
-    model_name = 'iris_model'
+    model_name = 'iris_model_final'
 
     # Log the model to MLflow
     mlflow.sklearn.log_model(model, "model") # 모델을 artifact 디렉토리에 저장

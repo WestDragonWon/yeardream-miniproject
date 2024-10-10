@@ -21,6 +21,7 @@
 
 - Kubernetes 클러스터  
 - 도커 허브에 등록할 수 있는 환경  
+- Git hub에 push할 수 있는 환경
 - [mlflow](../../k8s/app/workflow/mlflow/README.md) - 연동되어있습니다.
 
 
@@ -74,18 +75,18 @@
 build 버전은 파일에 기록되게 하여 하나씩 늘려가는 방식으로 구현했습니다.  
 
 ## 실행 이미지
-![alt text](image-1.png)
+![alt text](./image/image-1.png)
 1. 쉘 실행  
 
-![alt text](image-2.png)
+![alt text](./image/image-2.png)
 2. 모델 훈련 및 등록  
 
-![alt text](image-3.png)
+![alt text](./image/image-3.png)
 3. 도커허브에 이미지 등록    
 
-![alt text](image-4.png)
+![alt text](./image/image-4.png)
 4. 쿠버네티스 버전 갱신  
 
-![alt text](image-6.png)  
-![alt text](image-5.png)  
+![alt text](./image/image-6.png)  
+![alt text](./image/image-5.png)  
 5. 예측 요청, 반환  
