@@ -62,8 +62,7 @@ see the [LICENSE](./LICENSE) file for details.
 - **Workflow Management**: Apache Airflow, Crontab
 - **Data Message Que**: Apache Kafka
 - **Data Processing**: Apache Spark, Apache Flink, S3 Glue, ELK
-- **Data DB & Storage**: Redis, MongoDB, AWS-EBS-gp3, AWS-EFS, AWS-S3
-- **Monitoring**: K8s-Dashboard, Prometheus, Grafana
+- **Data DB & Storage**: Redis, MongoDB, AWS-EBS-gp3, AWS-EFS, AWS-S3, Amazon S3 Glacier
 
 ### Monitoring & Alerts
 - **Monitoring**: K8s-Dashboard, Prometheus, Grafana
