@@ -1,82 +1,82 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: kafka
+  name: kafka  # Kafka StatefulSet의 이름
 spec:
-  serviceName: kafka
-  replicas: 1
+  serviceName: kafka  # 서비스 이름
+  replicas: 1  # 복제본 수 (여기서는 1)
   selector:
     matchLabels:
-      app: kafka
+      app: kafka  # 선택기 레이블
   template:
     metadata:
       labels:
-        app: kafka
+        app: kafka  # 파드 레이블
     spec:
       nodeSelector:
-        type: worker
-      initContainers:
+        type: worker  # 워커 노드에서 실행
+      initContainers:  # 초기화 컨테이너
       - name: init-permissions
-        image: busybox
+        image: busybox  # 초기화 작업을 위한 이미지
         command: ["sh", "-c", "if [ -d /var/lib/kafka/data/lost+found ]; then rm -rf /var/lib/kafka/data/lost+found; fi && chown -R 1000:1000 /var/lib/kafka/data"]
         volumeMounts:
-        - name: kafka-storage
-          mountPath: /var/lib/kafka/data
+        - name: kafka-storage  # 볼륨 마운트
+          mountPath: /var/lib/kafka/data  # 마운트 경로
       containers:
-      - name: kafka
-        image: apache/kafka:3.7.1
+      - name: kafka  # Kafka 컨테이너
+        image: apache/kafka:3.7.1  # Kafka 이미지
         ports:
-        - containerPort: 9092
-        - containerPort: 9999
+        - containerPort: 9092  # Kafka 클라이언트 연결 포트
+        - containerPort: 9999  # JMX 포트
         env:
         - name: KAFKA_PROCESS_ROLES
-          value: "broker,controller"
+          value: "broker,controller"  # Kafka 역할 설정
         - name: KAFKA_NODE_ID
-          value: "0"
+          value: "0"  # 노드 ID 설정
         - name: KAFKA_CONTROLLER_QUORUM_VOTERS
-          value: "0@kafka-0:9093,1@kafka-1:9093,2@kafka-2:9093"
+          value: "0@kafka-0:9093,1@kafka-1:9093,2@kafka-2:9093"  # 컨트롤러 쿼럼 설정
         - name: KAFKA_LISTENERS
-          value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+          value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"  # 수신자 설정
         - name: KAFKA_ADVERTISED_LISTENERS
-          value: "PLAINTEXT://kafka-0:9092"
+          value: "PLAINTEXT://kafka-0:9092"  # 광고할 수신자
         - name: KAFKA_LOG_DIRS
-          value: "/var/lib/kafka/data"
+          value: "/var/lib/kafka/data"  # 로그 디렉토리
         - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-          value: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+          value: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"  # 보안 프로토콜 맵
         - name: KAFKA_INTER_BROKER_LISTENER_NAME
-          value: "PLAINTEXT"
+          value: "PLAINTEXT"  # 브로커 간 리스너 이름
         - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
-          value: "false"
+          value: "false"  # 자동 주제 생성 비활성화
         - name: KAFKA_CONTROLLER_LISTENER_NAMES
-          value: "CONTROLLER"
+          value: "CONTROLLER"  # 컨트롤러 리스너 이름
         - name: KAFKA_LOG_RETENTION_MS
-          value: "604800000"
+          value: "604800000"  # 로그 보존 시간 설정 (7일)
         - name: KAFKA_MESSAGE_MAX_BYTES
-          value: "10485760"  
+          value: "10485760"  # 최대 메시지 크기 (10MB)
         - name: KAFKA_REPLICA_FETCH_MAX_BYTES
-          value: "10485760"  
+          value: "10485760"  # 복제 최대 페치 크기
         - name: KAFKA_MAX_PARTITION_FETCH_MAX_BYTES
-          value: "10485760"  
+          value: "10485760"  # 최대 파티션 페치 크기
         volumeMounts:
-        - name: kafka-storage
-          mountPath: /var/lib/kafka/data
+        - name: kafka-storage  # 볼륨 마운트
+          mountPath: /var/lib/kafka/data  # 마운트 경로
         resources:
           requests:
-            memory: "1Gi"
-            cpu: "500m"
+            memory: "1Gi"  # 메모리 요청
+            cpu: "500m"  # CPU 요청
           limits:
-            memory: "2Gi"
-            cpu: "1"
+            memory: "2Gi"  # 메모리 제한
+            cpu: "1"  # CPU 제한
   volumeClaimTemplates:
   - metadata:
-      name: kafka-storage
+      name: kafka-storage  # 볼륨 클레임 템플릿 이름
     spec:
       accessModes: 
-        - ReadWriteOnce
+        - ReadWriteOnce  # 접근 모드
       resources:
         requests:
-          storage: 20Gi
-      storageClassName: ebs-gp3
+          storage: 20Gi  # 요청 저장소 크기
+      storageClassName: ebs-gp3  # 스토리지 클래스
 
 ---
 apiVersion: apps/v1
@@ -246,22 +246,23 @@ spec:
       storageClassName: ebs-gp3
 
 ---
-apiVersion: v1
-kind: Service
+apiVersion: v1  # API 버전
+kind: Service  # Kubernetes에서의 서비스 리소스
 metadata:
-  name: kafka-0
+  name: kafka-0  # 서비스 이름 (Kafka 브로커 0)
 spec:
-  ports:
-  - name: plaintext
-    port: 9092
-    targetPort: 9092
-    protocol: TCP
-  - name: controller
-    port: 9093
-    targetPort: 9093
-    protocol: TCP
-  selector:
-    app: kafka
+  ports:  # 서비스가 사용할 포트 설정
+  - name: plaintext  # 포트 이름
+    port: 9092  # 서비스에서 사용할 포트 번호
+    targetPort: 9092  # 백엔드 컨테이너에서의 포트 번호
+    protocol: TCP  # 프로토콜 설정 (TCP)
+  - name: controller  # 컨트롤러 포트 이름
+    port: 9093  # 서비스에서 사용할 컨트롤러 포트 번호
+    targetPort: 9093  # 백엔드 컨테이너에서의 컨트롤러 포트 번호
+    protocol: TCP  # 프로토콜 설정 (TCP)
+  selector:  # 서비스가 연결할 파드를 선택하는 기준
+    app: kafka  # 선택기 레이블 (app: kafka를 가진 파드와 연결)
+
 
 ---
 apiVersion: v1
