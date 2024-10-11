@@ -1,4 +1,4 @@
-# Yeardream Miniproject - MLOps & DataPipeline System
+# Yeardream Miniproject - MLOps & DataPipeline System 
 
 ## License
 이 프로젝트는 MIT License에 따라 배포됩니다.
@@ -16,6 +16,8 @@ see the [LICENSE](./LICENSE) file for details.
 - **Contributors**:
   - 전영남 - 00nam11
   - 강재국 - kangjaeguk
+
+![alt text](./docs/images/image.png)
 
 ## 프로젝트 개요
 이 프로젝트는 **MLOps**와 **데이터 파이프라인**을 통합한 견고한 시스템을 구축하는 것을 목표로 합니다. **AWS**와 **Kubernetes**를 기반으로 머신러닝 워크플로우 및 데이터 처리 파이프라인을 자동화하여, 머신러닝 모델의 확장과 대규모 데이터 처리를 위한 프로덕션 수준의 솔루션을 제공합니다. 
