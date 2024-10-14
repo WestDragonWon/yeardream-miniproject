@@ -16,6 +16,10 @@ see the [LICENSE](./LICENSE) file for details.
 - **Contributors**:
   - 전영남 - 00nam11
   - 강재국 - kangjaeguk
+ 
+# 발표 자료 영상
+
+[![발표자료](./docs/images/link.png)](https://youtu.be/6Tuhw1VPYDc)
 
 ![alt text](./docs/images/image.png)
 
